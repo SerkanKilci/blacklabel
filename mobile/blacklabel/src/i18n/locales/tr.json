@@ -1,0 +1,273 @@
+{
+  "scanner": {
+    "permissionTitle": "Kamera izni gerekli",
+    "permissionMessage": "Blacklabel, ürün barkodlarını tarayabilmek için kamera erişimine ihtiyaç duyar.",
+    "grantButton": "Kamera erişimi ver",
+    "targetHint": "Barkodu çerçeve içine hizalayın",
+    "recentScans": "Son taramalar",
+    "manualEntryButton": "Barkodu elle gir",
+    "manualEntryTitle": "Barkodu elle gir",
+    "manualEntryHint": "Barkodun altında yazan numarayı gir.",
+    "manualEntryPlaceholder": "örn. 8690504010104",
+    "manualEntryInvalid": "Geçerli bir 8, 12, 13 veya 14 haneli barkod gir.",
+    "manualEntrySubmit": "Ara"
+  },
+  "compare": {
+    "title": "Karşılaştır",
+    "hint": "Skorlarını karşılaştırmak için en fazla 5 ürün tarayın.",
+    "emptyHint": "Karşılaştırmaya başlamak için bir ürün tarayın.",
+    "maxReached": "Aynı anda en fazla 5 ürün karşılaştırabilirsiniz.",
+    "clearAll": "Tümünü temizle",
+    "removeItem": "Kaldır",
+    "bestChoice": "En iyi seçim",
+    "bestForYou": "Senin için daha iyi seçim: {{name}}",
+    "loadingItem": "Aranıyor...",
+    "notFoundItem": "Bulunamadı",
+    "premiumTitle": "Karşılaştırma modu Premium özelliğidir",
+    "premiumMessage": "Birden fazla ürünü tarayıp skorlarını en iyiden en kötüye sıralı şekilde yan yana görün — reyonda karar verirken tam size göre.",
+    "upgrade": "Premium'a yükselt",
+    "categoryLabels": {
+      "sugar": "Şeker",
+      "saturatedFat": "Doymuş yağ",
+      "salt": "Tuz",
+      "additives": "Katkı maddeleri",
+      "allergen": "Alerjen"
+    },
+    "levels": {
+      "sugar": { "Good": "Düşük", "Medium": "Orta", "Bad": "Yüksek" },
+      "saturatedFat": { "Good": "Düşük", "Medium": "Orta", "Bad": "Yüksek" },
+      "salt": { "Good": "Düşük", "Medium": "Orta", "Bad": "Yüksek" },
+      "additives": { "Good": "Az", "Medium": "Orta", "Bad": "Fazla" }
+    },
+    "allergenCompatible": "Profiline uygun",
+    "allergenConflict": "Profiline uygun değil",
+    "summaryTitle": "Karşılaştırma özeti",
+    "summaryWinner": "{{names}} daha iyi",
+    "summarySimilar": "Benzer",
+    "formulationDisclaimer": "Bu karşılaştırma ürünlerin içerik bilgilerine göre yapılmıştır. Formülasyonlar zamanla değişebilir; kesin bilgi için ürünün güncel etiketini kontrol et."
+  },
+  "result": {
+    "loading": "Ürün aranıyor...",
+    "errorTitle": "Bir şeyler ters gitti",
+    "errorMessage": "Ürün bilgisi alınamadı. Bağlantınızı kontrol edip tekrar deneyin.",
+    "retry": "Tekrar dene",
+    "backToScanner": "Taramaya dön",
+    "notFoundTitle": "Bu ürün henüz veritabanımızda yok",
+    "notFoundMessage": "Paketin fotoğrafını çekerek bu ürünün eklenmesine yardımcı olabilirsin — bir dakikadan az sürer.",
+    "startContribute": "Bu ürünü ekle",
+    "scoreUnavailable": "Yeterli veri yok",
+    "tabs": {
+      "additives": "Katkı Maddeleri",
+      "nutrition": "Besin Değerleri",
+      "ingredients": "İçindekiler"
+    },
+    "noAdditives": "Bu üründe katkı maddesi tespit edilmedi.",
+    "noNutriments": "Besin değeri bilgisi mevcut değil.",
+    "noIngredients": "İçindekiler bilgisi mevcut değil.",
+    "allergensTitle": "Alerjenler",
+    "attribution": "Open Food Facts tarafından desteklenmektedir",
+    "dataQuality": {
+      "complete": "Eksiksiz veri",
+      "partial": "Bazı veriler eksik",
+      "unverified": "Doğrulanmamış kullanıcı katkısı"
+    },
+    "riskLevel": {
+      "0": "Bilinen risk yok",
+      "1": "Sınırlı",
+      "2": "Orta",
+      "3": "Yüksek"
+    },
+    "nutriments": {
+      "energyKcal100g": "Enerji",
+      "fat100g": "Yağ",
+      "saturatedFat100g": "Doymuş yağ",
+      "carbohydrates100g": "Karbonhidrat",
+      "sugars100g": "Şeker",
+      "fiber100g": "Lif",
+      "proteins100g": "Protein",
+      "salt100g": "Tuz",
+      "per100g": "100g başına"
+    }
+  },
+  "common": {
+    "medicalDisclaimer": "Bu uygulama tıbbi tavsiye vermez, beslenme uzmanının yerini tutmaz.",
+    "allergenDisclaimer": "Alerjen bilgisi eksik veya hatalı olabilir; ciddi alerjiniz varsa ürünün kendi etiketini mutlaka okuyun."
+  },
+  "contribute": {
+    "stepIndicator": "Adım {{current}} / {{total}}",
+    "steps": {
+      "front": {
+        "title": "Paketin ön yüzü",
+        "instruction": "Ürün adının okunaklı olacağı şekilde paketin ön yüzünü çerçeveleyin."
+      },
+      "ingredients": {
+        "title": "İçindekiler listesi",
+        "instruction": "Metnin net ve tamamen görünür olacağı şekilde içindekiler listesini çerçeveleyin."
+      },
+      "nutrition": {
+        "title": "Besin değerleri tablosu",
+        "instruction": "Tüm değerlerin okunaklı olacağı şekilde besin değerleri tablosunu çerçeveleyin."
+      }
+    },
+    "capture": "Fotoğraf çek",
+    "retake": "Tekrar çek",
+    "confirmAndContinue": "Bu fotoğrafı kullan",
+    "submit": "Gönder",
+    "submitting": "Fotoğraflar analiz ediliyor...",
+    "cancel": "Vazgeç",
+    "errorTitle": "Fotoğraflar işlenemedi",
+    "errorMessage": "Bu fotoğraflardan etiket bilgisi okunamadı. Tekrar deneyebilirsin.",
+    "retry": "Tekrar dene"
+  },
+  "allergens": {
+    "gluten": "Glüten (buğday, çavdar, arpa, yulaf)",
+    "crustaceans": "Kabuklu deniz ürünleri",
+    "eggs": "Yumurta",
+    "fish": "Balık",
+    "peanuts": "Yer fıstığı",
+    "soybeans": "Soya",
+    "milk": "Süt",
+    "nuts": "Sert kabuklu yemişler",
+    "celery": "Kereviz",
+    "mustard": "Hardal",
+    "sesame-seeds": "Susam",
+    "sulphur-dioxide-and-sulphites": "Kükürt dioksit ve sülfitler",
+    "lupin": "Acı bakla (lupin)",
+    "molluscs": "Yumuşakçalar"
+  },
+  "dietFlags": {
+    "vegan": "Vegan",
+    "vegetarian": "Vejetaryen",
+    "glutenFree": "Glütensiz",
+    "lactoseFree": "Laktozsuz",
+    "noPalmOil": "Palm yağsız",
+    "lowSugar": "Az şekerli",
+    "lowSalt": "Az tuzlu"
+  },
+  "warning": {
+    "allergenMessage": "{{allergen}} içeriyor — bunu alerjen olarak işaretlemiştin.",
+    "additiveMessage": "{{additive}} içeriyor — kaçınmak istediğini belirtmiştin.",
+    "dietMessage": "Bu ürün \"{{flag}}\" tercihine uymuyor."
+  },
+  "history": {
+    "title": "Geçmiş",
+    "empty": "Henüz tarama yok — geçmişini oluşturmak için taramaya başla.",
+    "noResults": "Aramanla eşleşen tarama yok.",
+    "searchPlaceholder": "Barkod veya ürün adına göre ara",
+    "today": "Bugün",
+    "yesterday": "Dün",
+    "syncPending": "Henüz senkronize edilmedi"
+  },
+  "preferences": {
+    "title": "Tercihler",
+    "allergensSection": "İşaretlenecek alerjenler",
+    "dietSection": "Diyet",
+    "avoidedAdditivesSection": "Kaçınılacak katkı maddeleri",
+    "searchAdditivesPlaceholder": "Katkı maddesi ara",
+    "noAdditivesFound": "Aramanla eşleşen katkı maddesi yok.",
+    "save": "Kaydet",
+    "saving": "Kaydediliyor...",
+    "saved": "Tercihler kaydedildi",
+    "loadError": "Tercihlerin yüklenemedi.",
+    "saveError": "Tercihlerin kaydedilemedi. Tekrar dene."
+  },
+  "limits": {
+    "scanTitle": "Günlük tarama limitine ulaşıldı",
+    "scanMessage": "Ücretsiz hesaplar günde 10 tarama yapabilir. Sınırsız tarama için premium'a geç.",
+    "contributeTitle": "Günlük analiz limitine ulaşıldı",
+    "contributeMessage": "Ücretsiz hesaplar günde 2 etiket analizi yapabilir. Sınırsız analiz için premium'a geç.",
+    "upgrade": "Premium'a geç"
+  },
+  "alternatives": {
+    "title": "Daha iyi alternatifler",
+    "premiumTitle": "Daha iyi alternatifleri gör",
+    "premiumMessage": "Premium üyeler aynı kategoride en yüksek skorlu 5 ürüne kadar görebilir.",
+    "upgrade": "Premium'a geç",
+    "empty": "Bu kategoride daha yüksek skorlu alternatif bulunamadı."
+  },
+  "paywall": {
+    "title": "Blacklabel Premium",
+    "subtitle": "Her taramanın arkasındaki tüm detayların kilidini aç.",
+    "featuresTitle": "Neler kazanıyorsun",
+    "feature": {
+      "unlimitedScans": "Sınırsız barkod tarama",
+      "personalWarnings": "Kişisel alerjen ve tercih uyarıları",
+      "compareMode": "En fazla 5 ürünü yan yana karşılaştırma",
+      "unlimitedAnalysis": "Sınırsız etiket fotoğrafı analizi",
+      "alternatives": "Daha iyi alternatif ürün önerileri",
+      "unlimitedHistory": "İstatistikli sınırsız tarama geçmişi",
+      "offlineMode": "Çevrimdışı mod"
+    },
+    "notConfigured": "Satın alma bu sürümde henüz kullanılamıyor.",
+    "subscribe": "Abone ol",
+    "restore": "Satın alımları geri yükle",
+    "restoring": "Geri yükleniyor...",
+    "restoreSuccess": "Satın alımlar geri yüklendi.",
+    "purchaseError": "Satın alma sırasında bir şeyler ters gitti. Lütfen tekrar dene.",
+    "close": "Kapat",
+    "duration": {
+      "lifetime": "Tek seferlik satın alma",
+      "annual": "Yıllık faturalandırılır",
+      "sixMonth": "6 ayda bir faturalandırılır",
+      "threeMonth": "3 ayda bir faturalandırılır",
+      "twoMonth": "2 ayda bir faturalandırılır",
+      "monthly": "Aylık faturalandırılır",
+      "weekly": "Haftalık faturalandırılır"
+    },
+    "autoRenewalNotice": "Abonelikler, mevcut dönemin bitiminden en az 24 saat önce iptal edilmediği sürece otomatik olarak yenilenir. Aboneliğini istediğin zaman Apple ID veya Google Play hesap ayarlarından yönetebilir veya iptal edebilirsin — bunu senin adına yapamayız. Ödeme, satın alma onayında mağaza hesabından tahsil edilir.",
+    "legalIntro": "Abone olarak şunları kabul etmiş olursun:"
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "languageSection": "Dil",
+    "accountSection": "Hesap",
+    "deviceIdLabel": "Cihaz Kimliği",
+    "premiumActive": "Premium aktif",
+    "premiumInactive": "Ücretsiz plan",
+    "managePremium": "Premium'u yönet",
+    "dataSourcesLink": "Veri kaynakları",
+    "privacyLink": "Gizlilik politikası",
+    "version": "Sürüm {{version}}",
+    "linkedAccountsSection": "Bağlı hesaplar",
+    "linkedAccountsHint": "Cihaz değiştirdiğinizde geçmişinizi ve tercihlerinizi koruyabilmek için bir hesap bağlayın.",
+    "appleLinked": "Apple ile giriş yapıldı",
+    "googleLinked": "Google ile giriş yapıldı",
+    "signInWithApple": "Apple ile giriş yap",
+    "signInWithGoogle": "Google ile giriş yap",
+    "linkingInProgress": "Giriş yapılıyor…",
+    "linkError": "Giriş yapılamadı. Lütfen tekrar deneyin.",
+    "googleNotConfigured": "Bu sürüm için Google ile giriş henüz ayarlanmadı.",
+    "termsLink": "Kullanım koşulları",
+    "dangerZoneSection": "Tehlikeli bölge",
+    "deleteAccountButton": "Hesabımı sil",
+    "deleteAccountHint": "Tarama geçmişinizi, tercihlerinizi ve katkılarınızı kalıcı olarak siler. Bu işlem geri alınamaz.",
+    "deleteAccountConfirmTitle": "Hesabını sil?",
+    "deleteAccountConfirmMessage": "Bu işlem tarama geçmişinizi, tercihlerinizi ve katkılarınızı kalıcı olarak siler. Geri alınamaz.",
+    "deleteAccountConfirmButton": "Sil",
+    "cancel": "Vazgeç",
+    "deleteAccountErrorTitle": "Bir şeyler ters gitti",
+    "deleteAccountError": "Hesabınız silinemedi. Lütfen tekrar deneyin.",
+    "debugGrantPremium": "Kendime premium ver (yalnızca geliştirme)",
+    "debugGrantPremiumError": "Premium verilemedi. Bu yalnızca geliştirme backend'ine karşı çalışır."
+  },
+  "dataSources": {
+    "title": "Veri kaynakları",
+    "offTitle": "Open Food Facts",
+    "offBody": "Ürün adları, markalar, içindekiler, besin değerleri tabloları ve görseller, dünya çapındaki gıda ürünlerinin ücretsiz ve açık bir veritabanı olan Open Food Facts'ten gelir. Open Food Facts verileri Açık Veritabanı Lisansı (ODbL) ile lisanslanmıştır — Open Food Facts'e atıfta bulunmak ve aynı lisansla paylaşmak koşuluyla verileri paylaşmakta ve uyarlamakta özgürsünüz.",
+    "offAttribution": "Open Food Facts tarafından desteklenmektedir (openfoodfacts.org)",
+    "visionTitle": "Etiket fotoğrafı analizi",
+    "visionBody": "Bir ürünü veritabanına eklemeye yardımcı olmak için fotoğrafını çektiğinde, görseller metin çıkarımı için üçüncü taraf bir görsel analiz servisine gönderilir. Bu yalnızca bir ürüne aktif olarak katkıda bulunmayı seçtiğinde gerçekleşir.",
+    "revenueCatTitle": "Abonelikler",
+    "revenueCatBody": "Premium abonelikler RevenueCat üzerinden yönetilir; RevenueCat satın alma ve yetki durumunu bize bildirir. Ödeme bilgileri App Store veya Google Play tarafından işlenir, bizim tarafımızdan değil."
+  },
+  "privacy": {
+    "title": "Gizlilik",
+    "body": "Blacklabel, paketli gıda ürünlerinin barkodlarını tarar ve içindekiler, katkı maddeleri ve besin değerlerine dayalı 0–100 arası bir skor gösterir. Tıbbi tavsiye vermez.\n\nİlk açılışta, uygulama cihazında saklanan rastgele bir kimlikle ilişkili anonim bir hesap oluşturur — Apple veya Google hesabı bağlamayı seçmediğin sürece bu, adın veya e-postan değildir.\n\nKendi geçmişini görebilmen için taradığın barkodları ve zamanlarını saklarız. Bir ürün fotoğrafı katkısında bulunursan, bu görseller yüklenir ve metin çıkarımı için üçüncü taraf bir görsel analiz servisine gönderilir. Alerjen ve diyet tercihlerin, sana kişisel uyarılar gösterebilmek için saklanır. Premium'a abone olursan, RevenueCat abonelik durumunu bizimle paylaşır — ödeme bilgilerini asla görmeyiz.\n\nVerilerini satmayız veya reklam amaçlı kullanmayız. Verilerin hesabın var olduğu sürece saklanır. Hesabını ve ilişkili tüm verilerini istediğin zaman Ayarlar'dan kalıcı olarak silebilir, ya da aşağıdaki cihaz kimliğinle bize ulaşabilirsin.\n\nBu uygulama çocuklara yönelik değildir.",
+    "contactLabel": "Sorular veya veri talepleri"
+  },
+  "terms": {
+    "title": "Kullanım koşulları",
+    "body": "Blacklabel'ı kullanarak bu koşulları kabul etmiş olursun.\n\nBlacklabel, kamuya açık içindekiler, katkı maddesi ve besin değeri verilerine dayanarak paketli gıdalar için 0–100 arası bir skor gösterir. Bu skor tıbbi tavsiye, tanı veya herhangi bir durumun tedavisine yönelik bir öneri değildir — sağlıkla ilgili kararlar için her zaman uzman bir sağlık profesyoneline danış.\n\nÜrün verileri büyük ölçüde topluluk tarafından yönetilen bir veritabanı olan Open Food Facts'ten gelir. Doğruluğunu veya eksiksizliğini garanti edemeyiz; burada gösterilen bilgilere güvenmeden önce her zaman ürünün resmi ambalajını kontrol et.\n\nBir ürün fotoğrafı katkısında bulunursan, bu görseli paylaşma hakkına sahip olduğunu onaylamış ve içerdiği ürün bilgisini çıkarmamız ve yayınlamamız için bize lisans vermiş olursun.\n\nPremium abonelikler iptal edilene kadar otomatik olarak yenilenir. Aboneliğini Apple ID veya Google Play hesap ayarlarından yönetebilir veya iptal edebilirsin — bunu senin adına yapamayız; fiyatlandırma ve faturalandırma App Store veya Google Play tarafından belirlenir ve işlenir, bizim tarafımızdan değil.\n\nHesabını istediğin zaman Ayarlar'dan silebilirsin; bu işlem tarama geçmişini, tercihlerini ve katkılarını kalıcı olarak kaldırır.\n\nBlacklabel \"olduğu gibi\", herhangi bir garanti olmaksızın sunulur. Uygulamadaki bilgilere dayanarak alınan kararlardan sorumlu değiliz.\n\nUygulama değiştikçe bu koşulları güncelleyebiliriz; bir güncellemeden sonra kullanmaya devam etmen, güncellemeyi kabul ettiğin anlamına gelir.",
+    "contactLabel": "Sorular"
+  }
+}

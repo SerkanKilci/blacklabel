@@ -1,0 +1,273 @@
+{
+  "scanner": {
+    "permissionTitle": "Camera access needed",
+    "permissionMessage": "Blacklabel needs camera access to scan product barcodes.",
+    "grantButton": "Grant camera access",
+    "targetHint": "Align the barcode within the frame",
+    "recentScans": "Recent scans",
+    "manualEntryButton": "Enter barcode manually",
+    "manualEntryTitle": "Enter barcode manually",
+    "manualEntryHint": "Type the number printed under the barcode.",
+    "manualEntryPlaceholder": "e.g. 8690504010104",
+    "manualEntryInvalid": "Enter a valid 8, 12, 13, or 14-digit barcode.",
+    "manualEntrySubmit": "Look up"
+  },
+  "compare": {
+    "title": "Compare",
+    "hint": "Scan up to 5 products to compare their scores.",
+    "emptyHint": "Scan a product to start comparing.",
+    "maxReached": "You can compare up to 5 products at a time.",
+    "clearAll": "Clear all",
+    "removeItem": "Remove",
+    "bestChoice": "Best choice",
+    "bestForYou": "Best choice for you: {{name}}",
+    "loadingItem": "Looking up...",
+    "notFoundItem": "Not found",
+    "premiumTitle": "Compare mode is a Premium feature",
+    "premiumMessage": "Scan several products and see their scores side by side, sorted from best to worst — perfect for deciding between products right in the aisle.",
+    "upgrade": "Upgrade to premium",
+    "categoryLabels": {
+      "sugar": "Sugar",
+      "saturatedFat": "Saturated fat",
+      "salt": "Salt",
+      "additives": "Additives",
+      "allergen": "Allergens"
+    },
+    "levels": {
+      "sugar": { "Good": "Low", "Medium": "Medium", "Bad": "High" },
+      "saturatedFat": { "Good": "Low", "Medium": "Medium", "Bad": "High" },
+      "salt": { "Good": "Low", "Medium": "Medium", "Bad": "High" },
+      "additives": { "Good": "Few", "Medium": "Some", "Bad": "Many" }
+    },
+    "allergenCompatible": "Matches your profile",
+    "allergenConflict": "Conflicts with your profile",
+    "summaryTitle": "Comparison summary",
+    "summaryWinner": "{{names}} is better",
+    "summarySimilar": "Similar",
+    "formulationDisclaimer": "This comparison is based on the products' listed ingredient information. Formulations can change over time — always check the product's current label for certainty."
+  },
+  "result": {
+    "loading": "Looking up product...",
+    "errorTitle": "Something went wrong",
+    "errorMessage": "Couldn't fetch product data. Check your connection and try again.",
+    "retry": "Retry",
+    "backToScanner": "Back to scanner",
+    "notFoundTitle": "This product isn't in our database yet",
+    "notFoundMessage": "Help add it by photographing the package — it only takes a moment.",
+    "startContribute": "Add this product",
+    "scoreUnavailable": "Not enough data",
+    "tabs": {
+      "additives": "Additives",
+      "nutrition": "Nutrition",
+      "ingredients": "Ingredients"
+    },
+    "noAdditives": "No additives detected in this product.",
+    "noNutriments": "Nutrition information isn't available.",
+    "noIngredients": "Ingredients information isn't available.",
+    "allergensTitle": "Allergens",
+    "attribution": "Powered by Open Food Facts",
+    "dataQuality": {
+      "complete": "Complete data",
+      "partial": "Some data is missing",
+      "unverified": "Unverified user contribution"
+    },
+    "riskLevel": {
+      "0": "No known risk",
+      "1": "Limited",
+      "2": "Moderate",
+      "3": "High"
+    },
+    "nutriments": {
+      "energyKcal100g": "Energy",
+      "fat100g": "Fat",
+      "saturatedFat100g": "Saturated fat",
+      "carbohydrates100g": "Carbohydrates",
+      "sugars100g": "Sugars",
+      "fiber100g": "Fiber",
+      "proteins100g": "Protein",
+      "salt100g": "Salt",
+      "per100g": "per 100g"
+    }
+  },
+  "common": {
+    "medicalDisclaimer": "This app does not provide medical advice and is not a substitute for a nutrition professional.",
+    "allergenDisclaimer": "Allergen information may be incomplete or inaccurate; if you have a serious allergy, always check the product's own label."
+  },
+  "contribute": {
+    "stepIndicator": "Step {{current}} of {{total}}",
+    "steps": {
+      "front": {
+        "title": "Front of the package",
+        "instruction": "Frame the front of the package so the product name is readable."
+      },
+      "ingredients": {
+        "title": "Ingredients list",
+        "instruction": "Frame the ingredients list so the text is sharp and fully visible."
+      },
+      "nutrition": {
+        "title": "Nutrition table",
+        "instruction": "Frame the nutrition facts table so all values are readable."
+      }
+    },
+    "capture": "Take photo",
+    "retake": "Retake",
+    "confirmAndContinue": "Use this photo",
+    "submit": "Submit",
+    "submitting": "Analyzing photos...",
+    "cancel": "Cancel",
+    "errorTitle": "Couldn't process the photos",
+    "errorMessage": "We couldn't read the label from these photos. You can try again.",
+    "retry": "Try again"
+  },
+  "allergens": {
+    "gluten": "Gluten (wheat, rye, barley, oats)",
+    "crustaceans": "Crustaceans",
+    "eggs": "Eggs",
+    "fish": "Fish",
+    "peanuts": "Peanuts",
+    "soybeans": "Soybeans",
+    "milk": "Milk",
+    "nuts": "Tree nuts",
+    "celery": "Celery",
+    "mustard": "Mustard",
+    "sesame-seeds": "Sesame seeds",
+    "sulphur-dioxide-and-sulphites": "Sulphur dioxide and sulphites",
+    "lupin": "Lupin",
+    "molluscs": "Molluscs"
+  },
+  "dietFlags": {
+    "vegan": "Vegan",
+    "vegetarian": "Vegetarian",
+    "glutenFree": "Gluten-free",
+    "lactoseFree": "Lactose-free",
+    "noPalmOil": "No palm oil",
+    "lowSugar": "Low sugar",
+    "lowSalt": "Low salt"
+  },
+  "warning": {
+    "allergenMessage": "Contains {{allergen}}, which you've flagged as an allergen.",
+    "additiveMessage": "Contains {{additive}}, which you chose to avoid.",
+    "dietMessage": "This product doesn't fit your \"{{flag}}\" preference."
+  },
+  "history": {
+    "title": "History",
+    "empty": "No scans yet — start scanning to build your history.",
+    "noResults": "No scans match your search.",
+    "searchPlaceholder": "Search by barcode or product name",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "syncPending": "Not synced yet"
+  },
+  "preferences": {
+    "title": "Preferences",
+    "allergensSection": "Allergens to flag",
+    "dietSection": "Diet",
+    "avoidedAdditivesSection": "Additives to avoid",
+    "searchAdditivesPlaceholder": "Search additives",
+    "noAdditivesFound": "No additives match your search.",
+    "save": "Save",
+    "saving": "Saving...",
+    "saved": "Preferences saved",
+    "loadError": "Couldn't load your preferences.",
+    "saveError": "Couldn't save your preferences. Try again."
+  },
+  "limits": {
+    "scanTitle": "Daily scan limit reached",
+    "scanMessage": "Free accounts get 10 scans a day. Upgrade to premium for unlimited scans.",
+    "contributeTitle": "Daily analysis limit reached",
+    "contributeMessage": "Free accounts get 2 label analyses a day. Upgrade to premium for unlimited analysis.",
+    "upgrade": "Upgrade to premium"
+  },
+  "alternatives": {
+    "title": "Better alternatives",
+    "premiumTitle": "See better alternatives",
+    "premiumMessage": "Premium members see up to 5 higher-scored products in the same category.",
+    "upgrade": "Upgrade to premium",
+    "empty": "No higher-scored alternatives found in this category."
+  },
+  "paywall": {
+    "title": "Blacklabel Premium",
+    "subtitle": "Unlock the full picture behind every scan.",
+    "featuresTitle": "What you get",
+    "feature": {
+      "unlimitedScans": "Unlimited barcode scans",
+      "personalWarnings": "Personal allergen and preference warnings",
+      "compareMode": "Compare up to 5 products side by side",
+      "unlimitedAnalysis": "Unlimited label-photo analysis",
+      "alternatives": "Better alternative product suggestions",
+      "unlimitedHistory": "Unlimited scan history with stats",
+      "offlineMode": "Offline mode"
+    },
+    "notConfigured": "Purchases aren't available in this build yet.",
+    "subscribe": "Subscribe",
+    "restore": "Restore purchases",
+    "restoring": "Restoring...",
+    "restoreSuccess": "Purchases restored.",
+    "purchaseError": "Something went wrong with the purchase. Please try again.",
+    "close": "Close",
+    "duration": {
+      "lifetime": "One-time purchase",
+      "annual": "Billed yearly",
+      "sixMonth": "Billed every 6 months",
+      "threeMonth": "Billed every 3 months",
+      "twoMonth": "Billed every 2 months",
+      "monthly": "Billed monthly",
+      "weekly": "Billed weekly"
+    },
+    "autoRenewalNotice": "Subscriptions renew automatically unless cancelled at least 24 hours before the end of the current period. Manage or cancel anytime in your Apple ID or Google Play account settings — we can't cancel it for you. Payment is charged to your store account at purchase confirmation.",
+    "legalIntro": "By subscribing, you agree to our:"
+  },
+  "settings": {
+    "title": "Settings",
+    "languageSection": "Language",
+    "accountSection": "Account",
+    "deviceIdLabel": "Device ID",
+    "premiumActive": "Premium active",
+    "premiumInactive": "Free plan",
+    "managePremium": "Manage premium",
+    "dataSourcesLink": "Data sources",
+    "privacyLink": "Privacy policy",
+    "version": "Version {{version}}",
+    "linkedAccountsSection": "Linked accounts",
+    "linkedAccountsHint": "Link an account so you can keep your history and preferences if you switch devices.",
+    "appleLinked": "Signed in with Apple",
+    "googleLinked": "Signed in with Google",
+    "signInWithApple": "Sign in with Apple",
+    "signInWithGoogle": "Sign in with Google",
+    "linkingInProgress": "Signing in…",
+    "linkError": "Sign-in didn't work. Please try again.",
+    "googleNotConfigured": "Google sign-in isn't set up for this build yet.",
+    "termsLink": "Terms of use",
+    "dangerZoneSection": "Danger zone",
+    "deleteAccountButton": "Delete my account",
+    "deleteAccountHint": "Permanently deletes your scan history, preferences, and contributions. This cannot be undone.",
+    "deleteAccountConfirmTitle": "Delete your account?",
+    "deleteAccountConfirmMessage": "This permanently deletes your scan history, preferences, and contributions. This cannot be undone.",
+    "deleteAccountConfirmButton": "Delete",
+    "cancel": "Cancel",
+    "deleteAccountErrorTitle": "Something went wrong",
+    "deleteAccountError": "Couldn't delete your account. Please try again.",
+    "debugGrantPremium": "Grant myself premium (dev only)",
+    "debugGrantPremiumError": "Couldn't grant premium. This only works against a development backend."
+  },
+  "dataSources": {
+    "title": "Data sources",
+    "offTitle": "Open Food Facts",
+    "offBody": "Product names, brands, ingredients, nutrition tables and images come from Open Food Facts, a free, open database of food products from around the world. Data from Open Food Facts is licensed under the Open Database License (ODbL) — you're free to share and adapt it, as long as you credit Open Food Facts and share alike.",
+    "offAttribution": "Powered by Open Food Facts (openfoodfacts.org)",
+    "visionTitle": "Label photo analysis",
+    "visionBody": "When you photograph a product to help add it to the database, the images are sent to a third-party vision service to extract text. This only happens when you actively choose to contribute a product.",
+    "revenueCatTitle": "Subscriptions",
+    "revenueCatBody": "Premium subscriptions are managed through RevenueCat, which reports purchase and entitlement status back to us. Payment details are handled by the App Store or Google Play, not by us."
+  },
+  "privacy": {
+    "title": "Privacy",
+    "body": "Blacklabel scans packaged-food barcodes and shows a 0–100 score based on ingredients, additives and nutrition. It does not provide medical advice.\n\nOn first launch, the app creates an anonymous account tied to a random identifier stored on your device — not your name or email, unless you choose to link an Apple or Google account.\n\nWe store the barcodes you scan and when, so you can see your own history. If you contribute a product photo, those images are uploaded and sent to a third-party vision service to extract text. Your allergen and diet preferences are stored to show you personal warnings. If you subscribe to premium, RevenueCat shares your subscription status with us — we never see your payment details.\n\nWe don't sell your data or use it for advertising. Your data is retained as long as your account exists. You can permanently delete your account and all associated data at any time from Settings, or contact us with your device ID (below).\n\nThis app is not directed at children.",
+    "contactLabel": "Questions or data requests"
+  },
+  "terms": {
+    "title": "Terms of use",
+    "body": "By using Blacklabel, you agree to these terms.\n\nBlacklabel shows a 0–100 score for packaged foods based on publicly available ingredient, additive and nutrition data. This score is not medical advice, a diagnosis, or a recommendation to treat any condition — always consult a qualified professional for health decisions.\n\nProduct data comes primarily from Open Food Facts, a community-maintained database. We cannot guarantee its accuracy or completeness; always check a product's official packaging before relying on information shown here.\n\nIf you contribute a product photo, you confirm you have the right to share it and grant us a license to use it to extract and publish the product information it contains.\n\nPremium subscriptions automatically renew until cancelled. Manage or cancel your subscription in your Apple ID or Google Play account settings — we cannot cancel it on your behalf, and prices and billing are set and processed by the App Store or Google Play, not by us.\n\nYou can delete your account at any time from Settings, which permanently removes your scan history, preferences, and contributions.\n\nBlacklabel is provided \"as is\", without warranty of any kind. We are not liable for decisions made based on information in the app.\n\nWe may update these terms as the app changes; continued use after a change means you accept the update.",
+    "contactLabel": "Questions"
+  }
+}
