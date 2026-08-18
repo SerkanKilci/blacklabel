@@ -3,6 +3,7 @@ using Blacklabel.Application.Dtos;
 using Blacklabel.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Blacklabel.Api.Controllers;
 
@@ -20,6 +21,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("device")]
+    [EnableRateLimiting("auth")]
     public async Task<IActionResult> Device([FromBody] DeviceAuthRequest request, CancellationToken ct)
     {
         if (string.IsNullOrWhiteSpace(request.DeviceId))

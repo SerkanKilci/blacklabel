@@ -1,4 +1,5 @@
 using System.Text;
+using System.Threading.RateLimiting;
 using Blacklabel.Application;
 using Blacklabel.Application.Auth;
 using Blacklabel.Infrastructure;
@@ -6,6 +7,7 @@ using Blacklabel.Infrastructure.Persistence;
 using Blacklabel.Infrastructure.Storage;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -33,6 +35,40 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddHttpClient();
+
+// Per-IP request throttling. Two layers: a generous global limit as blunt DDoS/flood defense
+// across every endpoint, and a much stricter named policy for POST /auth/device specifically —
+// that endpoint is unauthenticated by necessity (it's how a device *gets* a token) and creates a
+// new AppUser row per unrecognized device ID, so without its own limit a client could mint
+// unlimited free accounts (each with its own fresh 10-scan/day allowance) just by sending a new
+// random device ID per request, defeating the daily-limit abuse control in ProductLookupService
+// entirely. Partitioned by remote IP; if this API ends up behind a reverse proxy/load balancer,
+// UseForwardedHeaders() must be configured too, or every request will appear to share the proxy's
+// IP and get rate-limited together.
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                Window = TimeSpan.FromMinutes(1),
+                PermitLimit = 100,
+                QueueLimit = 0
+            }));
+
+    options.AddPolicy("auth", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                Window = TimeSpan.FromMinutes(1),
+                PermitLimit = 10,
+                QueueLimit = 0
+            }));
+});
 
 if (builder.Environment.IsDevelopment())
 {
@@ -94,6 +130,8 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = imageStorageOptions.PublicPathPrefix,
     ContentTypeProvider = new FileExtensionContentTypeProvider()
 });
+
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();
