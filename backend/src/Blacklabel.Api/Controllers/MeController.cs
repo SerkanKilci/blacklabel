@@ -14,51 +14,104 @@ namespace Blacklabel.Api.Controllers;
 [Authorize]
 public class MeController : ControllerBase
 {
-    private readonly IUserPreferenceRepository _preferenceRepository;
+    private readonly IHouseholdProfileRepository _profileRepository;
     private readonly IAppUserRepository _appUserRepository;
+    private readonly IAdditiveRepository _additiveRepository;
+    private readonly IAllergenRepository _allergenRepository;
     private readonly IWebHostEnvironment _environment;
 
     public MeController(
-        IUserPreferenceRepository preferenceRepository,
+        IHouseholdProfileRepository profileRepository,
         IAppUserRepository appUserRepository,
+        IAdditiveRepository additiveRepository,
+        IAllergenRepository allergenRepository,
         IWebHostEnvironment environment)
     {
-        _preferenceRepository = preferenceRepository;
+        _profileRepository = profileRepository;
         _appUserRepository = appUserRepository;
+        _additiveRepository = additiveRepository;
+        _allergenRepository = allergenRepository;
         _environment = environment;
     }
 
-    [HttpGet("preferences")]
-    public async Task<IActionResult> GetPreferences(CancellationToken ct)
+    /// <summary>
+    /// Lists the household profiles (§CBS/Yuka critique: one profile per person sharing the
+    /// account, e.g. an allergic child alongside a parent on a low-salt diet) so a single scan
+    /// can be evaluated once per person instead of one blended result for the whole household.
+    /// </summary>
+    [HttpGet("household-profiles")]
+    public async Task<IActionResult> GetHouseholdProfiles(CancellationToken ct)
     {
         var userId = GetUserId();
-        var preference = await _preferenceRepository.GetByUserIdAsync(userId, ct);
-
-        return Ok(preference is null
-            ? new UserPreferenceResponse(Array.Empty<string>(), Array.Empty<string>(), DietFlagsDto.Empty)
-            : UserPreferenceMapper.ToResponse(preference));
+        var profiles = await _profileRepository.GetByUserIdAsync(userId, ct);
+        return Ok(profiles.Select(HouseholdProfileMapper.ToResponse).ToList());
     }
 
-    [HttpPut("preferences")]
-    public async Task<IActionResult> UpdatePreferences([FromBody] UpdateUserPreferenceRequest request, CancellationToken ct)
+    [HttpPost("household-profiles")]
+    public async Task<IActionResult> CreateHouseholdProfile([FromBody] CreateHouseholdProfileRequest request, CancellationToken ct)
     {
         var userId = GetUserId();
-        var preference = await _preferenceRepository.GetByUserIdAsync(userId, ct);
-
-        if (preference is null)
+        var profile = new HouseholdProfile
         {
-            preference = new UserPreference { UserId = userId };
-            UserPreferenceMapper.ApplyToEntity(preference, request);
-            await _preferenceRepository.AddAsync(preference, ct);
-        }
-        else
+            Id = Guid.NewGuid(),
+            UserId = userId,
+            Name = request.Name,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        await _profileRepository.AddAsync(profile, ct);
+        await _profileRepository.SaveChangesAsync(ct);
+
+        return Ok(HouseholdProfileMapper.ToResponse(profile));
+    }
+
+    [HttpPut("household-profiles/{profileId:guid}")]
+    public async Task<IActionResult> UpdateHouseholdProfile(
+        Guid profileId, [FromBody] UpdateHouseholdProfileRequest request, CancellationToken ct)
+    {
+        var userId = GetUserId();
+        var profile = await _profileRepository.GetByIdAsync(profileId, userId, ct);
+        if (profile is null)
         {
-            UserPreferenceMapper.ApplyToEntity(preference, request);
+            return NotFound();
         }
 
-        await _preferenceRepository.SaveChangesAsync(ct);
+        foreach (var code in request.AvoidedAdditiveCodes)
+        {
+            if (await _additiveRepository.GetByCodeAsync(code, ct) is null)
+            {
+                return BadRequest($"'{code}' is not a known additive code.");
+            }
+        }
 
-        return Ok(UserPreferenceMapper.ToResponse(preference));
+        foreach (var code in request.AllergenCodes)
+        {
+            if (await _allergenRepository.GetByCodeAsync(code, ct) is null)
+            {
+                return BadRequest($"'{code}' is not a known allergen code.");
+            }
+        }
+
+        HouseholdProfileMapper.ApplyToEntity(profile, request);
+        await _profileRepository.SaveChangesAsync(ct);
+
+        return Ok(HouseholdProfileMapper.ToResponse(profile));
+    }
+
+    [HttpDelete("household-profiles/{profileId:guid}")]
+    public async Task<IActionResult> DeleteHouseholdProfile(Guid profileId, CancellationToken ct)
+    {
+        var userId = GetUserId();
+        var profile = await _profileRepository.GetByIdAsync(profileId, userId, ct);
+        if (profile is null)
+        {
+            return NotFound();
+        }
+
+        _profileRepository.Remove(profile);
+        await _profileRepository.SaveChangesAsync(ct);
+
+        return NoContent();
     }
 
     [HttpGet("subscription")]
@@ -84,7 +137,7 @@ public class MeController : ControllerBase
 
     /// <summary>
     /// Deletes the current account (App Store Guideline 5.1.1(v): apps that support account
-    /// creation must also support in-app account deletion). Cascade-deletes UserPreference,
+    /// creation must also support in-app account deletion). Cascade-deletes HouseholdProfiles,
     /// Scans, and Contributions via the FK configuration in BlacklabelDbContext. Uploaded
     /// contribution images on disk are not cleaned up as part of this — a known gap, not scoped
     /// to the minimum "delete my account and data" requirement.

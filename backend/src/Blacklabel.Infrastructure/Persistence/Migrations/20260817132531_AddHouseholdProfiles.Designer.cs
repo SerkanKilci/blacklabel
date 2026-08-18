@@ -4,6 +4,7 @@ using Blacklabel.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blacklabel.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(BlacklabelDbContext))]
-    partial class BlacklabelDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260817132531_AddHouseholdProfiles")]
+    partial class AddHouseholdProfiles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

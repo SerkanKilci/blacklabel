@@ -35,7 +35,7 @@ public class ProductLookupServiceTests
             new ProductRepository(context),
             new AdditiveRepository(context),
             new AllergenRepository(context),
-            new UserPreferenceRepository(context),
+            new HouseholdProfileRepository(context),
             new AppUserRepository(context),
             new ScanRepository(context),
             offClient,
@@ -204,15 +204,17 @@ public class ProductLookupServiceTests
     }
 
     [Fact]
-    public async Task GetByBarcodeAsync_Returns_Empty_PersonalWarnings_For_Free_User_Even_With_Preferences()
+    public async Task GetByBarcodeAsync_Returns_Empty_ProfileWarnings_For_Free_User_Even_With_Profiles()
     {
         var (context, service, offClient) = CreateService();
         const string barcode = "8690504010104";
         offClient.SetResponse(barcode, CreateOffProduct());
         await SeedUserAsync(context, TestUserId, isPremium: false);
-        context.UserPreferences.Add(new UserPreference
+        context.HouseholdProfiles.Add(new HouseholdProfile
         {
+            Id = Guid.NewGuid(),
             UserId = TestUserId,
+            Name = "Ben",
             AllergenCodes = "[\"gluten\"]",
             AvoidedAdditiveCodes = "[]",
             DietFlags = "{}"
@@ -221,19 +223,21 @@ public class ProductLookupServiceTests
 
         var result = await service.GetByBarcodeAsync(TestUserId, barcode, CancellationToken.None);
 
-        Assert.Empty(result.Product!.PersonalWarnings);
+        Assert.Empty(result.Product!.ProfileWarnings);
     }
 
     [Fact]
-    public async Task GetByBarcodeAsync_Returns_PersonalWarnings_For_Premium_User()
+    public async Task GetByBarcodeAsync_Returns_ProfileWarnings_For_Premium_User()
     {
         var (context, service, offClient) = CreateService();
         const string barcode = "8690504010104";
         offClient.SetResponse(barcode, CreateOffProduct());
         await SeedUserAsync(context, TestUserId, isPremium: true);
-        context.UserPreferences.Add(new UserPreference
+        context.HouseholdProfiles.Add(new HouseholdProfile
         {
+            Id = Guid.NewGuid(),
             UserId = TestUserId,
+            Name = "Ben",
             AllergenCodes = "[\"gluten\"]",
             AvoidedAdditiveCodes = "[]",
             DietFlags = "{}"
@@ -242,7 +246,30 @@ public class ProductLookupServiceTests
 
         var result = await service.GetByBarcodeAsync(TestUserId, barcode, CancellationToken.None);
 
-        Assert.Contains(result.Product!.PersonalWarnings, w => w.Type == "allergen" && w.Code == "gluten");
+        var profileWarning = Assert.Single(result.Product!.ProfileWarnings);
+        Assert.Equal("Ben", profileWarning.ProfileName);
+        Assert.Contains(profileWarning.Warnings, w => w.Type == "allergen" && w.Code == "gluten");
+    }
+
+    [Fact]
+    public async Task GetByBarcodeAsync_Computes_Independent_Warnings_Per_Household_Profile()
+    {
+        var (context, service, offClient) = CreateService();
+        const string barcode = "8690504010104";
+        offClient.SetResponse(barcode, CreateOffProduct());
+        await SeedUserAsync(context, TestUserId, isPremium: true);
+        context.HouseholdProfiles.AddRange(
+            new HouseholdProfile { Id = Guid.NewGuid(), UserId = TestUserId, Name = "Ahmet", AllergenCodes = "[\"gluten\"]" },
+            new HouseholdProfile { Id = Guid.NewGuid(), UserId = TestUserId, Name = "Ayşe", AllergenCodes = "[\"peanuts\"]" });
+        await context.SaveChangesAsync();
+
+        var result = await service.GetByBarcodeAsync(TestUserId, barcode, CancellationToken.None);
+
+        Assert.Equal(2, result.Product!.ProfileWarnings.Count);
+        var ahmet = result.Product.ProfileWarnings.Single(pw => pw.ProfileName == "Ahmet");
+        var ayse = result.Product.ProfileWarnings.Single(pw => pw.ProfileName == "Ayşe");
+        Assert.Contains(ahmet.Warnings, w => w.Type == "allergen" && w.Code == "gluten");
+        Assert.Empty(ayse.Warnings);
     }
 
     [Fact]

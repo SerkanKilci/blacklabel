@@ -23,7 +23,7 @@ public class ProductLookupService : IProductLookupService
     private readonly IProductRepository _productRepository;
     private readonly IAdditiveRepository _additiveRepository;
     private readonly IAllergenRepository _allergenRepository;
-    private readonly IUserPreferenceRepository _userPreferenceRepository;
+    private readonly IHouseholdProfileRepository _householdProfileRepository;
     private readonly IAppUserRepository _appUserRepository;
     private readonly IScanRepository _scanRepository;
     private readonly IOpenFoodFactsClient _openFoodFactsClient;
@@ -35,7 +35,7 @@ public class ProductLookupService : IProductLookupService
         IProductRepository productRepository,
         IAdditiveRepository additiveRepository,
         IAllergenRepository allergenRepository,
-        IUserPreferenceRepository userPreferenceRepository,
+        IHouseholdProfileRepository householdProfileRepository,
         IAppUserRepository appUserRepository,
         IScanRepository scanRepository,
         IOpenFoodFactsClient openFoodFactsClient,
@@ -46,7 +46,7 @@ public class ProductLookupService : IProductLookupService
         _productRepository = productRepository;
         _additiveRepository = additiveRepository;
         _allergenRepository = allergenRepository;
-        _userPreferenceRepository = userPreferenceRepository;
+        _householdProfileRepository = householdProfileRepository;
         _appUserRepository = appUserRepository;
         _scanRepository = scanRepository;
         _openFoodFactsClient = openFoodFactsClient;
@@ -75,8 +75,7 @@ public class ProductLookupService : IProductLookupService
             }
         }
 
-        var preferenceEntity = await _userPreferenceRepository.GetByUserIdAsync(userId, ct);
-        var preference = preferenceEntity is null ? null : UserPreferenceMapper.ToResponse(preferenceEntity);
+        var profiles = await _householdProfileRepository.GetByUserIdAsync(userId, ct);
 
         var existing = await _productRepository.GetByBarcodeAsync(barcode, ct);
         if (existing is not null)
@@ -87,7 +86,7 @@ public class ProductLookupService : IProductLookupService
             }
 
             var cachedAdditives = existing.ProductAdditives.Select(pa => pa.Additive).ToList();
-            var cachedResponse = BuildResponse(existing, cachedAdditives, preference, isPremium);
+            var cachedResponse = BuildResponse(existing, cachedAdditives, profiles, isPremium);
             await RecordScanAsync(userId, barcode, existing.Id, cachedResponse.Score, ct);
             return new ProductLookupResult(ProductLookupOutcome.Found, false, cachedResponse);
         }
@@ -102,7 +101,7 @@ public class ProductLookupService : IProductLookupService
         await _productRepository.AddAsync(product, ct);
         await _productRepository.SaveChangesAsync(ct);
 
-        var response = BuildResponse(product, matchedAdditives, preference, isPremium);
+        var response = BuildResponse(product, matchedAdditives, profiles, isPremium);
         await RecordScanAsync(userId, barcode, product.Id, response.Score, ct);
         return new ProductLookupResult(ProductLookupOutcome.Found, false, response);
     }
@@ -140,7 +139,7 @@ public class ProductLookupService : IProductLookupService
             .Where(p => DeserializeCategories(p.Categories).Overlaps(targetCategories))
             .OrderByDescending(p => p.Score)
             .Take(AlternativesResultCount)
-            .Select(p => BuildResponse(p, p.ProductAdditives.Select(pa => pa.Additive).ToList(), null, isPremium: false))
+            .Select(p => BuildResponse(p, p.ProductAdditives.Select(pa => pa.Additive).ToList(), Array.Empty<HouseholdProfile>(), isPremium: false))
             .ToList();
 
         return new AlternativesResult(AlternativesOutcome.Found, alternatives);
@@ -222,7 +221,7 @@ public class ProductLookupService : IProductLookupService
         => ProductFromOffMapper.ApplyAsync(product, off, additiveRepository, allergenRepository, _scoreCalculator, ct);
 
     private ProductResponse BuildResponse(
-        Product product, IReadOnlyList<Additive> matchedAdditives, UserPreferenceResponse? preference, bool isPremium)
+        Product product, IReadOnlyList<Additive> matchedAdditives, IReadOnlyList<HouseholdProfile> profiles, bool isPremium)
     {
         var nutriments = ProductResponseMapper.DeserializeNutriments(product.Nutriments);
         var riskLevels = matchedAdditives.Select(a => a.RiskLevel).ToList();
@@ -240,16 +239,20 @@ public class ProductLookupService : IProductLookupService
 
         var response = ProductResponseMapper.ToResponse(product, matchedAdditives, scoreResult);
 
-        // Personal allergen/preference warnings are a premium feature (§11).
-        var warnings = isPremium
-            ? PersonalWarningCalculator.Calculate(
-                preference,
-                matchedAdditives.Select(a => a.Code).ToList(),
-                product.ProductAllergens.Select(pa => pa.AllergenCode).ToList(),
-                nutriments)
-            : Array.Empty<PersonalWarningDto>();
+        // Personal allergen/preference warnings are a premium feature (§11), computed once per
+        // household profile so one scan can tell "safe for you" from "not safe for your child" (§CBS/Yuka).
+        var additiveCodes = matchedAdditives.Select(a => a.Code).ToList();
+        var allergenCodes = product.ProductAllergens.Select(pa => pa.AllergenCode).ToList();
+        var profileWarnings = isPremium
+            ? profiles
+                .Select(p => new ProfileWarningDto(
+                    p.Id,
+                    p.Name,
+                    PersonalWarningCalculator.Calculate(HouseholdProfileMapper.ToPreferenceResponse(p), additiveCodes, allergenCodes, nutriments)))
+                .ToList()
+            : new List<ProfileWarningDto>();
 
-        return response with { PersonalWarnings = warnings };
+        return response with { ProfileWarnings = profileWarnings };
     }
 
     private static HashSet<string> DeserializeCategories(string? json)

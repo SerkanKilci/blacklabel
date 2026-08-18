@@ -21,6 +21,7 @@
     "removeItem": "Remove",
     "bestChoice": "Best choice",
     "bestForYou": "Best choice for you: {{name}}",
+    "noSafeChoice": "None of these work for your whole household — check the warnings by profile.",
     "loadingItem": "Looking up...",
     "notFoundItem": "Not found",
     "premiumTitle": "Compare mode is a Premium feature",
@@ -44,6 +45,7 @@
     "summaryTitle": "Comparison summary",
     "summaryWinner": "{{names}} is better",
     "summarySimilar": "Similar",
+    "summaryAllIncompatible": "None are compatible",
     "formulationDisclaimer": "This comparison is based on the products' listed ingredient information. Formulations can change over time — always check the product's current label for certainty."
   },
   "result": {
@@ -169,7 +171,19 @@
     "saving": "Saving...",
     "saved": "Preferences saved",
     "loadError": "Couldn't load your preferences.",
-    "saveError": "Couldn't save your preferences. Try again."
+    "saveError": "Couldn't save your preferences. Try again.",
+    "profiles": {
+      "title": "Household profiles",
+      "subtitle": "Set up separate allergen and diet preferences for each person in your household — one scan, a separate result for everyone.",
+      "empty": "You haven't added a profile yet.",
+      "addPlaceholder": "Profile name (e.g. Alex)",
+      "add": "Add",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "deleteConfirmTitle": "Delete profile?",
+      "deleteConfirmMessage": "{{name}}'s profile and preferences will be deleted.",
+      "loadError": "Couldn't load profiles."
+    }
   },
   "limits": {
     "scanTitle": "Daily scan limit reached",

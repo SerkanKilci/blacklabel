@@ -5,7 +5,7 @@ real one, have this reviewed against applicable law in your target markets (KVKK
 GDPR in the EU, App Store/Play Store privacy requirements), and host it at a public URL before
 submitting the app to either store — both require a live Privacy Policy URL in the listing.
 
-Last updated: 2026-08-14.
+Last updated: 2026-08-18.
 
 ## What this app does
 
@@ -25,8 +25,12 @@ and nutrition. It does not provide medical advice or diagnose anything.
   (front, ingredients list, nutrition table), those images are uploaded to our server and sent to
   a third-party vision/OCR service to extract text. They are retained to allow review of
   contributed data.
-- **Preferences.** Allergens you flag and dietary preferences you set, used only to show you
-  personal warnings on products you scan.
+- **Household profiles.** You can create a profile for each person in your household (e.g.
+  yourself, a family member) with a name you choose and the allergens/additives/dietary
+  preferences that apply to that person, used only to show per-profile warnings on products you
+  scan. This data is entered by you, the account holder, and stored under your own anonymous
+  account — it is not a separate account or login for anyone else, and we do not independently
+  verify who the profile refers to.
 - **Subscription status.** If you subscribe to premium, our payments provider (RevenueCat) shares
   your subscription status and entitlement with us so we can unlock premium features. We do not
   receive your payment card details — those are handled by Apple/Google/RevenueCat directly.
@@ -54,7 +58,14 @@ briefly afterward (a known gap — see `README.md`'s account-deletion notes).
 
 ## Children's privacy
 
-This app is not directed at children and does not knowingly collect data from children.
+This app is not directed at children and does not knowingly collect data from children. The
+household-profiles feature lets an adult account holder label a profile with a first name (e.g.
+a child's) and preferences such as an allergy — this is data entered *by* the adult who controls
+the account, not collected *from* a child directly, and no birthdate, contact information, or
+verified identity is collected for any profile. **This specific feature should be called out
+explicitly during the counsel review noted at the top of this document**, since child-directed
+privacy law (COPPA and equivalents) turns on fact-specific judgment calls this document alone
+can't resolve.
 
 ## Your rights
 

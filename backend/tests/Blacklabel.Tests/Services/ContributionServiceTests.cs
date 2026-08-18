@@ -47,7 +47,7 @@ public class ContributionServiceTests
             new ProductRepository(context),
             new AdditiveRepository(context),
             new AllergenRepository(context),
-            new UserPreferenceRepository(context),
+            new HouseholdProfileRepository(context),
             new AppUserRepository(context),
             new ContributionRepository(context),
             new FakeImageStorageService(),

@@ -21,6 +21,7 @@
     "removeItem": "Kaldır",
     "bestChoice": "En iyi seçim",
     "bestForYou": "Senin için daha iyi seçim: {{name}}",
+    "noSafeChoice": "Hiçbiri hanenin tamamı için uygun değil — profillere göre uyarıları kontrol et.",
     "loadingItem": "Aranıyor...",
     "notFoundItem": "Bulunamadı",
     "premiumTitle": "Karşılaştırma modu Premium özelliğidir",
@@ -44,6 +45,7 @@
     "summaryTitle": "Karşılaştırma özeti",
     "summaryWinner": "{{names}} daha iyi",
     "summarySimilar": "Benzer",
+    "summaryAllIncompatible": "Hiçbiri uygun değil",
     "formulationDisclaimer": "Bu karşılaştırma ürünlerin içerik bilgilerine göre yapılmıştır. Formülasyonlar zamanla değişebilir; kesin bilgi için ürünün güncel etiketini kontrol et."
   },
   "result": {
@@ -169,7 +171,19 @@
     "saving": "Kaydediliyor...",
     "saved": "Tercihler kaydedildi",
     "loadError": "Tercihlerin yüklenemedi.",
-    "saveError": "Tercihlerin kaydedilemedi. Tekrar dene."
+    "saveError": "Tercihlerin kaydedilemedi. Tekrar dene.",
+    "profiles": {
+      "title": "Hane profilleri",
+      "subtitle": "Hanedeki her kişi için ayrı alerjen ve diyet tercihi tanımla — tek taramada herkes için ayrı sonuç görürsün.",
+      "empty": "Henüz profil eklemedin.",
+      "addPlaceholder": "Profil adı (örn. Ahmet)",
+      "add": "Ekle",
+      "delete": "Sil",
+      "cancel": "Vazgeç",
+      "deleteConfirmTitle": "Profili sil?",
+      "deleteConfirmMessage": "{{name}} profili ve tercihleri silinecek.",
+      "loadError": "Profiller yüklenemedi."
+    }
   },
   "limits": {
     "scanTitle": "Günlük tarama limitine ulaşıldı",

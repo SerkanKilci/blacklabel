@@ -35,6 +35,14 @@ export interface PersonalWarning {
   messageKey: string;
 }
 
+/** Warnings for one household profile — a single scan can carry one of these per person
+ * sharing the account, so "safe for you" and "not safe for your child" don't get blended. */
+export interface ProfileWarning {
+  profileId: string;
+  profileName: string;
+  warnings: PersonalWarning[];
+}
+
 export type ComparisonLevel = 'Good' | 'Medium' | 'Bad';
 
 /** "Good"/"Medium"/"Bad"/null per category — derived server-side from the exact same
@@ -60,7 +68,7 @@ export interface ProductFound {
   additives: AdditiveInfo[];
   allergens: string[];
   nutriments: Nutriments | null;
-  personalWarnings: PersonalWarning[];
+  profileWarnings: ProfileWarning[];
   dataQuality: DataQuality;
   source: ProductSource;
   comparisonBands: ComparisonBands;

@@ -27,13 +27,22 @@ function formatGrams(value: number | null | undefined): string | null {
   return value === null || value === undefined ? null : `${value.toFixed(1)} g`;
 }
 
-interface SummaryRow {
-  key: CategoryKey | 'allergen';
-  // null = every item ties (all equally good, or none compatible) -> render as "similar"
-  winnerNames: string[] | null;
+// Compare mode doesn't (yet) let you pick which household profile's lens to view through, so it
+// conservatively flags a conflict if it applies to ANY profile on the account — erring toward
+// showing a warning rather than hiding one that matters for someone in the household.
+function hasAnyProfileAllergenConflict(data: ProductFound): boolean {
+  return data.profileWarnings.some((pw) => pw.warnings.some((w) => w.type === 'allergen'));
 }
 
-// Derived purely from the same `comparisonBands`/`personalWarnings` the cards already render —
+interface SummaryRow {
+  key: CategoryKey | 'allergen';
+  // null = every item ties (all equally good) -> render as "similar"
+  winnerNames: string[] | null;
+  // Allergen row only: every item conflicts with someone, so "similar" would understate it.
+  allIncompatible?: boolean;
+}
+
+// Derived purely from the same `comparisonBands`/`profileWarnings` the cards already render —
 // never invents a ranking that the band system itself wouldn't support.
 function buildSummaryRows(items: FoundItem[]): SummaryRow[] {
   if (items.length < 2) {
@@ -56,11 +65,15 @@ function buildSummaryRows(items: FoundItem[]): SummaryRow[] {
 
   const allergenConsidered = items.map((item) => ({
     name: item.data.name,
-    hasConflict: item.data.personalWarnings.some((w) => w.type === 'allergen'),
+    hasConflict: hasAnyProfileAllergenConflict(item.data),
   }));
   const compatible = allergenConsidered.filter((entry) => !entry.hasConflict);
-  const allergenTie = compatible.length === allergenConsidered.length || compatible.length === 0;
-  rows.push({ key: 'allergen', winnerNames: allergenTie ? null : compatible.map((w) => w.name) });
+  if (compatible.length === 0) {
+    rows.push({ key: 'allergen', winnerNames: null, allIncompatible: true });
+  } else {
+    const allergenTie = compatible.length === allergenConsidered.length;
+    rows.push({ key: 'allergen', winnerNames: allergenTie ? null : compatible.map((w) => w.name) });
+  }
 
   return rows;
 }
@@ -181,20 +194,22 @@ export default function CompareScreen() {
     return scoreB - scoreA;
   });
 
-  // "Best for you": prefer products with no allergen conflict, then highest score — not just
-  // the highest raw score, since a higher-scoring product that conflicts with the user's
-  // allergen profile isn't actually the better choice for them.
+  // "Best for you": highest score among products with no allergen conflict for anyone on the
+  // account. Unlike a single-profile app, we never fall back to "just pick the highest score
+  // anyway" when every scanned item conflicts with someone — recommending a fish product as
+  // "best" when it's exactly what one household member is allergic to would be actively
+  // misleading, not just imprecise. No safe candidate means no recommendation, not a bad one.
   const scorable = items
     .map((item) => (item.result.data?.found && item.result.data.score !== null ? { barcode: item.barcode, data: item.result.data } : null))
     .filter((item): item is { barcode: string; data: ProductFound } => item !== null);
-  const withoutAllergenConflict = scorable.filter((item) => !item.data.personalWarnings.some((w) => w.type === 'allergen'));
-  const bestCandidates = withoutAllergenConflict.length > 0 ? withoutAllergenConflict : scorable;
-  const best = bestCandidates.reduce<(typeof bestCandidates)[number] | null>((acc, item) => {
+  const withoutAllergenConflict = scorable.filter((item) => !hasAnyProfileAllergenConflict(item.data));
+  const best = withoutAllergenConflict.reduce<(typeof withoutAllergenConflict)[number] | null>((acc, item) => {
     if (!acc || (item.data.score ?? -1) > (acc.data.score ?? -1)) {
       return item;
     }
     return acc;
   }, null);
+  const noSafeChoice = scorable.length >= 2 && withoutAllergenConflict.length === 0;
 
   const foundItems: FoundItem[] = items
     .map((item) => (item.result.data?.found ? { barcode: item.barcode, data: item.result.data } : null))
@@ -232,13 +247,19 @@ export default function CompareScreen() {
       {barcodes.length > 0 && (
         <View style={styles.listPanel}>
           {best && <Text style={styles.bestForYouBanner}>{t('compare.bestForYou', { name: best.data.name })}</Text>}
+          {noSafeChoice && <Text style={styles.noSafeChoiceBanner}>{t('compare.noSafeChoice')}</Text>}
           {barcodes.length >= MAX_COMPARE_ITEMS && <Text style={styles.maxReachedText}>{t('compare.maxReached')}</Text>}
           {summaryRows.length > 0 && (
             <View style={styles.summaryBox}>
               <Text style={styles.summaryTitle}>{t('compare.summaryTitle')}</Text>
               {summaryRows.map((row) => (
                 <Text key={row.key} style={styles.summaryRow}>
-                  {t(`compare.categoryLabels.${row.key}`)}: {row.winnerNames ? t('compare.summaryWinner', { names: row.winnerNames.join(', ') }) : t('compare.summarySimilar')}
+                  {t(`compare.categoryLabels.${row.key}`)}:{' '}
+                  {row.allIncompatible
+                    ? t('compare.summaryAllIncompatible')
+                    : row.winnerNames
+                      ? t('compare.summaryWinner', { names: row.winnerNames.join(', ') })
+                      : t('compare.summarySimilar')}
                 </Text>
               ))}
             </View>
@@ -304,7 +325,7 @@ function ComparisonCard({ barcode, result, isBest, onRemove, onPress }: Comparis
     );
   }
 
-  const hasAllergenConflict = data.personalWarnings.some((warning) => warning.type === 'allergen');
+  const hasAllergenConflict = hasAnyProfileAllergenConflict(data);
   const categories: Array<{ key: CategoryKey; level: ComparisonLevel | null; detail: string | null }> = [
     { key: 'sugar', level: data.comparisonBands.sugar, detail: formatGrams(data.nutriments?.sugars100g) },
     { key: 'saturatedFat', level: data.comparisonBands.saturatedFat, detail: formatGrams(data.nutriments?.saturatedFat100g) },
@@ -420,6 +441,14 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '700',
     color: '#2E7D32',
+    textAlign: 'center',
+    paddingHorizontal: 20,
+    marginBottom: 10,
+  },
+  noSafeChoiceBanner: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#C62828',
     textAlign: 'center',
     paddingHorizontal: 20,
     marginBottom: 10,

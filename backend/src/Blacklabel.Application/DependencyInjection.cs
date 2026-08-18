@@ -23,7 +23,7 @@ public static class DependencyInjection
         services.AddScoped<IScanService, ScanService>();
         services.AddScoped<ISubscriptionWebhookService, SubscriptionWebhookService>();
 
-        services.AddValidatorsFromAssemblyContaining<UpdateUserPreferenceRequestValidator>();
+        services.AddValidatorsFromAssemblyContaining<UpdateHouseholdProfileRequestValidator>();
 
         return services;
     }

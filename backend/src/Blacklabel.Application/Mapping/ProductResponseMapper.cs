@@ -45,7 +45,7 @@ public static class ProductResponseMapper
             Additives: additives,
             Allergens: allergens,
             Nutriments: nutriments,
-            PersonalWarnings: Array.Empty<PersonalWarningDto>(),
+            ProfileWarnings: Array.Empty<ProfileWarningDto>(),
             DataQuality: product.DataQuality.ToString(),
             Source: product.Source.ToString(),
             ComparisonBands: comparisonBands);

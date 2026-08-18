@@ -16,7 +16,7 @@ public class BlacklabelDbContext : DbContext
     public DbSet<Allergen> Allergens => Set<Allergen>();
     public DbSet<ProductAllergen> ProductAllergens => Set<ProductAllergen>();
     public DbSet<AppUser> AppUsers => Set<AppUser>();
-    public DbSet<UserPreference> UserPreferences => Set<UserPreference>();
+    public DbSet<HouseholdProfile> HouseholdProfiles => Set<HouseholdProfile>();
     public DbSet<Scan> Scans => Set<Scan>();
     public DbSet<Contribution> Contributions => Set<Contribution>();
 
@@ -88,13 +88,15 @@ public class BlacklabelDbContext : DbContext
             entity.Property(u => u.DeviceId).IsRequired();
         });
 
-        modelBuilder.Entity<UserPreference>(entity =>
+        modelBuilder.Entity<HouseholdProfile>(entity =>
         {
-            entity.HasKey(up => up.UserId);
-            entity.HasOne(up => up.User)
-                .WithOne(u => u.UserPreference)
-                .HasForeignKey<UserPreference>(up => up.UserId)
+            entity.HasKey(hp => hp.Id);
+            entity.Property(hp => hp.Name).HasMaxLength(50).IsRequired();
+            entity.HasOne(hp => hp.User)
+                .WithMany(u => u.HouseholdProfiles)
+                .HasForeignKey(hp => hp.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+            entity.HasIndex(hp => hp.UserId);
         });
 
         modelBuilder.Entity<Scan>(entity =>

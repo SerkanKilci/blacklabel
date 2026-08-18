@@ -21,7 +21,7 @@ public class AppUserRepositoryTests
     }
 
     [Fact]
-    public async Task RemoveAsync_Cascades_To_Preferences_Scans_And_Contributions()
+    public async Task RemoveAsync_Cascades_To_HouseholdProfiles_Scans_And_Contributions()
     {
         using var context = CreateContext();
         var repository = new AppUserRepository(context);
@@ -31,7 +31,7 @@ public class AppUserRepositoryTests
         await repository.AddAsync(user, CancellationToken.None);
         await repository.SaveChangesAsync(CancellationToken.None);
 
-        context.UserPreferences.Add(new UserPreference { UserId = userId });
+        context.HouseholdProfiles.Add(new HouseholdProfile { Id = Guid.NewGuid(), UserId = userId, Name = "Test" });
         context.Scans.Add(new Scan { Id = Guid.NewGuid(), UserId = userId, Barcode = "8690504010104", ScannedAt = DateTime.UtcNow });
         context.Contributions.Add(new Contribution
         {
@@ -48,7 +48,7 @@ public class AppUserRepositoryTests
         await repository.SaveChangesAsync(CancellationToken.None);
 
         Assert.Null(await context.AppUsers.FirstOrDefaultAsync(u => u.Id == userId));
-        Assert.Null(await context.UserPreferences.FirstOrDefaultAsync(p => p.UserId == userId));
+        Assert.Empty(await context.HouseholdProfiles.Where(p => p.UserId == userId).ToListAsync());
         Assert.Empty(await context.Scans.Where(s => s.UserId == userId).ToListAsync());
         Assert.Empty(await context.Contributions.Where(c => c.UserId == userId).ToListAsync());
     }

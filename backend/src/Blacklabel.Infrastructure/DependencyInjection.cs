@@ -40,7 +40,7 @@ public static class DependencyInjection
         services.AddScoped<IAllergenRepository, AllergenRepository>();
         services.AddScoped<IAppUserRepository, AppUserRepository>();
         services.AddScoped<IContributionRepository, ContributionRepository>();
-        services.AddScoped<IUserPreferenceRepository, UserPreferenceRepository>();
+        services.AddScoped<IHouseholdProfileRepository, HouseholdProfileRepository>();
         services.AddScoped<IScanRepository, ScanRepository>();
 
         var baseUrl = configuration["OpenFoodFacts:BaseUrl"] ?? "https://world.openfoodfacts.org/api/v2/product/";

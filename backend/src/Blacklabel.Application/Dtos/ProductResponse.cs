@@ -14,7 +14,7 @@ public sealed record ProductResponse(
     IReadOnlyList<AdditiveResponse> Additives,
     IReadOnlyList<string> Allergens,
     NutrimentsDto? Nutriments,
-    IReadOnlyList<PersonalWarningDto> PersonalWarnings,
+    IReadOnlyList<ProfileWarningDto> ProfileWarnings,
     string DataQuality,
     string Source,
     ComparisonBands ComparisonBands

@@ -22,6 +22,21 @@ no gambling, no violence. Apple's questionnaire and Play's Data Safety form shou
 camera access (to scan/contribute), no ads, no third-party analytics/ad SDKs, in-app purchases
 present (RevenueCat-managed subscription).
 
+**Note for whoever submits:** Apple replaced its old 4+/9+/12+/17+ scale with a new
+4+/9+/13+/16+/18+ system (rolled out with iOS 26) — App Store Connect's questionnaire now asks a
+different/expanded set of content questions than older guides describe. Re-answer it fresh rather
+than copying a rating from an older reference; 4+ is still the expected outcome here (no
+objectionable content of any kind), but don't skip re-filling the form on the assumption nothing
+changed.
+
+**Child data note (relevant to household profiles, not age rating itself):** the app is not
+directed at children and doesn't verify anyone's identity or age — the household-profiles feature
+just lets the *account holder* (an adult, by virtue of registering the account) label a profile
+with a first name and preferences (e.g. a child's allergy) for their own use. No birthdate, no
+separate login, no data collected *from* a child directly. This is a reasonable COPPA/child-privacy
+posture but is exactly the kind of judgment call that needs the counsel review already flagged for
+`PRIVACY.md` — call this feature out specifically when that review happens.
+
 ## App Store
 
 **Subtitle (30 chars max):** `Barcode & ingredient scanner`
@@ -39,7 +54,8 @@ present (RevenueCat-managed subscription).
 > • Instant barcode scanning — point your camera, get the full picture
 > • Every additive explained — what it is, what it's used for, and any EFSA intake limits on file
 > • A 0–100 score blending nutrition, additives, and processing level
-> • Personal warnings for allergens and ingredients you want to avoid (Premium)
+> • Separate allergen and diet warnings for every person in your household — one scan, a result
+>   for each family member (Premium)
 > • Better-scoring alternatives in the same category (Premium)
 > • Your scan history, searchable, on or offline
 >
@@ -52,6 +68,34 @@ present (RevenueCat-managed subscription).
 
 **Keywords (100 chars, comma-separated, no spaces after commas):**
 `barcode,scanner,ingredients,additives,e-numbers,nutrition,food,label,allergen,grocery`
+
+## Google Play — Health apps declaration
+
+Separate from category selection (Play Console → App content → Health Content and Services): any
+app offering "health-related features or information" must complete this form, regardless of
+which store category it's listed under. Blacklabel's additive/allergen warnings, diet flags
+(low-sugar, low-salt, gluten-free, etc.), and 0–100 score put it inside that definition even
+though it's listed under Food & Drink, not Health & Fitness — don't skip this form assuming the
+category choice exempts it.
+
+Draft answers for the declaration questionnaire:
+- **Does the app provide health information or features?** Yes — nutrition/ingredient scoring,
+  allergen and dietary-preference warnings.
+- **Does it diagnose, treat, cure, or prevent a disease/condition?** No.
+- **Does it claim regulatory clearance (FDA/CE) or a "medical device" status?** No — the standard
+  disclaimer already in `common.medicalDisclaimer` ("this app does not provide medical advice and
+  is not a substitute for a nutrition professional") covers this; keep using it in-app and reuse
+  the same wording in the Play Console form's free-text fields if asked to describe the app.
+- **Does it read/write Android Health Connect data?** No — Blacklabel has no Health Connect
+  integration; all preference data (allergens, diet flags) is entered manually and stored in our
+  own backend, not Android's health data platform.
+- **Nutrition/diet-tracking sub-category?** Closest fit is "apps focused on specific dietary needs"
+  (allergen/ingredient avoidance) — not calorie counting or weight-management, so don't select
+  those sub-options even though they're the most common examples in Play's own guidance.
+
+Also note: as of January 2026, Play Console requires health-declared apps to submit under a
+**verified Organization account**, not an individual developer account — factor that into which
+Play Console account type gets set up before submission.
 
 ## Google Play
 

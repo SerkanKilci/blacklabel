@@ -102,6 +102,7 @@ export default function ProductResultScreen() {
 function ProductFoundView({ product }: { product: ProductFound }) {
   const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabKey>('additives');
+  const profilesWithWarnings = product.profileWarnings.filter((pw) => pw.warnings.length > 0);
 
   useEffect(() => {
     void cacheProduct(product);
@@ -123,12 +124,17 @@ function ProductFoundView({ product }: { product: ProductFound }) {
         {product.imageUrl && <Image source={{ uri: product.imageUrl }} style={styles.productImage} resizeMode="contain" />}
       </View>
 
-      {product.personalWarnings.length > 0 && (
+      {profilesWithWarnings.length > 0 && (
         <View style={styles.warningCard}>
-          {product.personalWarnings.map((warning) => (
-            <Text key={`${warning.type}-${warning.code}`} style={styles.warningText}>
-              {personalWarningText(warning, product, t, i18n.language === 'tr')}
-            </Text>
+          {profilesWithWarnings.map((profileWarning) => (
+            <View key={profileWarning.profileId} style={styles.warningProfileBlock}>
+              <Text style={styles.warningProfileName}>{profileWarning.profileName}</Text>
+              {profileWarning.warnings.map((warning) => (
+                <Text key={`${warning.type}-${warning.code}`} style={styles.warningText}>
+                  {personalWarningText(warning, product, t, i18n.language === 'tr')}
+                </Text>
+              ))}
+            </View>
           ))}
         </View>
       )}
@@ -397,6 +403,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#FDECEA',
     borderRadius: 12,
     padding: 16,
+  },
+  warningProfileBlock: {
+    marginBottom: 8,
+  },
+  warningProfileName: {
+    color: '#C62828',
+    fontSize: 12,
+    fontWeight: '700',
+    marginBottom: 2,
   },
   warningText: {
     color: '#C62828',

@@ -8,12 +8,6 @@ export interface DietFlags {
   lowSalt: boolean;
 }
 
-export interface UserPreferences {
-  avoidedAdditiveCodes: string[];
-  allergenCodes: string[];
-  dietFlags: DietFlags;
-}
-
 export const EMPTY_DIET_FLAGS: DietFlags = {
   vegan: false,
   vegetarian: false,
@@ -24,7 +18,18 @@ export const EMPTY_DIET_FLAGS: DietFlags = {
   lowSalt: false,
 };
 
-export const EMPTY_PREFERENCES: UserPreferences = {
+export interface HouseholdProfile {
+  id: string;
+  name: string;
+  avoidedAdditiveCodes: string[];
+  allergenCodes: string[];
+  dietFlags: DietFlags;
+}
+
+export type ProfileFormValues = Omit<HouseholdProfile, 'id'>;
+
+export const EMPTY_PROFILE_FORM: ProfileFormValues = {
+  name: '',
   avoidedAdditiveCodes: [],
   allergenCodes: [],
   dietFlags: EMPTY_DIET_FLAGS,

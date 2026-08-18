@@ -11,7 +11,7 @@ public class AppUser
     public DateTime? PremiumUntil { get; set; }
     public DateTime CreatedAt { get; set; }
 
-    public UserPreference? UserPreference { get; set; }
+    public ICollection<HouseholdProfile> HouseholdProfiles { get; set; } = new List<HouseholdProfile>();
     public ICollection<Scan> Scans { get; set; } = new List<Scan>();
     public ICollection<Contribution> Contributions { get; set; } = new List<Contribution>();
 }

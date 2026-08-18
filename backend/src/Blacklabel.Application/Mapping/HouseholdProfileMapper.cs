@@ -4,23 +4,32 @@ using Blacklabel.Domain.Entities;
 
 namespace Blacklabel.Application.Mapping;
 
-public static class UserPreferenceMapper
+public static class HouseholdProfileMapper
 {
-    public static UserPreferenceResponse ToResponse(UserPreference entity) => new(
+    public static HouseholdProfileResponse ToResponse(HouseholdProfile entity) => new(
+        entity.Id,
+        entity.Name,
         DeserializeStringList(entity.AvoidedAdditiveCodes),
         DeserializeStringList(entity.AllergenCodes),
         DeserializeDietFlags(entity.DietFlags));
 
-    public static void ApplyToEntity(UserPreference entity, UpdateUserPreferenceRequest request)
+    /// <summary>Just the preference fields, for feeding <see cref="Preferences.PersonalWarningCalculator"/>.</summary>
+    public static UserPreferenceResponse ToPreferenceResponse(HouseholdProfile entity) => new(
+        DeserializeStringList(entity.AvoidedAdditiveCodes),
+        DeserializeStringList(entity.AllergenCodes),
+        DeserializeDietFlags(entity.DietFlags));
+
+    public static void ApplyToEntity(HouseholdProfile entity, UpdateHouseholdProfileRequest request)
     {
+        entity.Name = request.Name;
         entity.AvoidedAdditiveCodes = JsonSerializer.Serialize(request.AvoidedAdditiveCodes);
         entity.AllergenCodes = JsonSerializer.Serialize(request.AllergenCodes);
         entity.DietFlags = JsonSerializer.Serialize(request.DietFlags);
     }
 
-    public static IReadOnlyList<string> DeserializeStringList(string? json)
+    private static IReadOnlyList<string> DeserializeStringList(string? json)
         => string.IsNullOrWhiteSpace(json) ? Array.Empty<string>() : JsonSerializer.Deserialize<List<string>>(json) ?? new List<string>();
 
-    public static DietFlagsDto DeserializeDietFlags(string? json)
+    private static DietFlagsDto DeserializeDietFlags(string? json)
         => string.IsNullOrWhiteSpace(json) ? DietFlagsDto.Empty : JsonSerializer.Deserialize<DietFlagsDto>(json) ?? DietFlagsDto.Empty;
 }

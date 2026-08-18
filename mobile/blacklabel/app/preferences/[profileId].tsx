@@ -1,7 +1,9 @@
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   Pressable,
   StyleSheet,
@@ -11,10 +13,10 @@ import {
   View,
 } from 'react-native';
 
-import { ALLERGEN_CODES } from '../src/constants/allergens';
-import { useAdditives } from '../src/hooks/useAdditives';
-import { usePreferences, useUpdatePreferences } from '../src/hooks/usePreferences';
-import { EMPTY_PREFERENCES, type DietFlags, type UserPreferences } from '../src/types/preferences';
+import { ALLERGEN_CODES } from '../../src/constants/allergens';
+import { useAdditives } from '../../src/hooks/useAdditives';
+import { useDeleteHouseholdProfile, useHouseholdProfiles, useUpdateHouseholdProfile } from '../../src/hooks/useHouseholdProfiles';
+import { EMPTY_PROFILE_FORM, type DietFlags, type ProfileFormValues } from '../../src/types/preferences';
 
 const DIET_FLAG_KEYS: Array<keyof DietFlags> = [
   'vegan',
@@ -26,23 +28,33 @@ const DIET_FLAG_KEYS: Array<keyof DietFlags> = [
   'lowSalt',
 ];
 
-export default function PreferencesScreen() {
+export default function EditHouseholdProfileScreen() {
+  const { profileId } = useLocalSearchParams<{ profileId: string }>();
+  const router = useRouter();
   const { t, i18n } = useTranslation();
   const isTurkish = i18n.language === 'tr';
-  const { data: loadedPreferences, isLoading, isError } = usePreferences();
+  const { data: profiles, isLoading, isError } = useHouseholdProfiles();
   const { data: additives } = useAdditives();
-  const updateMutation = useUpdatePreferences();
+  const updateMutation = useUpdateHouseholdProfile();
+  const deleteMutation = useDeleteHouseholdProfile();
 
-  const [draft, setDraft] = useState<UserPreferences>(EMPTY_PREFERENCES);
+  const profile = profiles?.find((p) => p.id === profileId);
+
+  const [draft, setDraft] = useState<ProfileFormValues>(EMPTY_PROFILE_FORM);
   const [additiveQuery, setAdditiveQuery] = useState('');
   const [hasLoadedDraft, setHasLoadedDraft] = useState(false);
 
   useEffect(() => {
-    if (loadedPreferences && !hasLoadedDraft) {
-      setDraft(loadedPreferences);
+    if (profile && !hasLoadedDraft) {
+      setDraft({
+        name: profile.name,
+        avoidedAdditiveCodes: profile.avoidedAdditiveCodes,
+        allergenCodes: profile.allergenCodes,
+        dietFlags: profile.dietFlags,
+      });
       setHasLoadedDraft(true);
     }
-  }, [loadedPreferences, hasLoadedDraft]);
+  }, [profile, hasLoadedDraft]);
 
   const toggleAllergen = (code: string) => {
     setDraft((prev) => ({
@@ -66,6 +78,22 @@ export default function PreferencesScreen() {
     }));
   };
 
+  const handleDelete = () => {
+    if (!profile) return;
+    Alert.alert(
+      t('preferences.profiles.deleteConfirmTitle'),
+      t('preferences.profiles.deleteConfirmMessage', { name: profile.name }),
+      [
+        { text: t('preferences.profiles.cancel'), style: 'cancel' },
+        {
+          text: t('preferences.profiles.delete'),
+          style: 'destructive',
+          onPress: () => deleteMutation.mutate(profile.id, { onSuccess: () => router.back() }),
+        },
+      ],
+    );
+  };
+
   const filteredAdditives = useMemo(() => {
     if (!additives) return [];
     const normalizedQuery = additiveQuery.trim().toLowerCase();
@@ -86,7 +114,7 @@ export default function PreferencesScreen() {
     );
   }
 
-  if (isError) {
+  if (isError || !profile) {
     return (
       <View style={styles.centered}>
         <Text style={styles.centeredText}>{t('preferences.loadError')}</Text>
@@ -101,7 +129,12 @@ export default function PreferencesScreen() {
         keyExtractor={(item) => item.code}
         ListHeaderComponent={
           <View>
-            <Text style={styles.title}>{t('preferences.title')}</Text>
+            <TextInput
+              style={styles.nameInput}
+              value={draft.name}
+              onChangeText={(name) => setDraft((prev) => ({ ...prev, name }))}
+              placeholder={t('preferences.profiles.addPlaceholder')}
+            />
 
             <Text style={styles.sectionTitle}>{t('preferences.allergensSection')}</Text>
             {ALLERGEN_CODES.map((code) => (
@@ -141,6 +174,11 @@ export default function PreferencesScreen() {
         ListEmptyComponent={
           additiveQuery.trim() ? <Text style={styles.noResultsText}>{t('preferences.noAdditivesFound')}</Text> : null
         }
+        ListFooterComponent={
+          <Pressable style={styles.deleteProfileButton} onPress={handleDelete}>
+            <Text style={styles.deleteProfileButtonText}>{t('preferences.profiles.delete')}</Text>
+          </Pressable>
+        }
         contentContainerStyle={styles.listContent}
       />
 
@@ -149,7 +187,7 @@ export default function PreferencesScreen() {
         {updateMutation.isSuccess && <Text style={styles.successText}>{t('preferences.saved')}</Text>}
         <Pressable
           style={styles.saveButton}
-          onPress={() => updateMutation.mutate(draft)}
+          onPress={() => updateMutation.mutate({ id: profile.id, values: draft })}
           disabled={updateMutation.isPending}
         >
           <Text style={styles.saveButtonText}>
@@ -181,11 +219,14 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingBottom: 20,
   },
-  title: {
+  nameInput: {
     fontSize: 24,
     fontWeight: '700',
     color: '#1A1A1A',
     marginBottom: 20,
+    paddingVertical: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEEEEE',
   },
   sectionTitle: {
     fontSize: 14,
@@ -236,6 +277,16 @@ const styles = StyleSheet.create({
     color: '#9E9E9E',
     textAlign: 'center',
     marginTop: 12,
+  },
+  deleteProfileButton: {
+    marginTop: 32,
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+  deleteProfileButtonText: {
+    color: '#C62828',
+    fontSize: 14,
+    fontWeight: '600',
   },
   footer: {
     borderTopWidth: 1,
