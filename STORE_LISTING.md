@@ -16,11 +16,12 @@ a packaged product and show ingredient/additive/nutrition information.
 
 ## Age rating
 
-**4+ / Everyone.** No objectionable content, no user-generated content visible to other users
-(contributed photos go through moderation into a shared product database, not a social feed),
-no gambling, no violence. Apple's questionnaire and Play's Data Safety form should both reflect:
-camera access (to scan/contribute), no ads, no third-party analytics/ad SDKs, in-app purchases
-present (RevenueCat-managed subscription).
+**4+ / Everyone.** No objectionable content, no user-generated content of any kind in v1 (the
+photo-contribution feature is pulled from the front end — see the README's milestones section;
+the backend endpoint still exists but nothing in the app links to it), no gambling, no violence.
+Apple's questionnaire and Play's Data Safety form should both reflect: camera access (for barcode
+scanning only), no ads, no third-party analytics/ad SDKs, in-app purchases present
+(RevenueCat-managed subscription).
 
 **Note for whoever submits:** Apple replaced its old 4+/9+/12+/17+ scale with a new
 4+/9+/13+/16+/18+ system (rolled out with iOS 26) — App Store Connect's questionnaire now asks a
@@ -59,8 +60,7 @@ posture but is exactly the kind of judgment call that needs the counsel review a
 > • Better-scoring alternatives in the same category (Premium)
 > • Your scan history, searchable, on or offline
 >
-> Product data comes from Open Food Facts, an open, community-maintained database — and you can
-> contribute missing products yourself by photographing the label.
+> Product data comes from Open Food Facts, an open, community-maintained database.
 >
 > Blacklabel is an information tool, not a medical device. It does not diagnose conditions,
 > recommend treatment, or replace advice from a qualified healthcare professional. Always check a

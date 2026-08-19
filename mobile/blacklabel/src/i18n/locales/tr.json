@@ -55,8 +55,7 @@
     "retry": "Tekrar dene",
     "backToScanner": "Taramaya dön",
     "notFoundTitle": "Bu ürün henüz veritabanımızda yok",
-    "notFoundMessage": "Paketin fotoğrafını çekerek bu ürünün eklenmesine yardımcı olabilirsin — bir dakikadan az sürer.",
-    "startContribute": "Bu ürünü ekle",
+    "notFoundMessage": "Bu barkodu veritabanımızda bulamadık. Yakında farklı ürünlerle tekrar deneyebilirsin.",
     "scoreUnavailable": "Yeterli veri yok",
     "tabs": {
       "additives": "Katkı Maddeleri",

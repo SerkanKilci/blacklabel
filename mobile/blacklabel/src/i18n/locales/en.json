@@ -55,8 +55,7 @@
     "retry": "Retry",
     "backToScanner": "Back to scanner",
     "notFoundTitle": "This product isn't in our database yet",
-    "notFoundMessage": "Help add it by photographing the package — it only takes a moment.",
-    "startContribute": "Add this product",
+    "notFoundMessage": "We couldn't find this barcode in our database. Try again soon as we add more products.",
     "scoreUnavailable": "Not enough data",
     "tabs": {
       "additives": "Additives",

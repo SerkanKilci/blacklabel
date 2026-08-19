@@ -86,11 +86,8 @@ export default function ProductResultScreen() {
       <View style={styles.centered}>
         <Text style={styles.centeredTitle}>{t('result.notFoundTitle')}</Text>
         <Text style={styles.centeredText}>{t('result.notFoundMessage')}</Text>
-        <Pressable style={styles.primaryButton} onPress={() => router.push(`/contribute/${barcode}`)}>
-          <Text style={styles.primaryButtonText}>{t('result.startContribute')}</Text>
-        </Pressable>
-        <Pressable style={styles.secondaryButton} onPress={() => router.back()}>
-          <Text style={styles.secondaryButtonText}>{t('result.backToScanner')}</Text>
+        <Pressable style={styles.primaryButton} onPress={() => router.back()}>
+          <Text style={styles.primaryButtonText}>{t('result.backToScanner')}</Text>
         </Pressable>
       </View>
     );
