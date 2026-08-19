@@ -91,18 +91,31 @@ public class ProductLookupService : IProductLookupService
             return new ProductLookupResult(ProductLookupOutcome.Found, false, cachedResponse);
         }
 
-        var offProduct = await _openFoodFactsClient.GetProductAsync(barcode, ct);
-        if (offProduct is null)
+        var offResult = await _openFoodFactsClient.GetProductAsync(barcode, ct);
+        if (offResult.Outcome == OpenFoodFactsLookupOutcome.Unavailable)
+        {
+            return new ProductLookupResult(ProductLookupOutcome.LookupUnavailable, false, null);
+        }
+
+        if (offResult.Outcome == OpenFoodFactsLookupOutcome.NotFound || offResult.Product is null)
         {
             return new ProductLookupResult(ProductLookupOutcome.NotFound, true, null);
         }
 
-        var (product, matchedAdditives) = await BuildProductFromOffAsync(barcode, offProduct, ct);
-        await _productRepository.AddAsync(product, ct);
-        await _productRepository.SaveChangesAsync(ct);
+        var (product, matchedAdditives) = await BuildProductFromOffAsync(barcode, offResult.Product, ct);
+        var savedProduct = await _productRepository.AddOrGetExistingAsync(product, ct);
 
-        var response = BuildResponse(product, matchedAdditives, profiles, isPremium);
-        await RecordScanAsync(userId, barcode, product.Id, response.Score, ct);
+        // ReferenceEquals tells us whether we won the insert race: if so, matchedAdditives (built
+        // straight from the additive repository, no query round-trip) is already correct. If
+        // another concurrent request won instead, savedProduct is a freshly-queried different
+        // row and its own matched additives must be used, not the ones we computed from OFF data
+        // that was never actually persisted.
+        var savedAdditives = ReferenceEquals(savedProduct, product)
+            ? matchedAdditives
+            : savedProduct.ProductAdditives.Select(pa => pa.Additive).ToList();
+
+        var response = BuildResponse(savedProduct, savedAdditives, profiles, isPremium);
+        await RecordScanAsync(userId, barcode, savedProduct.Id, response.Score, ct);
         return new ProductLookupResult(ProductLookupOutcome.Found, false, response);
     }
 
@@ -171,8 +184,8 @@ public class ProductLookupService : IProductLookupService
 
             try
             {
-                var refreshed = await offClient.GetProductAsync(barcode, CancellationToken.None);
-                if (refreshed is null)
+                var refreshedResult = await offClient.GetProductAsync(barcode, CancellationToken.None);
+                if (refreshedResult.Outcome != OpenFoodFactsLookupOutcome.Found || refreshedResult.Product is null)
                 {
                     return;
                 }
@@ -183,7 +196,7 @@ public class ProductLookupService : IProductLookupService
                     return;
                 }
 
-                await ApplyOffDataAsync(existing, refreshed, additiveRepository, allergenRepository, CancellationToken.None);
+                await ApplyOffDataAsync(existing, refreshedResult.Product, additiveRepository, allergenRepository, CancellationToken.None);
                 await productRepository.SaveChangesAsync(CancellationToken.None);
             }
             catch (Exception ex)

@@ -7,7 +7,12 @@ public enum ProductLookupOutcome
     Found,
     NotFound,
     InvalidBarcode,
-    DailyLimitExceeded
+    DailyLimitExceeded,
+    /// <summary>
+    /// Not in our cache, and we couldn't reach Open Food Facts (or held back to respect our own
+    /// rate limit toward them) to check. Distinct from NotFound: the product may well exist.
+    /// </summary>
+    LookupUnavailable
 }
 
 public sealed record ProductLookupResult(ProductLookupOutcome Outcome, bool CanContribute, ProductResponse? Product);

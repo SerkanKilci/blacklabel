@@ -101,6 +101,22 @@ public class ProductLookupServiceTests
     }
 
     [Fact]
+    public async Task GetByBarcodeAsync_Returns_LookupUnavailable_Rather_Than_NotFound_When_OFF_Is_Unreachable()
+    {
+        var (_, service, offClient) = CreateService();
+        const string barcode = "8690504010104";
+        offClient.SetUnavailable(barcode);
+
+        var result = await service.GetByBarcodeAsync(TestUserId, barcode, CancellationToken.None);
+
+        // Must not be reported as NotFound: the product may well exist, we just couldn't check
+        // (rate-limited, OFF down, timeout) -- telling the user "not in our database" would be a
+        // false negative and, pre-this-fix, would have offered them a (now-disabled) contribute flow.
+        Assert.Equal(ProductLookupOutcome.LookupUnavailable, result.Outcome);
+        Assert.Null(result.Product);
+    }
+
+    [Fact]
     public async Task GetByBarcodeAsync_Fetches_From_OFF_Maps_And_Persists_When_Not_Cached()
     {
         var (context, service, offClient) = CreateService();

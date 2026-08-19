@@ -14,37 +14,48 @@ public class OpenFoodFactsClient : IOpenFoodFactsClient
         "product_name,product_name_tr,brands,quantity,ingredients_text,ingredients_text_tr,additives_tags,allergens_tags,nova_group,nutriscore_grade,nutriments,image_url,categories_tags";
 
     private readonly HttpClient _httpClient;
+    private readonly OpenFoodFactsRateLimiter _rateLimiter;
     private readonly ILogger<OpenFoodFactsClient> _logger;
 
-    public OpenFoodFactsClient(HttpClient httpClient, ILogger<OpenFoodFactsClient> logger)
+    public OpenFoodFactsClient(HttpClient httpClient, OpenFoodFactsRateLimiter rateLimiter, ILogger<OpenFoodFactsClient> logger)
     {
         _httpClient = httpClient;
+        _rateLimiter = rateLimiter;
         _logger = logger;
     }
 
-    public async Task<OpenFoodFactsProduct?> GetProductAsync(string barcode, CancellationToken ct)
+    public async Task<OpenFoodFactsLookupResult> GetProductAsync(string barcode, CancellationToken ct)
     {
+        if (!await _rateLimiter.WaitForPermitAsync(ct))
+        {
+            _logger.LogWarning("Open Food Facts self-throttle exhausted, skipping lookup for {Barcode}", barcode);
+            return new OpenFoodFactsLookupResult(OpenFoodFactsLookupOutcome.Unavailable, null);
+        }
+
         try
         {
             var response = await _httpClient.GetAsync($"{barcode}.json?fields={Fields}", ct);
             if (!response.IsSuccessStatusCode)
             {
+                // Open Food Facts returns HTTP 200 with a "status": 0 body for a barcode that
+                // genuinely doesn't exist (verified directly) -- a non-success status here means
+                // something went wrong on their end or ours (429, 5xx), not "not found".
                 _logger.LogWarning("Open Food Facts request failed for {Barcode} with status {StatusCode}", barcode, response.StatusCode);
-                return null;
+                return new OpenFoodFactsLookupResult(OpenFoodFactsLookupOutcome.Unavailable, null);
             }
 
             var payload = await response.Content.ReadFromJsonAsync<OpenFoodFactsEnvelope>(cancellationToken: ct);
             if (payload is null || payload.Status == 0 || payload.Product is null)
             {
-                return null;
+                return new OpenFoodFactsLookupResult(OpenFoodFactsLookupOutcome.NotFound, null);
             }
 
-            return MapToProduct(payload.Product);
+            return new OpenFoodFactsLookupResult(OpenFoodFactsLookupOutcome.Found, MapToProduct(payload.Product));
         }
         catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or JsonException)
         {
             _logger.LogWarning(ex, "Open Food Facts lookup failed for {Barcode}", barcode);
-            return null;
+            return new OpenFoodFactsLookupResult(OpenFoodFactsLookupOutcome.Unavailable, null);
         }
     }
 

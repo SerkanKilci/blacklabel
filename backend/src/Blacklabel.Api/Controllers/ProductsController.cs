@@ -37,6 +37,9 @@ public class ProductsController : ControllerBase
             ProductLookupOutcome.DailyLimitExceeded => StatusCode(
                 StatusCodes.Status429TooManyRequests,
                 new { message = "Daily scan limit reached. Upgrade to premium for unlimited scans." }),
+            ProductLookupOutcome.LookupUnavailable => StatusCode(
+                StatusCodes.Status503ServiceUnavailable,
+                new { message = "Couldn't look up this product right now. Try again in a moment." }),
             _ => NotFound(new ProductNotFoundResponse(false, result.CanContribute))
         };
     }

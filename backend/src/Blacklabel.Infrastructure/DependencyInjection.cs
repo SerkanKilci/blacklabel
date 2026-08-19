@@ -46,6 +46,7 @@ public static class DependencyInjection
         var baseUrl = configuration["OpenFoodFacts:BaseUrl"] ?? "https://world.openfoodfacts.org/api/v2/product/";
         var userAgent = configuration["OpenFoodFacts:UserAgent"] ?? "Blacklabel/1.0 (contact@blacklabel.app)";
 
+        services.AddSingleton<OpenFoodFactsRateLimiter>();
         services.AddHttpClient<IOpenFoodFactsClient, OpenFoodFactsClient>(client =>
             {
                 client.BaseAddress = new Uri(baseUrl);
