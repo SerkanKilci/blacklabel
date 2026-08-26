@@ -7,6 +7,8 @@ using Blacklabel.Infrastructure.Persistence;
 using Blacklabel.Infrastructure.Storage;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.IdentityModel.Tokens;
@@ -106,6 +108,30 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 app.UseSerilogRequestLogging();
+
+// Without this, an unhandled exception anywhere downstream (a bug we haven't found yet) reaches
+// the client as a bare, bodyless 500 -- Kestrel's default with no handler configured. This turns
+// that into a consistent application/problem+json body and, more importantly, makes sure the
+// exception itself gets logged with full detail even if it's swallowed before Serilog's request
+// logger would otherwise see it. Never includes the exception message/stack trace in the response
+// -- full detail goes to the log, not to API clients.
+app.UseExceptionHandler(errorApp => errorApp.Run(async context =>
+{
+    var exceptionFeature = context.Features.Get<IExceptionHandlerFeature>();
+    if (exceptionFeature is not null)
+    {
+        var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+        logger.LogError(exceptionFeature.Error, "Unhandled exception on {Path}", exceptionFeature.Path);
+    }
+
+    context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+    context.Response.ContentType = "application/problem+json";
+    await context.Response.WriteAsJsonAsync(new ProblemDetails
+    {
+        Status = StatusCodes.Status500InternalServerError,
+        Title = "An unexpected error occurred."
+    });
+}));
 
 if (app.Environment.IsDevelopment())
 {
