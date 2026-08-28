@@ -36,22 +36,27 @@ export function ScoreRing({ score, size = 140, strokeWidth = 12 }: ScoreRingProp
 
   return (
     <View style={{ width: size, height: size }}>
-      <Svg width={size} height={size}>
-        <Circle cx={size / 2} cy={size / 2} r={radius} stroke="#E0E0E0" strokeWidth={strokeWidth} fill="none" />
-        <AnimatedCircle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          stroke={color}
-          strokeWidth={strokeWidth}
-          fill="none"
-          strokeDasharray={circumference}
-          strokeDashoffset={strokeDashoffset}
-          strokeLinecap="round"
-          rotation="-90"
-          origin={`${size / 2}, ${size / 2}`}
-        />
-      </Svg>
+      {/* Rotating the whole group -90deg via a View transform (rather than passing
+       * rotation/origin props into the Animated-wrapped SVG Circle) avoids react-native-web
+       * leaking a raw, invalid `transform-origin` DOM attribute — both circles share the same
+       * center, so this is visually identical to rotating just the animated one around its own
+       * center. */}
+      <View style={{ transform: [{ rotate: '-90deg' }] }}>
+        <Svg width={size} height={size}>
+          <Circle cx={size / 2} cy={size / 2} r={radius} stroke="#E0E0E0" strokeWidth={strokeWidth} fill="none" />
+          <AnimatedCircle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            stroke={color}
+            strokeWidth={strokeWidth}
+            fill="none"
+            strokeDasharray={circumference}
+            strokeDashoffset={strokeDashoffset}
+            strokeLinecap="round"
+          />
+        </Svg>
+      </View>
       <View style={styles.centerLabel}>
         <Text style={[styles.scoreText, { color }]}>{score ?? '–'}</Text>
         {score === null && <Text style={styles.unavailableText}>{t('result.scoreUnavailable')}</Text>}

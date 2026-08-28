@@ -13,7 +13,13 @@
     },
     "preview": {
       "distribution": "internal",
-      "channel": "preview"
+      "channel": "preview",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://jaguar-findlaw-very-steering.trycloudflare.com/api/v1",
+        "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "61337598525-tmg1cr1hs9gp0uoim46mhvs9mnboir55.apps.googleusercontent.com",
+        "EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID": "61337598525-a1t988d9kd96ui7jofbravt2qkca7762.apps.googleusercontent.com",
+        "EXPO_PUBLIC_REVENUECAT_IOS_KEY": "appl_RyjFwromrjdIFuPvMdpbYgJnIcQ"
+      }
     },
     "production": {
       "autoIncrement": true,

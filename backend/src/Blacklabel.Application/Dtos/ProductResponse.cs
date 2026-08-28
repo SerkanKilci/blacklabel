@@ -17,7 +17,8 @@ public sealed record ProductResponse(
     IReadOnlyList<ProfileWarningDto> ProfileWarnings,
     string DataQuality,
     string Source,
-    ComparisonBands ComparisonBands
+    ComparisonBands ComparisonBands,
+    bool HasLockedPersonalWarnings = false
 );
 
 public sealed record ProductNotFoundResponse(bool Found, bool CanContribute);

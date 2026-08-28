@@ -252,20 +252,26 @@ public class ProductLookupService : IProductLookupService
 
         var response = ProductResponseMapper.ToResponse(product, matchedAdditives, scoreResult);
 
-        // Personal allergen/preference warnings are a premium feature (§11), computed once per
-        // household profile so one scan can tell "safe for you" from "not safe for your child" (§CBS/Yuka).
+        // Personal allergen/preference warnings are computed for every household profile
+        // regardless of premium status -- a real allergy conflict is a safety signal, not just a
+        // premium perk, so a free account must still learn that *something* was flagged. Only the
+        // detail (which profile, which allergen/additive/diet flag) is gated behind premium; the
+        // free account gets a bare "something's flagged, upgrade to see details" flag instead of
+        // the full breakdown (§CBS/Yuka).
         var additiveCodes = matchedAdditives.Select(a => a.Code).ToList();
         var allergenCodes = product.ProductAllergens.Select(pa => pa.AllergenCode).ToList();
-        var profileWarnings = isPremium
-            ? profiles
-                .Select(p => new ProfileWarningDto(
-                    p.Id,
-                    p.Name,
-                    PersonalWarningCalculator.Calculate(HouseholdProfileMapper.ToPreferenceResponse(p), additiveCodes, allergenCodes, nutriments)))
-                .ToList()
-            : new List<ProfileWarningDto>();
+        var allProfileWarnings = profiles
+            .Select(p => new ProfileWarningDto(
+                p.Id,
+                p.Name,
+                PersonalWarningCalculator.Calculate(HouseholdProfileMapper.ToPreferenceResponse(p), additiveCodes, allergenCodes, nutriments)))
+            .ToList();
+        var hasAnyWarning = allProfileWarnings.Any(pw => pw.Warnings.Count > 0);
 
-        return response with { ProfileWarnings = profileWarnings };
+        var profileWarnings = isPremium ? allProfileWarnings : new List<ProfileWarningDto>();
+        var hasLockedPersonalWarnings = !isPremium && hasAnyWarning;
+
+        return response with { ProfileWarnings = profileWarnings, HasLockedPersonalWarnings = hasLockedPersonalWarnings };
     }
 
     private static HashSet<string> DeserializeCategories(string? json)

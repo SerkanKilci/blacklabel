@@ -41,8 +41,14 @@ public class BlacklabelDbContext : DbContext
             entity.Property(a => a.Code).HasMaxLength(10);
             entity.Property(a => a.NameTr).HasMaxLength(200).IsRequired();
             entity.Property(a => a.NameEn).HasMaxLength(200).IsRequired();
+            entity.Property(a => a.NameDe).HasMaxLength(200).IsRequired();
+            entity.Property(a => a.NameFr).HasMaxLength(200).IsRequired();
+            entity.Property(a => a.NameEs).HasMaxLength(200).IsRequired();
             entity.Property(a => a.DescriptionTr).HasMaxLength(1000).IsRequired();
             entity.Property(a => a.DescriptionEn).HasMaxLength(1000).IsRequired();
+            entity.Property(a => a.DescriptionDe).HasMaxLength(1000).IsRequired();
+            entity.Property(a => a.DescriptionFr).HasMaxLength(1000).IsRequired();
+            entity.Property(a => a.DescriptionEs).HasMaxLength(1000).IsRequired();
             entity.Property(a => a.SourceNote).HasMaxLength(500);
             entity.Property(a => a.Synonyms).HasMaxLength(500).IsRequired();
             entity.HasData(AdditiveSeedData.Get());

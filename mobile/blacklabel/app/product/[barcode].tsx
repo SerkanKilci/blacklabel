@@ -12,6 +12,8 @@ import {
 } from 'react-native';
 
 import { ApiError } from '../../src/api/client';
+import { BackButton } from '../../src/components/BackButton';
+import { Screen } from '../../src/components/Screen';
 import { ScoreRing } from '../../src/components/ScoreRing';
 import { cacheProduct } from '../../src/db/productCache';
 import { insertScan } from '../../src/db/scanHistory';
@@ -20,19 +22,20 @@ import { useProduct } from '../../src/hooks/useProduct';
 import { useSubscription } from '../../src/hooks/useSubscription';
 import { syncPendingScans } from '../../src/sync/syncScans';
 import type { AdditiveInfo, PersonalWarning, ProductFound } from '../../src/types/product';
+import { getLocalizedAdditiveName, getLocalizedAdditiveDescription } from '../../src/utils/additiveLocalization';
 import { getRiskLevelColor, getScoreColor } from '../../src/utils/score';
 
 type TabKey = 'additives' | 'nutrition' | 'ingredients';
 type TFunction = (key: string, options?: Record<string, unknown>) => string;
 
-function personalWarningText(warning: PersonalWarning, product: ProductFound, t: TFunction, isTurkish: boolean): string {
+function personalWarningText(warning: PersonalWarning, product: ProductFound, t: TFunction, language: string): string {
   if (warning.type === 'allergen') {
     return t('warning.allergenMessage', { allergen: t(`allergens.${warning.code}`) });
   }
 
   if (warning.type === 'additive') {
     const additive = product.additives.find((a) => a.code === warning.code);
-    const name = additive ? (isTurkish ? additive.nameTr : additive.nameEn) : warning.code;
+    const name = additive ? getLocalizedAdditiveName(additive, language) : warning.code;
     return t('warning.additiveMessage', { additive: `${warning.code} (${name})` });
   }
 
@@ -47,10 +50,11 @@ export default function ProductResultScreen() {
 
   if (isLoading) {
     return (
-      <View style={styles.centered}>
+      <Screen style={styles.centered}>
+        <BackButton style={styles.loadingBackButton} />
         <ActivityIndicator size="large" color="#1A1A1A" />
         <Text style={styles.centeredText}>{t('result.loading')}</Text>
-      </View>
+      </Screen>
     );
   }
 
@@ -98,6 +102,7 @@ export default function ProductResultScreen() {
 
 function ProductFoundView({ product }: { product: ProductFound }) {
   const { t, i18n } = useTranslation();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabKey>('additives');
   const profilesWithWarnings = product.profileWarnings.filter((pw) => pw.warnings.length > 0);
 
@@ -113,8 +118,10 @@ function ProductFoundView({ product }: { product: ProductFound }) {
   }, [product.barcode, product.score]);
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <Screen style={styles.container}>
+    <ScrollView contentContainerStyle={styles.contentContainer}>
       <View style={styles.header}>
+        <BackButton style={styles.backButton} />
         <ScoreRing score={product.score} />
         <Text style={styles.productName}>{product.name}</Text>
         {product.brand && <Text style={styles.productBrand}>{product.brand}</Text>}
@@ -128,11 +135,21 @@ function ProductFoundView({ product }: { product: ProductFound }) {
               <Text style={styles.warningProfileName}>{profileWarning.profileName}</Text>
               {profileWarning.warnings.map((warning) => (
                 <Text key={`${warning.type}-${warning.code}`} style={styles.warningText}>
-                  {personalWarningText(warning, product, t, i18n.language === 'tr')}
+                  {personalWarningText(warning, product, t, i18n.language)}
                 </Text>
               ))}
             </View>
           ))}
+        </View>
+      )}
+
+      {product.hasLockedPersonalWarnings && (
+        <View style={styles.lockedWarningCard}>
+          <Text style={styles.lockedWarningTitle}>{t('warning.lockedTitle')}</Text>
+          <Text style={styles.lockedWarningMessage}>{t('warning.lockedMessage')}</Text>
+          <Pressable style={styles.lockedWarningButton} onPress={() => router.push('/paywall')}>
+            <Text style={styles.lockedWarningButtonText}>{t('preferences.profiles.upgrade')}</Text>
+          </Pressable>
         </View>
       )}
 
@@ -151,6 +168,7 @@ function ProductFoundView({ product }: { product: ProductFound }) {
       <Text style={styles.disclaimer}>{t('common.medicalDisclaimer')}</Text>
       {product.source === 'OpenFoodFacts' && <Text style={styles.attribution}>{t('result.attribution')}</Text>}
     </ScrollView>
+    </Screen>
   );
 }
 
@@ -165,7 +183,6 @@ function TabButton({ label, active, onPress }: { label: string; active: boolean;
 function AdditivesTab({ additives, allergens }: { additives: AdditiveInfo[]; allergens: string[] }) {
   const { t, i18n } = useTranslation();
   const [expandedCode, setExpandedCode] = useState<string | null>(null);
-  const isTurkish = i18n.language === 'tr';
 
   return (
     <View style={styles.tabContent}>
@@ -188,8 +205,8 @@ function AdditivesTab({ additives, allergens }: { additives: AdditiveInfo[]; all
       ) : (
         additives.map((additive) => {
           const isExpanded = expandedCode === additive.code;
-          const name = isTurkish ? additive.nameTr : additive.nameEn;
-          const description = isTurkish ? additive.descriptionTr : additive.descriptionEn;
+          const name = getLocalizedAdditiveName(additive, i18n.language);
+          const description = getLocalizedAdditiveDescription(additive, i18n.language);
 
           return (
             <Pressable
@@ -325,7 +342,6 @@ function IngredientsTab({ ingredientsText }: { ingredientsText: string | null })
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#FFFFFF',
   },
   contentContainer: {
@@ -374,8 +390,16 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    paddingTop: 32,
+    paddingTop: 12,
     paddingHorizontal: 24,
+  },
+  backButton: {
+    alignSelf: 'flex-start',
+  },
+  loadingBackButton: {
+    position: 'absolute',
+    top: 12,
+    left: 24,
   },
   productName: {
     fontSize: 20,
@@ -414,6 +438,37 @@ const styles = StyleSheet.create({
     color: '#C62828',
     fontSize: 14,
     fontWeight: '500',
+  },
+  lockedWarningCard: {
+    marginTop: 20,
+    marginHorizontal: 20,
+    backgroundColor: '#FFF4E5',
+    borderRadius: 12,
+    padding: 16,
+  },
+  lockedWarningTitle: {
+    color: '#8A5A00',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  lockedWarningMessage: {
+    color: '#8A5A00',
+    fontSize: 13,
+    marginTop: 4,
+    lineHeight: 19,
+  },
+  lockedWarningButton: {
+    marginTop: 12,
+    alignSelf: 'flex-start',
+    backgroundColor: '#8A5A00',
+    borderRadius: 10,
+    paddingVertical: 9,
+    paddingHorizontal: 16,
+  },
+  lockedWarningButtonText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '600',
   },
   tabBar: {
     flexDirection: 'row',

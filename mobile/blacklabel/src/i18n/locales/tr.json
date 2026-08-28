@@ -10,7 +10,8 @@
     "manualEntryHint": "Barkodun altında yazan numarayı gir.",
     "manualEntryPlaceholder": "örn. 8690504010104",
     "manualEntryInvalid": "Geçerli bir 8, 12, 13 veya 14 haneli barkod gir.",
-    "manualEntrySubmit": "Ara"
+    "manualEntrySubmit": "Ara",
+    "restartCameraButton": "Kamerayı yenile"
   },
   "compare": {
     "title": "Karşılaştır",
@@ -148,7 +149,9 @@
   "warning": {
     "allergenMessage": "{{allergen}} içeriyor — bunu alerjen olarak işaretlemiştin.",
     "additiveMessage": "{{additive}} içeriyor — kaçınmak istediğini belirtmiştin.",
-    "dietMessage": "Bu ürün \"{{flag}}\" tercihine uymuyor."
+    "dietMessage": "Bu ürün \"{{flag}}\" tercihine uymuyor.",
+    "lockedTitle": "⚠️ Hane profillerinden biri için uyarı var",
+    "lockedMessage": "Bu ürün, kaydettiğin profillerden birinin alerjen veya tercihleriyle çelişiyor. Kimin ve neden olduğunu görmek için Premium'a geç."
   },
   "history": {
     "title": "Geçmiş",
@@ -181,7 +184,11 @@
       "cancel": "Vazgeç",
       "deleteConfirmTitle": "Profili sil?",
       "deleteConfirmMessage": "{{name}} profili ve tercihleri silinecek.",
-      "loadError": "Profiller yüklenemedi."
+      "loadError": "Profiller yüklenemedi.",
+      "premiumTitle": "Hane profilleri premium özelliktir",
+      "premiumMessage": "Hanedeki her kişi için ayrı profil eklemek premium üyelere açıktır.",
+      "premiumEditNotice": "Bu profili görüntüleyebilirsin ama düzenlemek premium üyelere açıktır.",
+      "upgrade": "Premium'a geç"
     }
   },
   "limits": {
@@ -212,6 +219,9 @@
       "offlineMode": "Çevrimdışı mod"
     },
     "notConfigured": "Satın alma bu sürümde henüz kullanılamıyor.",
+    "signInRequiredTitle": "Önce giriş yapmalısın",
+    "signInRequiredMessage": "Premium aboneliğini güvenceye almak için Apple veya Google hesabınla giriş yap. Böylece telefon değiştirsen bile aboneliğini kaybetmezsin.",
+    "signInUnavailable": "Bu cihazda desteklenen bir giriş yöntemi bulunamadı.",
     "subscribe": "Abone ol",
     "restore": "Satın alımları geri yükle",
     "restoring": "Geri yükleniyor...",

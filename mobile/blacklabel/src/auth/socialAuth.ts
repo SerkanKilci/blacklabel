@@ -7,6 +7,7 @@ import { setAuthToken } from './deviceAuthClient';
 import type { AuthResponse } from '../types/auth';
 
 const GOOGLE_WEB_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID;
+const GOOGLE_IOS_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
 
 let googleConfigured = false;
 
@@ -25,7 +26,7 @@ function ensureGoogleConfigured(): void {
   if (googleConfigured || !GOOGLE_WEB_CLIENT_ID) {
     return;
   }
-  GoogleSignin.configure({ webClientId: GOOGLE_WEB_CLIENT_ID });
+  GoogleSignin.configure({ webClientId: GOOGLE_WEB_CLIENT_ID, iosClientId: GOOGLE_IOS_CLIENT_ID });
   googleConfigured = true;
 }
 

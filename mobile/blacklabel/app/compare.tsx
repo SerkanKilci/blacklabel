@@ -5,6 +5,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { getProductByBarcode } from '../src/api/products';
 import { ManualBarcodeEntryModal } from '../src/components/ManualBarcodeEntryModal';
@@ -81,6 +82,7 @@ function buildSummaryRows(items: FoundItem[]): SummaryRow[] {
 export default function CompareScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { data: subscription, isLoading: isSubscriptionLoading } = useSubscription();
   const isPremium = subscription?.isPremium ?? false;
 
@@ -88,12 +90,17 @@ export default function CompareScreen() {
   const [isScanningPaused, setIsScanningPaused] = useState(false);
   const [isManualEntryVisible, setIsManualEntryVisible] = useState(false);
   const [barcodes, setBarcodes] = useState<string[]>([]);
+  const [cameraKey, setCameraKey] = useState(0);
   const isProcessingRef = useRef(false);
 
+  // See app/index.tsx's identical fix: this screen stays mounted (just hidden) behind
+  // /product/[barcode], and a backgrounded camera stream can get suspended by the browser and
+  // never resume on its own. Bumping this key forces a fresh CameraView mount on every refocus.
   useFocusEffect(
     useCallback(() => {
       isProcessingRef.current = false;
       setIsScanningPaused(false);
+      setCameraKey((key) => key + 1);
     }, []),
   );
 
@@ -219,6 +226,7 @@ export default function CompareScreen() {
   return (
     <View style={styles.container}>
       <CameraView
+        key={cameraKey}
         style={StyleSheet.absoluteFill}
         facing="back"
         barcodeScannerSettings={{ barcodeTypes: ['ean13', 'ean8', 'upc_a'] }}
@@ -226,7 +234,7 @@ export default function CompareScreen() {
       />
 
       <View style={styles.overlay} pointerEvents="box-none">
-        <View style={styles.topBar}>
+        <View style={[styles.topBar, { top: insets.top + 12 }]}>
           <Pressable style={styles.topBarButton} onPress={() => router.back()}>
             <Text style={styles.topBarButtonText}>{t('result.backToScanner')}</Text>
           </Pressable>
@@ -238,6 +246,10 @@ export default function CompareScreen() {
               <Text style={styles.topBarButtonText}>{t('compare.clearAll')}</Text>
             </Pressable>
           )}
+          {/* Same direct-user-gesture requirement as app/index.tsx's identical button. */}
+          <Pressable style={styles.topBarButton} onPress={() => setCameraKey((key) => key + 1)}>
+            <Text style={styles.topBarButtonText}>{t('scanner.restartCameraButton')}</Text>
+          </Pressable>
         </View>
 
         <View style={styles.targetFrame} />
@@ -264,7 +276,7 @@ export default function CompareScreen() {
               ))}
             </View>
           )}
-          <ScrollView contentContainerStyle={styles.listContent}>
+          <ScrollView contentContainerStyle={[styles.listContent, { paddingBottom: 24 + insets.bottom }]}>
             {sortedItems.map(({ barcode, result }) => (
               <ComparisonCard
                 key={barcode}
@@ -387,7 +399,6 @@ const styles = StyleSheet.create({
   },
   topBar: {
     position: 'absolute',
-    top: 60,
     left: 20,
     right: 20,
     flexDirection: 'row',

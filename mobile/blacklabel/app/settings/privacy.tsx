@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { ensureUserId } from '../../src/auth/deviceAuthClient';
+import { BackButton } from '../../src/components/BackButton';
+import { Screen } from '../../src/components/Screen';
 
 export default function PrivacyScreen() {
   const { t } = useTranslation();
@@ -13,27 +15,29 @@ export default function PrivacyScreen() {
   }, []);
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>{t('privacy.title')}</Text>
-      <Text style={styles.body}>{t('privacy.body')}</Text>
+    <Screen style={styles.container}>
+      <ScrollView contentContainerStyle={styles.content}>
+        <BackButton />
+        <Text style={styles.title}>{t('privacy.title')}</Text>
+        <Text style={styles.body}>{t('privacy.body')}</Text>
 
-      <View style={styles.contactSection}>
-        <Text style={styles.contactLabel}>{t('privacy.contactLabel')}</Text>
-        <Text style={styles.contactValue}>privacy@blacklabel.app</Text>
-        <Text style={styles.contactValue}>{t('settings.deviceIdLabel')}: {userId ?? '—'}</Text>
-      </View>
-    </ScrollView>
+        <View style={styles.contactSection}>
+          <Text style={styles.contactLabel}>{t('privacy.contactLabel')}</Text>
+          <Text style={styles.contactValue}>privacy@blacklabel.app</Text>
+          <Text style={styles.contactValue}>{t('settings.deviceIdLabel')}: {userId ?? '—'}</Text>
+        </View>
+      </ScrollView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#FFFFFF',
   },
   content: {
     paddingHorizontal: 20,
-    paddingTop: 60,
+    paddingTop: 16,
     paddingBottom: 40,
   },
   title: {

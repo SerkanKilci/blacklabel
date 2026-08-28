@@ -47,7 +47,14 @@ public abstract class OidcIdentityTokenVerifier : IIdentityTokenVerifier
         try
         {
             var config = await _configManager.GetConfigurationAsync(ct);
-            var handler = new JwtSecurityTokenHandler();
+            var handler = new JwtSecurityTokenHandler
+            {
+                // Without this, the handler silently rewrites the "sub" claim to the long
+                // ClaimTypes.NameIdentifier URI (a legacy WS-Federation compat behavior), so the
+                // FindFirst(JwtRegisteredClaimNames.Sub) lookup below always came back null and
+                // every otherwise-valid Apple/Google identity token got rejected.
+                MapInboundClaims = false
+            };
             var parameters = new TokenValidationParameters
             {
                 ValidIssuers = _validIssuers,

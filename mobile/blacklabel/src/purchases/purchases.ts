@@ -32,9 +32,16 @@ export function isPurchasesConfigured(): boolean {
   return isConfigured;
 }
 
+/**
+ * Throws (rather than returning null) when RevenueCat isn't configured yet, so that a caller
+ * mounted before `configurePurchases` finishes (e.g. the Paywall query firing before the root
+ * layout's `ensureUserId().then(configurePurchases)` resolves) gets a React Query retry instead
+ * of a permanently-cached null result — returning null here would look like "successfully
+ * fetched, no offering" and React Query never retries a successful response.
+ */
 export async function getCurrentOffering(): Promise<PurchasesOffering | null> {
   if (!isConfigured) {
-    return null;
+    throw new Error('RevenueCat is not configured yet');
   }
 
   const offerings = await Purchases.getOfferings();

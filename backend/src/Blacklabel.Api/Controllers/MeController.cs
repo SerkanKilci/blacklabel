@@ -51,6 +51,12 @@ public class MeController : ControllerBase
     public async Task<IActionResult> CreateHouseholdProfile([FromBody] CreateHouseholdProfileRequest request, CancellationToken ct)
     {
         var userId = GetUserId();
+        var user = await _appUserRepository.GetByIdAsync(userId, ct);
+        if (user is null || !user.IsPremium)
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, new { message = "Household profiles are a premium feature." });
+        }
+
         var profile = new HouseholdProfile
         {
             Id = Guid.NewGuid(),
@@ -70,6 +76,12 @@ public class MeController : ControllerBase
         Guid profileId, [FromBody] UpdateHouseholdProfileRequest request, CancellationToken ct)
     {
         var userId = GetUserId();
+        var user = await _appUserRepository.GetByIdAsync(userId, ct);
+        if (user is null || !user.IsPremium)
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, new { message = "Household profiles are a premium feature." });
+        }
+
         var profile = await _profileRepository.GetByIdAsync(profileId, userId, ct);
         if (profile is null)
         {

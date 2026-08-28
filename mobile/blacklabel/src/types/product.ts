@@ -11,10 +11,16 @@ export interface AdditiveInfo {
   code: string;
   nameTr: string;
   nameEn: string;
+  nameDe: string;
+  nameFr: string;
+  nameEs: string;
   category: string;
   riskLevel: number;
   descriptionTr: string;
   descriptionEn: string;
+  descriptionDe: string;
+  descriptionFr: string;
+  descriptionEs: string;
   sourceNote: string | null;
 }
 
@@ -69,6 +75,9 @@ export interface ProductFound {
   allergens: string[];
   nutriments: Nutriments | null;
   profileWarnings: ProfileWarning[];
+  /** True when a household profile has a real conflict (allergen/additive/diet) but the account
+   * isn't premium, so the server withheld who/what — a bare safety flag, not the full detail. */
+  hasLockedPersonalWarnings: boolean;
   dataQuality: DataQuality;
   source: ProductSource;
   comparisonBands: ComparisonBands;

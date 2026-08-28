@@ -4,6 +4,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ManualBarcodeEntryModal } from '../src/components/ManualBarcodeEntryModal';
 import { useScanHistoryStore } from '../src/store/useScanHistoryStore';
@@ -13,18 +14,26 @@ const SCAN_RESET_DELAY_MS = 1500;
 export default function ScannerScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [permission, requestPermission] = useCameraPermissions();
   const [isScanningPaused, setIsScanningPaused] = useState(false);
   const [isManualEntryVisible, setIsManualEntryVisible] = useState(false);
+  const [cameraKey, setCameraKey] = useState(0);
   const isProcessingRef = useRef(false);
 
   const recentScans = useScanHistoryStore((state) => state.recentScans);
   const addScan = useScanHistoryStore((state) => state.addScan);
 
+  // expo-router keeps this screen mounted (just hidden) when navigating to /product/[barcode],
+  // so the camera's live stream stays open in the background rather than stopping. Browsers
+  // (iOS Safari in particular) can suspend a backgrounded camera stream and never resume it on
+  // their own, leaving a black frame on return. Bumping this key forces CameraView to fully
+  // unmount/remount — and re-acquire a fresh stream — every time the screen regains focus.
   useFocusEffect(
     useCallback(() => {
       isProcessingRef.current = false;
       setIsScanningPaused(false);
+      setCameraKey((key) => key + 1);
     }, []),
   );
 
@@ -86,6 +95,7 @@ export default function ScannerScreen() {
   return (
     <View style={styles.container}>
       <CameraView
+        key={cameraKey}
         style={StyleSheet.absoluteFill}
         facing="back"
         barcodeScannerSettings={{ barcodeTypes: ['ean13', 'ean8', 'upc_a'] }}
@@ -93,7 +103,7 @@ export default function ScannerScreen() {
       />
 
       <View style={styles.overlay} pointerEvents="box-none">
-        <View style={styles.topBar}>
+        <View style={[styles.topBar, { top: insets.top + 12 }]}>
           <Pressable style={styles.topBarButton} onPress={() => router.push('/compare')}>
             <Text style={styles.topBarButtonText}>{t('compare.title')}</Text>
           </Pressable>
@@ -109,7 +119,7 @@ export default function ScannerScreen() {
         </View>
 
         {recentScans.length > 0 && (
-          <View style={styles.recentScansWrapper}>
+          <View style={[styles.recentScansWrapper, { top: insets.top + 62 }]}>
             <Text style={styles.recentScansLabel}>{t('scanner.recentScans')}</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.recentScansRow}>
               {recentScans.map((entry) => (
@@ -128,9 +138,18 @@ export default function ScannerScreen() {
         <View style={styles.targetFrame} />
         <Text style={styles.targetHint}>{t('scanner.targetHint')}</Text>
 
-        <View style={styles.bottomBar}>
+        <View style={[styles.bottomBar, { bottom: insets.bottom + 20 }]}>
           <Pressable style={styles.manualEntryButton} onPress={() => setIsManualEntryVisible(true)}>
             <Text style={styles.manualEntryButtonText}>{t('scanner.manualEntryButton')}</Text>
+          </Pressable>
+          {/* iOS Safari can suspend a backgrounded camera stream and refuses to silently resume
+           * it from a getUserMedia() call that isn't tied to a direct user tap (our own
+           * useFocusEffect-driven remount doesn't count) -- it shows its own "resume camera"
+           * banner instead, which can leave the barcode-scanning loop bound to a stale stream.
+           * This button's onPress IS a direct tap, so bumping cameraKey here reliably gets a
+           * fresh, correctly-bound stream without depending on Safari's own banner at all. */}
+          <Pressable style={styles.restartCameraButton} onPress={() => setCameraKey((key) => key + 1)}>
+            <Text style={styles.restartCameraButtonText}>{t('scanner.restartCameraButton')}</Text>
           </Pressable>
         </View>
       </View>
@@ -160,9 +179,11 @@ const styles = StyleSheet.create({
   },
   topBar: {
     position: 'absolute',
-    top: 60,
+    left: 20,
     right: 20,
     flexDirection: 'row',
+    justifyContent: 'flex-end',
+    flexWrap: 'wrap',
     gap: 8,
   },
   topBarButton: {
@@ -178,7 +199,6 @@ const styles = StyleSheet.create({
   },
   recentScansWrapper: {
     position: 'absolute',
-    top: 110,
     left: 0,
     right: 0,
   },
@@ -220,7 +240,6 @@ const styles = StyleSheet.create({
   },
   bottomBar: {
     position: 'absolute',
-    bottom: 50,
     left: 0,
     right: 0,
     alignItems: 'center',
@@ -237,6 +256,16 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '600',
+  },
+  restartCameraButton: {
+    marginTop: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  restartCameraButtonText: {
+    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: 12,
+    fontWeight: '500',
   },
   permissionContainer: {
     flex: 1,

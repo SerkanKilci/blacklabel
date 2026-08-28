@@ -8,14 +8,19 @@ import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, View
 import { deleteAccount } from '../../src/api/auth';
 import { debugGrantPremium } from '../../src/api/subscription';
 import { clearAuth, ensureUserId } from '../../src/auth/deviceAuthClient';
-import { isAppleSignInAvailable, isGoogleSignInConfigured, signInWithApple, signInWithGoogle } from '../../src/auth/socialAuth';
+import { BackButton } from '../../src/components/BackButton';
+import { Screen } from '../../src/components/Screen';
 import { clearLocalData } from '../../src/db/database';
 import { useProfile } from '../../src/hooks/useProfile';
+import { useSocialLink } from '../../src/hooks/useSocialLink';
 import { useSubscription } from '../../src/hooks/useSubscription';
 
 const LANGUAGES = [
   { code: 'tr', label: 'Türkçe' },
   { code: 'en', label: 'English' },
+  { code: 'de', label: 'Deutsch' },
+  { code: 'fr', label: 'Français' },
+  { code: 'es', label: 'Español' },
 ] as const;
 
 export default function SettingsScreen() {
@@ -24,32 +29,14 @@ export default function SettingsScreen() {
   const queryClient = useQueryClient();
   const { data: subscription } = useSubscription();
   const { data: profile } = useProfile();
+  const { appleAvailable, googleConfigured, linkingProvider, hasError: linkError, handleSignIn } = useSocialLink();
   const [userId, setUserId] = useState<string | null>(null);
-  const [appleAvailable, setAppleAvailable] = useState(false);
-  const [linkingProvider, setLinkingProvider] = useState<'apple' | 'google' | null>(null);
-  const [linkError, setLinkError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isGrantingPremium, setIsGrantingPremium] = useState(false);
 
   useEffect(() => {
     void ensureUserId().then(setUserId);
-    void isAppleSignInAvailable().then(setAppleAvailable);
   }, []);
-
-  const handleSignIn = async (provider: 'apple' | 'google') => {
-    setLinkingProvider(provider);
-    setLinkError(null);
-    try {
-      const result = provider === 'apple' ? await signInWithApple() : await signInWithGoogle();
-      if (result) {
-        await queryClient.invalidateQueries({ queryKey: ['profile'] });
-      }
-    } catch {
-      setLinkError(t('settings.linkError'));
-    } finally {
-      setLinkingProvider(null);
-    }
-  };
 
   const performDeleteAccount = async () => {
     setIsDeleting(true);
@@ -86,7 +73,9 @@ export default function SettingsScreen() {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <Screen style={styles.container}>
+    <ScrollView contentContainerStyle={styles.content}>
+      <BackButton />
       <Text style={styles.title}>{t('settings.title')}</Text>
 
       <Text style={styles.sectionTitle}>{t('settings.languageSection')}</Text>
@@ -158,7 +147,7 @@ export default function SettingsScreen() {
         <View style={styles.row}>
           <Text style={styles.rowLabel}>{t('settings.googleLinked')}</Text>
         </View>
-      ) : isGoogleSignInConfigured() ? (
+      ) : googleConfigured ? (
         <Pressable
           style={styles.signInButton}
           onPress={() => void handleSignIn('google')}
@@ -174,7 +163,7 @@ export default function SettingsScreen() {
         <Text style={styles.hintText}>{t('settings.googleNotConfigured')}</Text>
       )}
 
-      {linkError && <Text style={styles.errorText}>{linkError}</Text>}
+      {linkError && <Text style={styles.errorText}>{t('settings.linkError')}</Text>}
 
       <Pressable style={styles.navRow} onPress={() => router.push('/settings/data-sources')}>
         <Text style={styles.navRowText}>{t('settings.dataSourcesLink')}</Text>
@@ -200,17 +189,17 @@ export default function SettingsScreen() {
         {t('settings.version', { version: Constants.expoConfig?.version ?? '—' })}
       </Text>
     </ScrollView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#FFFFFF',
   },
   content: {
     paddingHorizontal: 20,
-    paddingTop: 60,
+    paddingTop: 16,
     paddingBottom: 40,
   },
   title: {
@@ -228,6 +217,7 @@ const styles = StyleSheet.create({
   },
   languageRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 8,
   },
   languageButton: {

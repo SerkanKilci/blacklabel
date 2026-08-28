@@ -10,7 +10,8 @@
     "manualEntryHint": "Type the number printed under the barcode.",
     "manualEntryPlaceholder": "e.g. 8690504010104",
     "manualEntryInvalid": "Enter a valid 8, 12, 13, or 14-digit barcode.",
-    "manualEntrySubmit": "Look up"
+    "manualEntrySubmit": "Look up",
+    "restartCameraButton": "Restart camera"
   },
   "compare": {
     "title": "Compare",
@@ -148,7 +149,9 @@
   "warning": {
     "allergenMessage": "Contains {{allergen}}, which you've flagged as an allergen.",
     "additiveMessage": "Contains {{additive}}, which you chose to avoid.",
-    "dietMessage": "This product doesn't fit your \"{{flag}}\" preference."
+    "dietMessage": "This product doesn't fit your \"{{flag}}\" preference.",
+    "lockedTitle": "⚠️ One of your household profiles has a warning",
+    "lockedMessage": "This product conflicts with an allergen or preference on one of your saved profiles. Upgrade to Premium to see who and why."
   },
   "history": {
     "title": "History",
@@ -181,7 +184,11 @@
       "cancel": "Cancel",
       "deleteConfirmTitle": "Delete profile?",
       "deleteConfirmMessage": "{{name}}'s profile and preferences will be deleted.",
-      "loadError": "Couldn't load profiles."
+      "loadError": "Couldn't load profiles.",
+      "premiumTitle": "Household profiles are a premium feature",
+      "premiumMessage": "Adding a separate profile for each person in your household is available to premium members.",
+      "premiumEditNotice": "You can view this profile, but editing it is available to premium members.",
+      "upgrade": "Upgrade to premium"
     }
   },
   "limits": {
@@ -212,6 +219,9 @@
       "offlineMode": "Offline mode"
     },
     "notConfigured": "Purchases aren't available in this build yet.",
+    "signInRequiredTitle": "Sign in first",
+    "signInRequiredMessage": "Sign in with Apple or Google to secure your premium subscription. That way you won't lose it if you switch phones.",
+    "signInUnavailable": "No supported sign-in method is available on this device.",
     "subscribe": "Subscribe",
     "restore": "Restore purchases",
     "restoring": "Restoring...",

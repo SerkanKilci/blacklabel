@@ -5,6 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { PACKAGE_TYPE, type PurchasesPackage } from 'react-native-purchases';
 
+import { Screen } from '../src/components/Screen';
+import { useProfile } from '../src/hooks/useProfile';
+import { useSocialLink } from '../src/hooks/useSocialLink';
 import { getCurrentOffering, isPurchasesConfigured, purchasePackage, restorePurchases } from '../src/purchases/purchases';
 
 const FEATURE_KEYS = [
@@ -35,9 +38,14 @@ export default function PaywallScreen() {
   const [isRestoring, setIsRestoring] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
 
+  const { data: profile } = useProfile();
+  const { appleAvailable, googleConfigured, linkingProvider, hasError: linkError, handleSignIn } = useSocialLink();
+  const isAccountLinked = Boolean(profile?.hasAppleLink || profile?.hasGoogleLink);
+
   const { data: offering, isLoading } = useQuery({
     queryKey: ['revenuecat-offering'],
     queryFn: getCurrentOffering,
+    enabled: isAccountLinked,
   });
 
   const handlePurchase = async (pkg: PurchasesPackage) => {
@@ -69,7 +77,8 @@ export default function PaywallScreen() {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <Screen style={styles.container}>
+    <ScrollView contentContainerStyle={styles.content}>
       <Text style={styles.title}>{t('paywall.title')}</Text>
       <Text style={styles.subtitle}>{t('paywall.subtitle')}</Text>
 
@@ -82,7 +91,46 @@ export default function PaywallScreen() {
       ))}
 
       <View style={styles.packagesSection}>
-        {!isPurchasesConfigured() ? (
+        {!isAccountLinked ? (
+          <View style={styles.signInGate}>
+            <Text style={styles.signInGateTitle}>{t('paywall.signInRequiredTitle')}</Text>
+            <Text style={styles.signInGateText}>{t('paywall.signInRequiredMessage')}</Text>
+
+            {appleAvailable && (
+              <Pressable
+                style={styles.signInButton}
+                onPress={() => void handleSignIn('apple')}
+                disabled={linkingProvider !== null}
+              >
+                {linkingProvider === 'apple' ? (
+                  <ActivityIndicator size="small" color="#1A1A1A" />
+                ) : (
+                  <Text style={styles.signInButtonText}>{t('settings.signInWithApple')}</Text>
+                )}
+              </Pressable>
+            )}
+
+            {googleConfigured && (
+              <Pressable
+                style={styles.signInButton}
+                onPress={() => void handleSignIn('google')}
+                disabled={linkingProvider !== null}
+              >
+                {linkingProvider === 'google' ? (
+                  <ActivityIndicator size="small" color="#1A1A1A" />
+                ) : (
+                  <Text style={styles.signInButtonText}>{t('settings.signInWithGoogle')}</Text>
+                )}
+              </Pressable>
+            )}
+
+            {!appleAvailable && !googleConfigured && (
+              <Text style={styles.notConfiguredText}>{t('paywall.signInUnavailable')}</Text>
+            )}
+
+            {linkError && <Text style={styles.feedbackText}>{t('settings.linkError')}</Text>}
+          </View>
+        ) : !isPurchasesConfigured() ? (
           <Text style={styles.notConfiguredText}>{t('paywall.notConfigured')}</Text>
         ) : isLoading ? (
           <ActivityIndicator size="large" color="#1A1A1A" />
@@ -107,7 +155,7 @@ export default function PaywallScreen() {
         )}
       </View>
 
-      {isPurchasesConfigured() && (
+      {isAccountLinked && isPurchasesConfigured() && (
         <>
           <Text style={styles.legalNoticeText}>{t('paywall.autoRenewalNotice')}</Text>
 
@@ -131,17 +179,17 @@ export default function PaywallScreen() {
         <Text style={styles.closeButtonText}>{t('paywall.close')}</Text>
       </Pressable>
     </ScrollView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#FFFFFF',
   },
   content: {
     paddingHorizontal: 24,
-    paddingTop: 60,
+    paddingTop: 16,
     paddingBottom: 40,
   },
   title: {
@@ -180,6 +228,37 @@ const styles = StyleSheet.create({
   },
   packagesSection: {
     marginTop: 32,
+  },
+  signInGate: {
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 12,
+    padding: 20,
+  },
+  signInGateTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#1A1A1A',
+  },
+  signInGateText: {
+    fontSize: 13,
+    color: '#6B6B6B',
+    marginTop: 6,
+    marginBottom: 16,
+    lineHeight: 18,
+  },
+  signInButton: {
+    borderWidth: 1,
+    borderColor: '#1A1A1A',
+    borderRadius: 12,
+    paddingVertical: 12,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  signInButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1A1A1A',
   },
   packageButton: {
     borderWidth: 1,

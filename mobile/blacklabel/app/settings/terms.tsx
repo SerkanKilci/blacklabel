@@ -1,30 +1,35 @@
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { BackButton } from '../../src/components/BackButton';
+import { Screen } from '../../src/components/Screen';
+
 export default function TermsScreen() {
   const { t } = useTranslation();
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>{t('terms.title')}</Text>
-      <Text style={styles.body}>{t('terms.body')}</Text>
+    <Screen style={styles.container}>
+      <ScrollView contentContainerStyle={styles.content}>
+        <BackButton />
+        <Text style={styles.title}>{t('terms.title')}</Text>
+        <Text style={styles.body}>{t('terms.body')}</Text>
 
-      <View style={styles.contactSection}>
-        <Text style={styles.contactLabel}>{t('terms.contactLabel')}</Text>
-        <Text style={styles.contactValue}>legal@blacklabel.app</Text>
-      </View>
-    </ScrollView>
+        <View style={styles.contactSection}>
+          <Text style={styles.contactLabel}>{t('terms.contactLabel')}</Text>
+          <Text style={styles.contactValue}>legal@blacklabel.app</Text>
+        </View>
+      </ScrollView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#FFFFFF',
   },
   content: {
     paddingHorizontal: 20,
-    paddingTop: 60,
+    paddingTop: 16,
     paddingBottom: 40,
   },
   title: {

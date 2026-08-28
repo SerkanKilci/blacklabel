@@ -11,6 +11,8 @@ import {
   View,
 } from 'react-native';
 
+import { BackButton } from '../src/components/BackButton';
+import { Screen } from '../src/components/Screen';
 import { getCachedProductName } from '../src/db/productCache';
 import { getAllScans, type LocalScan } from '../src/db/scanHistory';
 import { syncPendingScans } from '../src/sync/syncScans';
@@ -97,8 +99,9 @@ export default function HistoryScreen() {
   }, [scans, query, t]);
 
   return (
-    <View style={styles.container}>
+    <Screen style={styles.container}>
       <View style={styles.header}>
+        <BackButton />
         <Text style={styles.headerTitle}>{t('history.title')}</Text>
         <TextInput
           style={styles.searchInput}
@@ -132,18 +135,17 @@ export default function HistoryScreen() {
         )}
         contentContainerStyle={sections.length === 0 && styles.emptyContainer}
       />
-    </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#FFFFFF',
   },
   header: {
     paddingHorizontal: 20,
-    paddingTop: 60,
+    paddingTop: 8,
     paddingBottom: 16,
   },
   headerTitle: {

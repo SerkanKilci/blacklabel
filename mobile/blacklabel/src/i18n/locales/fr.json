@@ -1,0 +1,296 @@
+{
+  "scanner": {
+    "permissionTitle": "Accès à l'appareil photo requis",
+    "permissionMessage": "Blacklabel a besoin d'accéder à l'appareil photo pour scanner les codes-barres des produits.",
+    "grantButton": "Autoriser l'appareil photo",
+    "targetHint": "Aligne le code-barres dans le cadre",
+    "recentScans": "Scans récents",
+    "manualEntryButton": "Saisir le code-barres manuellement",
+    "manualEntryTitle": "Saisir le code-barres manuellement",
+    "manualEntryHint": "Saisis le numéro imprimé sous le code-barres.",
+    "manualEntryPlaceholder": "ex. 8690504010104",
+    "manualEntryInvalid": "Saisis un code-barres valide à 8, 12, 13 ou 14 chiffres.",
+    "manualEntrySubmit": "Rechercher",
+    "restartCameraButton": "Redémarrer la caméra"
+  },
+  "compare": {
+    "title": "Comparer",
+    "hint": "Scanne jusqu'à 5 produits pour comparer leurs scores.",
+    "emptyHint": "Scanne un produit pour commencer la comparaison.",
+    "maxReached": "Tu peux comparer jusqu'à 5 produits à la fois.",
+    "clearAll": "Tout effacer",
+    "removeItem": "Retirer",
+    "bestChoice": "Meilleur choix",
+    "bestForYou": "Meilleur choix pour toi : {{name}}",
+    "noSafeChoice": "Aucun ne convient à tout ton foyer — consulte les avertissements par profil.",
+    "loadingItem": "Recherche en cours...",
+    "notFoundItem": "Introuvable",
+    "premiumTitle": "Le mode Comparaison est une fonctionnalité Premium",
+    "premiumMessage": "Scanne plusieurs produits et compare leurs scores côte à côte, triés du meilleur au moins bon — idéal pour choisir directement en rayon.",
+    "upgrade": "Passer à Premium",
+    "categoryLabels": {
+      "sugar": "Sucre",
+      "saturatedFat": "Acides gras saturés",
+      "salt": "Sel",
+      "additives": "Additifs",
+      "allergen": "Allergènes"
+    },
+    "levels": {
+      "sugar": { "Good": "Faible", "Medium": "Moyen", "Bad": "Élevé" },
+      "saturatedFat": { "Good": "Faible", "Medium": "Moyen", "Bad": "Élevé" },
+      "salt": { "Good": "Faible", "Medium": "Moyen", "Bad": "Élevé" },
+      "additives": { "Good": "Peu", "Medium": "Quelques-uns", "Bad": "Beaucoup" }
+    },
+    "allergenCompatible": "Correspond à ton profil",
+    "allergenConflict": "En conflit avec ton profil",
+    "summaryTitle": "Résumé de la comparaison",
+    "summaryWinner": "{{names}} est meilleur",
+    "summarySimilar": "Similaire",
+    "summaryAllIncompatible": "Aucun n'est compatible",
+    "formulationDisclaimer": "Cette comparaison se base sur les informations d'ingrédients indiquées par les produits. Les formulations peuvent évoluer avec le temps — vérifie toujours l'étiquette actuelle du produit pour en être sûr."
+  },
+  "result": {
+    "loading": "Recherche du produit...",
+    "errorTitle": "Une erreur s'est produite",
+    "errorMessage": "Impossible de récupérer les données du produit. Vérifie ta connexion et réessaie.",
+    "retry": "Réessayer",
+    "backToScanner": "Retour au scanner",
+    "notFoundTitle": "Ce produit n'est pas encore dans notre base de données",
+    "notFoundMessage": "Nous n'avons pas trouvé ce code-barres dans notre base de données. Réessaie bientôt, nous ajoutons régulièrement de nouveaux produits.",
+    "scoreUnavailable": "Données insuffisantes",
+    "tabs": {
+      "additives": "Additifs",
+      "nutrition": "Nutrition",
+      "ingredients": "Ingrédients"
+    },
+    "noAdditives": "Aucun additif détecté dans ce produit.",
+    "noNutriments": "Les informations nutritionnelles ne sont pas disponibles.",
+    "noIngredients": "Les informations sur les ingrédients ne sont pas disponibles.",
+    "allergensTitle": "Allergènes",
+    "attribution": "Propulsé par Open Food Facts",
+    "dataQuality": {
+      "complete": "Données complètes",
+      "partial": "Certaines données manquent",
+      "unverified": "Contribution utilisateur non vérifiée"
+    },
+    "riskLevel": {
+      "0": "Aucun risque connu",
+      "1": "Limité",
+      "2": "Modéré",
+      "3": "Élevé"
+    },
+    "nutriments": {
+      "energyKcal100g": "Énergie",
+      "fat100g": "Matières grasses",
+      "saturatedFat100g": "Acides gras saturés",
+      "carbohydrates100g": "Glucides",
+      "sugars100g": "Sucres",
+      "fiber100g": "Fibres",
+      "proteins100g": "Protéines",
+      "salt100g": "Sel",
+      "per100g": "pour 100 g"
+    }
+  },
+  "common": {
+    "medicalDisclaimer": "Cette application ne fournit pas de conseils médicaux et ne remplace pas un professionnel de la nutrition.",
+    "allergenDisclaimer": "Les informations sur les allergènes peuvent être incomplètes ou inexactes ; en cas d'allergie sévère, vérifie toujours l'étiquette du produit lui-même."
+  },
+  "contribute": {
+    "stepIndicator": "Étape {{current}} sur {{total}}",
+    "steps": {
+      "front": {
+        "title": "Face avant de l'emballage",
+        "instruction": "Cadre la face avant de l'emballage pour que le nom du produit soit lisible."
+      },
+      "ingredients": {
+        "title": "Liste des ingrédients",
+        "instruction": "Cadre la liste des ingrédients pour que le texte soit net et entièrement visible."
+      },
+      "nutrition": {
+        "title": "Tableau nutritionnel",
+        "instruction": "Cadre le tableau nutritionnel pour que toutes les valeurs soient lisibles."
+      }
+    },
+    "capture": "Prendre une photo",
+    "retake": "Reprendre",
+    "confirmAndContinue": "Utiliser cette photo",
+    "submit": "Envoyer",
+    "submitting": "Analyse des photos...",
+    "cancel": "Annuler",
+    "errorTitle": "Impossible de traiter les photos",
+    "errorMessage": "Nous n'avons pas pu lire l'étiquette sur ces photos. Tu peux réessayer.",
+    "retry": "Réessayer"
+  },
+  "allergens": {
+    "gluten": "Gluten (blé, seigle, orge, avoine)",
+    "crustaceans": "Crustacés",
+    "eggs": "Œufs",
+    "fish": "Poisson",
+    "peanuts": "Arachides",
+    "soybeans": "Soja",
+    "milk": "Lait",
+    "nuts": "Fruits à coque",
+    "celery": "Céleri",
+    "mustard": "Moutarde",
+    "sesame-seeds": "Graines de sésame",
+    "sulphur-dioxide-and-sulphites": "Anhydride sulfureux et sulfites",
+    "lupin": "Lupin",
+    "molluscs": "Mollusques"
+  },
+  "dietFlags": {
+    "vegan": "Végétalien",
+    "vegetarian": "Végétarien",
+    "glutenFree": "Sans gluten",
+    "lactoseFree": "Sans lactose",
+    "noPalmOil": "Sans huile de palme",
+    "lowSugar": "Faible en sucre",
+    "lowSalt": "Faible en sel"
+  },
+  "warning": {
+    "allergenMessage": "Contient {{allergen}}, que tu as signalé comme allergène.",
+    "additiveMessage": "Contient {{additive}}, que tu as choisi d'éviter.",
+    "dietMessage": "Ce produit ne correspond pas à ta préférence « {{flag}} ».",
+    "lockedTitle": "⚠️ Un de tes profils du foyer a un avertissement",
+    "lockedMessage": "Ce produit est en conflit avec un allergène ou une préférence de l'un de tes profils enregistrés. Passe à Premium pour voir qui et pourquoi."
+  },
+  "history": {
+    "title": "Historique",
+    "empty": "Aucun scan pour l'instant — commence à scanner pour créer ton historique.",
+    "noResults": "Aucun scan ne correspond à ta recherche.",
+    "searchPlaceholder": "Rechercher par code-barres ou nom de produit",
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "syncPending": "Pas encore synchronisé"
+  },
+  "preferences": {
+    "title": "Préférences",
+    "allergensSection": "Allergènes à signaler",
+    "dietSection": "Alimentation",
+    "avoidedAdditivesSection": "Additifs à éviter",
+    "searchAdditivesPlaceholder": "Rechercher des additifs",
+    "noAdditivesFound": "Aucun additif ne correspond à ta recherche.",
+    "save": "Enregistrer",
+    "saving": "Enregistrement...",
+    "saved": "Préférences enregistrées",
+    "loadError": "Impossible de charger tes préférences.",
+    "saveError": "Impossible d'enregistrer tes préférences. Réessaie.",
+    "profiles": {
+      "title": "Profils du foyer",
+      "subtitle": "Définis des préférences d'allergènes et alimentaires distinctes pour chaque personne de ton foyer — un seul scan, un résultat différent pour chacun.",
+      "empty": "Tu n'as pas encore ajouté de profil.",
+      "addPlaceholder": "Nom du profil (ex. Alex)",
+      "add": "Ajouter",
+      "delete": "Supprimer",
+      "cancel": "Annuler",
+      "deleteConfirmTitle": "Supprimer le profil ?",
+      "deleteConfirmMessage": "Le profil et les préférences de {{name}} seront supprimés.",
+      "loadError": "Impossible de charger les profils.",
+      "premiumTitle": "Les profils du foyer sont une fonctionnalité Premium",
+      "premiumMessage": "Ajouter un profil distinct pour chaque personne de ton foyer est réservé aux membres Premium.",
+      "premiumEditNotice": "Tu peux consulter ce profil, mais sa modification est réservée aux membres Premium.",
+      "upgrade": "Passer à Premium"
+    }
+  },
+  "limits": {
+    "scanTitle": "Limite quotidienne de scans atteinte",
+    "scanMessage": "Les comptes gratuits ont droit à 10 scans par jour. Passe à Premium pour des scans illimités.",
+    "contributeTitle": "Limite quotidienne d'analyses atteinte",
+    "contributeMessage": "Les comptes gratuits ont droit à 2 analyses d'étiquettes par jour. Passe à Premium pour des analyses illimitées.",
+    "upgrade": "Passer à Premium"
+  },
+  "alternatives": {
+    "title": "Meilleures alternatives",
+    "premiumTitle": "Découvrir de meilleures alternatives",
+    "premiumMessage": "Les membres Premium voient jusqu'à 5 produits mieux notés dans la même catégorie.",
+    "upgrade": "Passer à Premium",
+    "empty": "Aucune alternative mieux notée trouvée dans cette catégorie."
+  },
+  "paywall": {
+    "title": "Blacklabel Premium",
+    "subtitle": "Débloque toutes les informations derrière chaque scan.",
+    "featuresTitle": "Ce que tu obtiens",
+    "feature": {
+      "unlimitedScans": "Scans de codes-barres illimités",
+      "personalWarnings": "Avertissements personnalisés sur les allergènes et préférences",
+      "compareMode": "Comparer jusqu'à 5 produits côte à côte",
+      "unlimitedAnalysis": "Analyse illimitée de photos d'étiquettes",
+      "alternatives": "Meilleures suggestions de produits alternatifs",
+      "unlimitedHistory": "Historique de scans illimité avec statistiques",
+      "offlineMode": "Mode hors ligne"
+    },
+    "notConfigured": "Les achats ne sont pas encore disponibles dans cette version.",
+    "signInRequiredTitle": "Connecte-toi d'abord",
+    "signInRequiredMessage": "Connecte-toi avec Apple ou Google pour sécuriser ton abonnement Premium. Ainsi, tu ne le perdras pas si tu changes de téléphone.",
+    "signInUnavailable": "Aucune méthode de connexion prise en charge n'est disponible sur cet appareil.",
+    "subscribe": "S'abonner",
+    "restore": "Restaurer les achats",
+    "restoring": "Restauration en cours...",
+    "restoreSuccess": "Achats restaurés.",
+    "purchaseError": "Un problème est survenu lors de l'achat. Veuillez réessayer.",
+    "close": "Fermer",
+    "duration": {
+      "lifetime": "Achat unique",
+      "annual": "Facturation annuelle",
+      "sixMonth": "Facturation tous les 6 mois",
+      "threeMonth": "Facturation tous les 3 mois",
+      "twoMonth": "Facturation tous les 2 mois",
+      "monthly": "Facturation mensuelle",
+      "weekly": "Facturation hebdomadaire"
+    },
+    "autoRenewalNotice": "Les abonnements se renouvellent automatiquement sauf annulation au moins 24 heures avant la fin de la période en cours. Gère ou annule à tout moment dans les paramètres de ton compte Apple ID ou Google Play — nous ne pouvons pas l'annuler à ta place. Le paiement est débité de ton compte du store à la confirmation de l'achat.",
+    "legalIntro": "En t'abonnant, tu acceptes nos :"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "languageSection": "Langue",
+    "accountSection": "Compte",
+    "deviceIdLabel": "ID de l'appareil",
+    "premiumActive": "Premium actif",
+    "premiumInactive": "Formule gratuite",
+    "managePremium": "Gérer Premium",
+    "dataSourcesLink": "Sources de données",
+    "privacyLink": "Politique de confidentialité",
+    "version": "Version {{version}}",
+    "linkedAccountsSection": "Comptes liés",
+    "linkedAccountsHint": "Lie un compte pour conserver ton historique et tes préférences si tu changes d'appareil.",
+    "appleLinked": "Connecté avec Apple",
+    "googleLinked": "Connecté avec Google",
+    "signInWithApple": "Se connecter avec Apple",
+    "signInWithGoogle": "Se connecter avec Google",
+    "linkingInProgress": "Connexion en cours…",
+    "linkError": "La connexion a échoué. Veuillez réessayer.",
+    "googleNotConfigured": "La connexion Google n'est pas encore configurée pour cette version.",
+    "termsLink": "Conditions d'utilisation",
+    "dangerZoneSection": "Zone de danger",
+    "deleteAccountButton": "Supprimer mon compte",
+    "deleteAccountHint": "Supprime définitivement ton historique de scans, tes préférences et tes contributions. Cette action est irréversible.",
+    "deleteAccountConfirmTitle": "Supprimer ton compte ?",
+    "deleteAccountConfirmMessage": "Cette action supprime définitivement ton historique de scans, tes préférences et tes contributions. Cette action est irréversible.",
+    "deleteAccountConfirmButton": "Supprimer",
+    "cancel": "Annuler",
+    "deleteAccountErrorTitle": "Une erreur s'est produite",
+    "deleteAccountError": "Impossible de supprimer ton compte. Veuillez réessayer.",
+    "debugGrantPremium": "M'accorder Premium (développement uniquement)",
+    "debugGrantPremiumError": "Impossible d'accorder Premium. Cela ne fonctionne qu'avec un backend de développement."
+  },
+  "dataSources": {
+    "title": "Sources de données",
+    "offTitle": "Open Food Facts",
+    "offBody": "Les noms de produits, marques, ingrédients, tableaux nutritionnels et images proviennent d'Open Food Facts, une base de données ouverte et gratuite de produits alimentaires du monde entier. Les données d'Open Food Facts sont sous licence Open Database License (ODbL) — tu es libre de les partager et de les adapter, à condition de créditer Open Food Facts et de partager à l'identique.",
+    "offAttribution": "Propulsé par Open Food Facts (openfoodfacts.org)",
+    "visionTitle": "Analyse de photos d'étiquettes",
+    "visionBody": "Lorsque tu photographies un produit pour aider à l'ajouter à la base de données, les images sont envoyées à un service tiers de reconnaissance visuelle pour en extraire le texte. Cela ne se produit que lorsque tu choisis activement de contribuer un produit.",
+    "revenueCatTitle": "Abonnements",
+    "revenueCatBody": "Les abonnements Premium sont gérés via RevenueCat, qui nous transmet le statut d'achat et de droits. Les informations de paiement sont traitées par l'App Store ou Google Play, pas par nous."
+  },
+  "privacy": {
+    "title": "Confidentialité",
+    "body": "Blacklabel scanne les codes-barres des produits alimentaires emballés et affiche un score de 0 à 100 basé sur les ingrédients, les additifs et la nutrition. L'application ne fournit pas de conseils médicaux.\n\nLors du premier lancement, l'application crée un compte anonyme lié à un identifiant aléatoire stocké sur ton appareil — pas ton nom ni ton adresse e-mail, sauf si tu choisis de lier un compte Apple ou Google.\n\nNous enregistrons les codes-barres que tu scannes et à quel moment, afin que tu puisses consulter ton propre historique. Si tu contribues une photo de produit, ces images sont envoyées à un service tiers de reconnaissance visuelle pour en extraire le texte. Tes préférences d'allergènes et alimentaires sont enregistrées pour t'afficher des avertissements personnalisés. Si tu t'abonnes à Premium, RevenueCat partage avec nous le statut de ton abonnement — nous ne voyons jamais tes informations de paiement.\n\nNous ne vendons pas tes données et ne les utilisons pas à des fins publicitaires. Tes données sont conservées tant que ton compte existe. Tu peux supprimer définitivement ton compte et toutes les données associées à tout moment depuis les paramètres, ou nous contacter en indiquant l'ID de ton appareil (ci-dessous).\n\nCette application ne s'adresse pas aux enfants.",
+    "contactLabel": "Questions ou demandes de données"
+  },
+  "terms": {
+    "title": "Conditions d'utilisation",
+    "body": "En utilisant Blacklabel, tu acceptes ces conditions.\n\nBlacklabel affiche un score de 0 à 100 pour les aliments emballés, basé sur des données publiques d'ingrédients, d'additifs et de nutrition. Ce score ne constitue pas un avis médical, un diagnostic ou une recommandation de traitement d'une affection — consulte toujours un professionnel qualifié pour les décisions de santé.\n\nLes données produits proviennent principalement d'Open Food Facts, une base de données gérée par la communauté. Nous ne pouvons garantir leur exactitude ni leur exhaustivité — vérifie toujours l'emballage officiel d'un produit avant de te fier aux informations affichées ici.\n\nSi tu contribues une photo de produit, tu confirmes détenir le droit de la partager et nous accordes une licence pour l'utiliser afin d'en extraire et publier les informations produit qu'elle contient.\n\nLes abonnements Premium se renouvellent automatiquement jusqu'à annulation. Gère ou annule ton abonnement dans les paramètres de ton compte Apple ID ou Google Play — nous ne pouvons pas l'annuler en ton nom, et les prix ainsi que la facturation sont fixés et traités par l'App Store ou Google Play, pas par nous.\n\nTu peux supprimer ton compte à tout moment depuis les paramètres, ce qui supprime définitivement ton historique de scans, tes préférences et tes contributions.\n\nBlacklabel est fourni « tel quel », sans garantie d'aucune sorte. Nous ne sommes pas responsables des décisions prises sur la base des informations fournies dans l'application.\n\nNous pouvons mettre à jour ces conditions à mesure que l'application évolue ; continuer à l'utiliser après une modification signifie que tu acceptes la mise à jour.",
+    "contactLabel": "Questions"
+  }
+}

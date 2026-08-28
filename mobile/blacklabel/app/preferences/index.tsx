@@ -1,14 +1,30 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 
+import { BackButton } from '../../src/components/BackButton';
+import { Screen } from '../../src/components/Screen';
 import { useCreateHouseholdProfile, useDeleteHouseholdProfile, useHouseholdProfiles } from '../../src/hooks/useHouseholdProfiles';
+import { useSubscription } from '../../src/hooks/useSubscription';
 import type { HouseholdProfile } from '../../src/types/preferences';
 
 export default function HouseholdProfilesScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const { data: subscription } = useSubscription();
+  const isPremium = subscription?.isPremium ?? false;
   const { data: profiles, isLoading, isError } = useHouseholdProfiles();
   const createMutation = useCreateHouseholdProfile();
   const deleteMutation = useDeleteHouseholdProfile();
@@ -55,7 +71,10 @@ export default function HouseholdProfilesScreen() {
   }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <Screen style={styles.container}>
+    <KeyboardAvoidingView style={styles.keyboardAvoider} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <BackButton />
       <Text style={styles.title}>{t('preferences.profiles.title')}</Text>
       <Text style={styles.subtitle}>{t('preferences.profiles.subtitle')}</Text>
 
@@ -73,26 +92,40 @@ export default function HouseholdProfilesScreen() {
         </View>
       ))}
 
-      <View style={styles.addRow}>
-        <TextInput
-          style={styles.addInput}
-          placeholder={t('preferences.profiles.addPlaceholder')}
-          value={newName}
-          onChangeText={setNewName}
-          onSubmitEditing={handleAdd}
-        />
-        <Pressable style={styles.addButton} onPress={handleAdd} disabled={createMutation.isPending}>
-          <Text style={styles.addButtonText}>{t('preferences.profiles.add')}</Text>
-        </Pressable>
-      </View>
+      {isPremium ? (
+        <View style={styles.addRow}>
+          <TextInput
+            style={styles.addInput}
+            placeholder={t('preferences.profiles.addPlaceholder')}
+            value={newName}
+            onChangeText={setNewName}
+            onSubmitEditing={handleAdd}
+          />
+          <Pressable style={styles.addButton} onPress={handleAdd} disabled={createMutation.isPending}>
+            <Text style={styles.addButtonText}>{t('preferences.profiles.add')}</Text>
+          </Pressable>
+        </View>
+      ) : (
+        <View style={styles.premiumCard}>
+          <Text style={styles.premiumCardTitle}>{t('preferences.profiles.premiumTitle')}</Text>
+          <Text style={styles.premiumCardMessage}>{t('preferences.profiles.premiumMessage')}</Text>
+          <Pressable style={styles.premiumCardButton} onPress={() => router.push('/paywall')}>
+            <Text style={styles.premiumCardButtonText}>{t('preferences.profiles.upgrade')}</Text>
+          </Pressable>
+        </View>
+      )}
     </ScrollView>
+    </KeyboardAvoidingView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#FFFFFF',
+  },
+  keyboardAvoider: {
+    flex: 1,
   },
   centered: {
     flex: 1,
@@ -106,7 +139,7 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: 20,
-    paddingTop: 60,
+    paddingTop: 16,
     paddingBottom: 40,
   },
   title: {
@@ -180,6 +213,36 @@ const styles = StyleSheet.create({
   addButtonText: {
     color: '#FFFFFF',
     fontSize: 14,
+    fontWeight: '600',
+  },
+  premiumCard: {
+    marginTop: 28,
+    padding: 16,
+    borderRadius: 12,
+    backgroundColor: '#F5F5F5',
+  },
+  premiumCardTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#1A1A1A',
+  },
+  premiumCardMessage: {
+    fontSize: 13,
+    color: '#6B6B6B',
+    marginTop: 4,
+    lineHeight: 19,
+  },
+  premiumCardButton: {
+    marginTop: 12,
+    alignSelf: 'flex-start',
+    backgroundColor: '#1A1A1A',
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+  },
+  premiumCardButtonText: {
+    color: '#FFFFFF',
+    fontSize: 13,
     fontWeight: '600',
   },
 });

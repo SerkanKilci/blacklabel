@@ -19,7 +19,7 @@ public class AdditivesController : ControllerBase
     {
         _repository = repository;
     }
-
+            
     [HttpGet]
     public async Task<IActionResult> GetAll(CancellationToken ct)
     {

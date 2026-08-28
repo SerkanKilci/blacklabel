@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { normalizeBarcode } from '../utils/barcode';
 
@@ -33,7 +33,10 @@ export function ManualBarcodeEntryModal({ visible, onClose, onSubmit }: ManualBa
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={handleClose}>
-      <View style={styles.modalBackdrop}>
+      <KeyboardAvoidingView
+        style={styles.modalBackdrop}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
         <View style={styles.modalCard}>
           <Text style={styles.modalTitle}>{t('scanner.manualEntryTitle')}</Text>
           <Text style={styles.modalHint}>{t('scanner.manualEntryHint')}</Text>
@@ -65,7 +68,7 @@ export function ManualBarcodeEntryModal({ visible, onClose, onSubmit }: ManualBa
             </Pressable>
           </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

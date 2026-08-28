@@ -5,6 +5,8 @@ import {
   ActivityIndicator,
   Alert,
   FlatList,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
   StyleSheet,
   Switch,
@@ -13,10 +15,14 @@ import {
   View,
 } from 'react-native';
 
+import { BackButton } from '../../src/components/BackButton';
+import { Screen } from '../../src/components/Screen';
 import { ALLERGEN_CODES } from '../../src/constants/allergens';
 import { useAdditives } from '../../src/hooks/useAdditives';
 import { useDeleteHouseholdProfile, useHouseholdProfiles, useUpdateHouseholdProfile } from '../../src/hooks/useHouseholdProfiles';
+import { useSubscription } from '../../src/hooks/useSubscription';
 import { EMPTY_PROFILE_FORM, type DietFlags, type ProfileFormValues } from '../../src/types/preferences';
+import { getLocalizedAdditiveName } from '../../src/utils/additiveLocalization';
 
 const DIET_FLAG_KEYS: Array<keyof DietFlags> = [
   'vegan',
@@ -32,7 +38,8 @@ export default function EditHouseholdProfileScreen() {
   const { profileId } = useLocalSearchParams<{ profileId: string }>();
   const router = useRouter();
   const { t, i18n } = useTranslation();
-  const isTurkish = i18n.language === 'tr';
+  const { data: subscription } = useSubscription();
+  const isPremium = subscription?.isPremium ?? false;
   const { data: profiles, isLoading, isError } = useHouseholdProfiles();
   const { data: additives } = useAdditives();
   const updateMutation = useUpdateHouseholdProfile();
@@ -57,6 +64,7 @@ export default function EditHouseholdProfileScreen() {
   }, [profile, hasLoadedDraft]);
 
   const toggleAllergen = (code: string) => {
+    if (!isPremium) return;
     setDraft((prev) => ({
       ...prev,
       allergenCodes: prev.allergenCodes.includes(code)
@@ -66,10 +74,12 @@ export default function EditHouseholdProfileScreen() {
   };
 
   const toggleDietFlag = (key: keyof DietFlags) => {
+    if (!isPremium) return;
     setDraft((prev) => ({ ...prev, dietFlags: { ...prev.dietFlags, [key]: !prev.dietFlags[key] } }));
   };
 
   const toggleAvoidedAdditive = (code: string) => {
+    if (!isPremium) return;
     setDraft((prev) => ({
       ...prev,
       avoidedAdditiveCodes: prev.avoidedAdditiveCodes.includes(code)
@@ -101,10 +111,10 @@ export default function EditHouseholdProfileScreen() {
     return additives.filter(
       (additive) =>
         additive.code.toLowerCase().includes(normalizedQuery) ||
-        additive.nameTr.toLowerCase().includes(normalizedQuery) ||
+        getLocalizedAdditiveName(additive, i18n.language).toLowerCase().includes(normalizedQuery) ||
         additive.nameEn.toLowerCase().includes(normalizedQuery),
     );
-  }, [additives, additiveQuery]);
+  }, [additives, additiveQuery, i18n.language]);
 
   if (isLoading) {
     return (
@@ -123,22 +133,38 @@ export default function EditHouseholdProfileScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <Screen style={styles.container}>
+    <KeyboardAvoidingView style={styles.keyboardAvoider} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <FlatList
         data={filteredAdditives}
         keyExtractor={(item) => item.code}
+        keyboardShouldPersistTaps="handled"
         ListHeaderComponent={
           <View>
+            <BackButton />
+            {!isPremium && (
+              <View style={styles.premiumNotice}>
+                <Text style={styles.premiumNoticeTitle}>{t('preferences.profiles.premiumTitle')}</Text>
+                <Text style={styles.premiumNoticeMessage}>{t('preferences.profiles.premiumEditNotice')}</Text>
+              </View>
+            )}
+
             <TextInput
-              style={styles.nameInput}
+              style={[styles.nameInput, !isPremium && styles.disabledField]}
               value={draft.name}
               onChangeText={(name) => setDraft((prev) => ({ ...prev, name }))}
               placeholder={t('preferences.profiles.addPlaceholder')}
+              editable={isPremium}
             />
 
             <Text style={styles.sectionTitle}>{t('preferences.allergensSection')}</Text>
             {ALLERGEN_CODES.map((code) => (
-              <Pressable key={code} style={styles.checkboxRow} onPress={() => toggleAllergen(code)}>
+              <Pressable
+                key={code}
+                style={[styles.checkboxRow, !isPremium && styles.disabledField]}
+                onPress={() => toggleAllergen(code)}
+                disabled={!isPremium}
+              >
                 <View style={[styles.checkbox, draft.allergenCodes.includes(code) && styles.checkboxChecked]} />
                 <Text style={styles.checkboxLabel}>{t(`allergens.${code}`)}</Text>
               </Pressable>
@@ -146,28 +172,33 @@ export default function EditHouseholdProfileScreen() {
 
             <Text style={styles.sectionTitle}>{t('preferences.dietSection')}</Text>
             {DIET_FLAG_KEYS.map((key) => (
-              <View key={key} style={styles.switchRow}>
+              <View key={key} style={[styles.switchRow, !isPremium && styles.disabledField]}>
                 <Text style={styles.checkboxLabel}>{t(`dietFlags.${key}`)}</Text>
-                <Switch value={draft.dietFlags[key]} onValueChange={() => toggleDietFlag(key)} />
+                <Switch value={draft.dietFlags[key]} onValueChange={() => toggleDietFlag(key)} disabled={!isPremium} />
               </View>
             ))}
 
             <Text style={styles.sectionTitle}>{t('preferences.avoidedAdditivesSection')}</Text>
             <TextInput
-              style={styles.searchInput}
+              style={[styles.searchInput, !isPremium && styles.disabledField]}
               placeholder={t('preferences.searchAdditivesPlaceholder')}
               value={additiveQuery}
               onChangeText={setAdditiveQuery}
               autoCapitalize="none"
               autoCorrect={false}
+              editable={isPremium}
             />
           </View>
         }
         renderItem={({ item }) => (
-          <Pressable style={styles.checkboxRow} onPress={() => toggleAvoidedAdditive(item.code)}>
+          <Pressable
+            style={[styles.checkboxRow, !isPremium && styles.disabledField]}
+            onPress={() => toggleAvoidedAdditive(item.code)}
+            disabled={!isPremium}
+          >
             <View style={[styles.checkbox, draft.avoidedAdditiveCodes.includes(item.code) && styles.checkboxChecked]} />
             <Text style={styles.checkboxLabel}>
-              {item.code} — {isTurkish ? item.nameTr : item.nameEn}
+              {item.code} — {getLocalizedAdditiveName(item, i18n.language)}
             </Text>
           </Pressable>
         )}
@@ -183,26 +214,37 @@ export default function EditHouseholdProfileScreen() {
       />
 
       <View style={styles.footer}>
-        {updateMutation.isError && <Text style={styles.errorText}>{t('preferences.saveError')}</Text>}
-        {updateMutation.isSuccess && <Text style={styles.successText}>{t('preferences.saved')}</Text>}
-        <Pressable
-          style={styles.saveButton}
-          onPress={() => updateMutation.mutate({ id: profile.id, values: draft })}
-          disabled={updateMutation.isPending}
-        >
-          <Text style={styles.saveButtonText}>
-            {updateMutation.isPending ? t('preferences.saving') : t('preferences.save')}
-          </Text>
-        </Pressable>
+        {isPremium ? (
+          <>
+            {updateMutation.isError && <Text style={styles.errorText}>{t('preferences.saveError')}</Text>}
+            {updateMutation.isSuccess && <Text style={styles.successText}>{t('preferences.saved')}</Text>}
+            <Pressable
+              style={styles.saveButton}
+              onPress={() => updateMutation.mutate({ id: profile.id, values: draft })}
+              disabled={updateMutation.isPending}
+            >
+              <Text style={styles.saveButtonText}>
+                {updateMutation.isPending ? t('preferences.saving') : t('preferences.save')}
+              </Text>
+            </Pressable>
+          </>
+        ) : (
+          <Pressable style={styles.saveButton} onPress={() => router.push('/paywall')}>
+            <Text style={styles.saveButtonText}>{t('preferences.profiles.upgrade')}</Text>
+          </Pressable>
+        )}
       </View>
-    </View>
+    </KeyboardAvoidingView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#FFFFFF',
+  },
+  keyboardAvoider: {
+    flex: 1,
   },
   centered: {
     flex: 1,
@@ -216,7 +258,7 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingHorizontal: 20,
-    paddingTop: 60,
+    paddingTop: 16,
     paddingBottom: 20,
   },
   nameInput: {
@@ -316,5 +358,25 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 8,
     textAlign: 'center',
+  },
+  premiumNotice: {
+    marginBottom: 20,
+    padding: 14,
+    borderRadius: 12,
+    backgroundColor: '#F5F5F5',
+  },
+  premiumNoticeTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#1A1A1A',
+  },
+  premiumNoticeMessage: {
+    fontSize: 12,
+    color: '#6B6B6B',
+    marginTop: 4,
+    lineHeight: 18,
+  },
+  disabledField: {
+    opacity: 0.45,
   },
 });
