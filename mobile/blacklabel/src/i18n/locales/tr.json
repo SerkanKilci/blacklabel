@@ -151,7 +151,9 @@
     "additiveMessage": "{{additive}} içeriyor — kaçınmak istediğini belirtmiştin.",
     "dietMessage": "Bu ürün \"{{flag}}\" tercihine uymuyor.",
     "lockedTitle": "⚠️ Hane profillerinden biri için uyarı var",
-    "lockedMessage": "Bu ürün, kaydettiğin profillerden birinin alerjen veya tercihleriyle çelişiyor. Kimin ve neden olduğunu görmek için Premium'a geç."
+    "lockedMessage": "Bu ürün, kaydettiğin profillerden birinin alerjen veya tercihleriyle çelişiyor. Kimin ve neden olduğunu görmek için Premium'a geç.",
+    "incompleteDataTitle": "⚠️ Bu ürünün verisi eksik",
+    "incompleteDataMessage": "İçindekiler listesi eksik olduğu için alerjen ve katkı maddesi kontrolü tam olmayabilir. Uyarı çıkmaması, bu ürünün güvenli olduğu anlamına gelmez — satın almadan önce mutlaka ambalajı kontrol et."
   },
   "history": {
     "title": "Geçmiş",
@@ -248,6 +250,10 @@
     "premiumActive": "Premium aktif",
     "premiumInactive": "Ücretsiz plan",
     "managePremium": "Premium'u yönet",
+    "redeemCodeLink": "Bir kodun mu var?",
+    "redeemCodePlaceholder": "Kod",
+    "redeemCodeSubmit": "Kullan",
+    "redeemCodeError": "Kod geçersiz. Lütfen tekrar deneyin.",
     "dataSourcesLink": "Veri kaynakları",
     "privacyLink": "Gizlilik politikası",
     "version": "Sürüm {{version}}",
@@ -285,12 +291,10 @@
   },
   "privacy": {
     "title": "Gizlilik",
-    "body": "Blacklabel, paketli gıda ürünlerinin barkodlarını tarar ve içindekiler, katkı maddeleri ve besin değerlerine dayalı 0–100 arası bir skor gösterir. Tıbbi tavsiye vermez.\n\nİlk açılışta, uygulama cihazında saklanan rastgele bir kimlikle ilişkili anonim bir hesap oluşturur — Apple veya Google hesabı bağlamayı seçmediğin sürece bu, adın veya e-postan değildir.\n\nKendi geçmişini görebilmen için taradığın barkodları ve zamanlarını saklarız. Bir ürün fotoğrafı katkısında bulunursan, bu görseller yüklenir ve metin çıkarımı için üçüncü taraf bir görsel analiz servisine gönderilir. Alerjen ve diyet tercihlerin, sana kişisel uyarılar gösterebilmek için saklanır. Premium'a abone olursan, RevenueCat abonelik durumunu bizimle paylaşır — ödeme bilgilerini asla görmeyiz.\n\nVerilerini satmayız veya reklam amaçlı kullanmayız. Verilerin hesabın var olduğu sürece saklanır. Hesabını ve ilişkili tüm verilerini istediğin zaman Ayarlar'dan kalıcı olarak silebilir, ya da aşağıdaki cihaz kimliğinle bize ulaşabilirsin.\n\nBu uygulama çocuklara yönelik değildir.",
-    "contactLabel": "Sorular veya veri talepleri"
+    "body": "Blacklabel, paketli gıda ürünlerinin barkodlarını tarar ve içindekiler, katkı maddeleri ve besin değerlerine dayalı 0–100 arası bir skor gösterir. Tıbbi tavsiye vermez.\n\nİlk açılışta, uygulama cihazında saklanan rastgele bir kimlikle ilişkili anonim bir hesap oluşturur — Apple veya Google hesabı bağlamayı seçmediğin sürece bu, adın veya e-postan değildir.\n\nKendi geçmişini görebilmen için taradığın barkodları ve zamanlarını saklarız. Bir ürün fotoğrafı katkısında bulunursan, bu görseller yüklenir ve metin çıkarımı için üçüncü taraf bir görsel analiz servisine gönderilir. Alerjen ve diyet tercihlerin, sana kişisel uyarılar gösterebilmek için saklanır. Premium'a abone olursan, RevenueCat abonelik durumunu bizimle paylaşır — ödeme bilgilerini asla görmeyiz.\n\nVerilerini satmayız veya reklam amaçlı kullanmayız. Verilerin hesabın var olduğu sürece saklanır. Hesabını ve ilişkili tüm verilerini istediğin zaman Ayarlar'dan kalıcı olarak silebilirsin.\n\nBu uygulama çocuklara yönelik değildir."
   },
   "terms": {
     "title": "Kullanım koşulları",
-    "body": "Blacklabel'ı kullanarak bu koşulları kabul etmiş olursun.\n\nBlacklabel, kamuya açık içindekiler, katkı maddesi ve besin değeri verilerine dayanarak paketli gıdalar için 0–100 arası bir skor gösterir. Bu skor tıbbi tavsiye, tanı veya herhangi bir durumun tedavisine yönelik bir öneri değildir — sağlıkla ilgili kararlar için her zaman uzman bir sağlık profesyoneline danış.\n\nÜrün verileri büyük ölçüde topluluk tarafından yönetilen bir veritabanı olan Open Food Facts'ten gelir. Doğruluğunu veya eksiksizliğini garanti edemeyiz; burada gösterilen bilgilere güvenmeden önce her zaman ürünün resmi ambalajını kontrol et.\n\nBir ürün fotoğrafı katkısında bulunursan, bu görseli paylaşma hakkına sahip olduğunu onaylamış ve içerdiği ürün bilgisini çıkarmamız ve yayınlamamız için bize lisans vermiş olursun.\n\nPremium abonelikler iptal edilene kadar otomatik olarak yenilenir. Aboneliğini Apple ID veya Google Play hesap ayarlarından yönetebilir veya iptal edebilirsin — bunu senin adına yapamayız; fiyatlandırma ve faturalandırma App Store veya Google Play tarafından belirlenir ve işlenir, bizim tarafımızdan değil.\n\nHesabını istediğin zaman Ayarlar'dan silebilirsin; bu işlem tarama geçmişini, tercihlerini ve katkılarını kalıcı olarak kaldırır.\n\nBlacklabel \"olduğu gibi\", herhangi bir garanti olmaksızın sunulur. Uygulamadaki bilgilere dayanarak alınan kararlardan sorumlu değiliz.\n\nUygulama değiştikçe bu koşulları güncelleyebiliriz; bir güncellemeden sonra kullanmaya devam etmen, güncellemeyi kabul ettiğin anlamına gelir.",
-    "contactLabel": "Sorular"
+    "body": "Blacklabel'ı kullanarak bu koşulları kabul etmiş olursun.\n\nBlacklabel, kamuya açık içindekiler, katkı maddesi ve besin değeri verilerine dayanarak paketli gıdalar için 0–100 arası bir skor gösterir. Bu skor tıbbi tavsiye, tanı veya herhangi bir durumun tedavisine yönelik bir öneri değildir — sağlıkla ilgili kararlar için her zaman uzman bir sağlık profesyoneline danış.\n\nÜrün verileri büyük ölçüde topluluk tarafından yönetilen bir veritabanı olan Open Food Facts'ten gelir. Doğruluğunu veya eksiksizliğini garanti edemeyiz; burada gösterilen bilgilere güvenmeden önce her zaman ürünün resmi ambalajını kontrol et.\n\nBir ürün fotoğrafı katkısında bulunursan, bu görseli paylaşma hakkına sahip olduğunu onaylamış ve içerdiği ürün bilgisini çıkarmamız ve yayınlamamız için bize lisans vermiş olursun.\n\nPremium abonelikler iptal edilene kadar otomatik olarak yenilenir. Aboneliğini Apple ID veya Google Play hesap ayarlarından yönetebilir veya iptal edebilirsin — bunu senin adına yapamayız; fiyatlandırma ve faturalandırma App Store veya Google Play tarafından belirlenir ve işlenir, bizim tarafımızdan değil.\n\nHesabını istediğin zaman Ayarlar'dan silebilirsin; bu işlem tarama geçmişini, tercihlerini ve katkılarını kalıcı olarak kaldırır.\n\nBlacklabel \"olduğu gibi\", herhangi bir garanti olmaksızın sunulur. Uygulamadaki bilgilere dayanarak alınan kararlardan sorumlu değiliz.\n\nUygulama değiştikçe bu koşulları güncelleyebiliriz; bir güncellemeden sonra kullanmaya devam etmen, güncellemeyi kabul ettiğin anlamına gelir."
   }
 }

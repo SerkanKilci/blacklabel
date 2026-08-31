@@ -78,7 +78,3 @@ delete your account at any time.
 
 We may update these terms as the app changes. Continued use after a change means you accept the
 update. Material changes will be reflected in the app's Settings → Terms of use page.
-
-## Contact
-
-legal@blacklabel.app *(placeholder — replace before publishing)*

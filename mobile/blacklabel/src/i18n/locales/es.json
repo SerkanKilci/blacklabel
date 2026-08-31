@@ -151,7 +151,9 @@
     "additiveMessage": "Contiene {{additive}}, que elegiste evitar.",
     "dietMessage": "Este producto no encaja con tu preferencia \"{{flag}}\".",
     "lockedTitle": "⚠️ Uno de tus perfiles del hogar tiene una advertencia",
-    "lockedMessage": "Este producto entra en conflicto con un alérgeno o preferencia de uno de tus perfiles guardados. Pasa a Premium para ver quién y por qué."
+    "lockedMessage": "Este producto entra en conflicto con un alérgeno o preferencia de uno de tus perfiles guardados. Pasa a Premium para ver quién y por qué.",
+    "incompleteDataTitle": "⚠️ Los datos de este producto están incompletos",
+    "incompleteDataMessage": "Falta la lista de ingredientes, por lo que la comprobación de alérgenos y aditivos puede ser incompleta. Que no aparezca ninguna advertencia no significa que este producto sea seguro — comprueba siempre el envase oficial antes de comprar."
   },
   "history": {
     "title": "Historial",
@@ -248,6 +250,10 @@
     "premiumActive": "Premium activo",
     "premiumInactive": "Plan gratuito",
     "managePremium": "Gestionar Premium",
+    "redeemCodeLink": "¿Tienes un código?",
+    "redeemCodePlaceholder": "Código",
+    "redeemCodeSubmit": "Canjear",
+    "redeemCodeError": "Código no válido. Inténtalo de nuevo.",
     "dataSourcesLink": "Fuentes de datos",
     "privacyLink": "Política de privacidad",
     "version": "Versión {{version}}",
@@ -285,12 +291,10 @@
   },
   "privacy": {
     "title": "Privacidad",
-    "body": "Blacklabel escanea códigos de barras de alimentos envasados y muestra una puntuación de 0 a 100 basada en los ingredientes, aditivos y valores nutricionales. No ofrece asesoramiento médico.\n\nAl abrir la aplicación por primera vez, se crea una cuenta anónima vinculada a un identificador aleatorio almacenado en tu dispositivo — no tu nombre ni tu correo electrónico, a menos que decidas vincular una cuenta de Apple o Google.\n\nGuardamos los códigos de barras que escaneas y cuándo lo haces, para que puedas ver tu propio historial. Si contribuyes con una foto de un producto, esas imágenes se suben y se envían a un servicio externo de visión artificial para extraer el texto. Tus preferencias de alérgenos y dieta se guardan para mostrarte advertencias personales. Si te suscribes a Premium, RevenueCat comparte con nosotros el estado de tu suscripción — nunca vemos tus datos de pago.\n\nNo vendemos tus datos ni los usamos con fines publicitarios. Tus datos se conservan mientras exista tu cuenta. Puedes eliminar permanentemente tu cuenta y todos los datos asociados en cualquier momento desde Ajustes, o contactarnos indicando el ID de tu dispositivo (abajo).\n\nEsta aplicación no está dirigida a menores.",
-    "contactLabel": "Preguntas o solicitudes de datos"
+    "body": "Blacklabel escanea códigos de barras de alimentos envasados y muestra una puntuación de 0 a 100 basada en los ingredientes, aditivos y valores nutricionales. No ofrece asesoramiento médico.\n\nAl abrir la aplicación por primera vez, se crea una cuenta anónima vinculada a un identificador aleatorio almacenado en tu dispositivo — no tu nombre ni tu correo electrónico, a menos que decidas vincular una cuenta de Apple o Google.\n\nGuardamos los códigos de barras que escaneas y cuándo lo haces, para que puedas ver tu propio historial. Si contribuyes con una foto de un producto, esas imágenes se suben y se envían a un servicio externo de visión artificial para extraer el texto. Tus preferencias de alérgenos y dieta se guardan para mostrarte advertencias personales. Si te suscribes a Premium, RevenueCat comparte con nosotros el estado de tu suscripción — nunca vemos tus datos de pago.\n\nNo vendemos tus datos ni los usamos con fines publicitarios. Tus datos se conservan mientras exista tu cuenta. Puedes eliminar permanentemente tu cuenta y todos los datos asociados en cualquier momento desde Ajustes.\n\nEsta aplicación no está dirigida a menores."
   },
   "terms": {
     "title": "Condiciones de uso",
-    "body": "Al usar Blacklabel, aceptas estas condiciones.\n\nBlacklabel muestra una puntuación de 0 a 100 para alimentos envasados basada en datos públicos de ingredientes, aditivos y nutrición. Esta puntuación no constituye asesoramiento médico, diagnóstico ni recomendación para tratar ninguna afección — consulta siempre a un profesional cualificado para decisiones de salud.\n\nLos datos de los productos proceden principalmente de Open Food Facts, una base de datos mantenida por la comunidad. No podemos garantizar su exactitud ni integridad — comprueba siempre el envase oficial de un producto antes de basarte en la información mostrada aquí.\n\nSi contribuyes con una foto de un producto, confirmas que tienes derecho a compartirla y nos concedes una licencia para usarla con el fin de extraer y publicar la información del producto que contiene.\n\nLas suscripciones Premium se renuevan automáticamente hasta que se cancelen. Gestiona o cancela tu suscripción en la configuración de tu cuenta de Apple ID o Google Play — no podemos cancelarla en tu nombre, y los precios y la facturación los establece y procesa la App Store o Google Play, no nosotros.\n\nPuedes eliminar tu cuenta en cualquier momento desde Ajustes, lo que elimina permanentemente tu historial de escaneos, preferencias y contribuciones.\n\nBlacklabel se ofrece \"tal cual\", sin garantía de ningún tipo. No somos responsables de las decisiones tomadas basándose en la información de la aplicación.\n\nPodemos actualizar estas condiciones a medida que la aplicación cambie; el uso continuado tras un cambio implica que aceptas la actualización.",
-    "contactLabel": "Preguntas"
+    "body": "Al usar Blacklabel, aceptas estas condiciones.\n\nBlacklabel muestra una puntuación de 0 a 100 para alimentos envasados basada en datos públicos de ingredientes, aditivos y nutrición. Esta puntuación no constituye asesoramiento médico, diagnóstico ni recomendación para tratar ninguna afección — consulta siempre a un profesional cualificado para decisiones de salud.\n\nLos datos de los productos proceden principalmente de Open Food Facts, una base de datos mantenida por la comunidad. No podemos garantizar su exactitud ni integridad — comprueba siempre el envase oficial de un producto antes de basarte en la información mostrada aquí.\n\nSi contribuyes con una foto de un producto, confirmas que tienes derecho a compartirla y nos concedes una licencia para usarla con el fin de extraer y publicar la información del producto que contiene.\n\nLas suscripciones Premium se renuevan automáticamente hasta que se cancelen. Gestiona o cancela tu suscripción en la configuración de tu cuenta de Apple ID o Google Play — no podemos cancelarla en tu nombre, y los precios y la facturación los establece y procesa la App Store o Google Play, no nosotros.\n\nPuedes eliminar tu cuenta en cualquier momento desde Ajustes, lo que elimina permanentemente tu historial de escaneos, preferencias y contribuciones.\n\nBlacklabel se ofrece \"tal cual\", sin garantía de ningún tipo. No somos responsables de las decisiones tomadas basándose en la información de la aplicación.\n\nPodemos actualizar estas condiciones a medida que la aplicación cambie; el uso continuado tras un cambio implica que aceptas la actualización."
   }
 }

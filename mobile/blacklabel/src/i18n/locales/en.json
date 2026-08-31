@@ -151,7 +151,9 @@
     "additiveMessage": "Contains {{additive}}, which you chose to avoid.",
     "dietMessage": "This product doesn't fit your \"{{flag}}\" preference.",
     "lockedTitle": "⚠️ One of your household profiles has a warning",
-    "lockedMessage": "This product conflicts with an allergen or preference on one of your saved profiles. Upgrade to Premium to see who and why."
+    "lockedMessage": "This product conflicts with an allergen or preference on one of your saved profiles. Upgrade to Premium to see who and why.",
+    "incompleteDataTitle": "⚠️ This product's data is incomplete",
+    "incompleteDataMessage": "The ingredients list is missing, so allergen and additive checks may be incomplete. No warning shown doesn't mean this product is safe — always check the official packaging before buying."
   },
   "history": {
     "title": "History",
@@ -248,6 +250,10 @@
     "premiumActive": "Premium active",
     "premiumInactive": "Free plan",
     "managePremium": "Manage premium",
+    "redeemCodeLink": "Have a code?",
+    "redeemCodePlaceholder": "Code",
+    "redeemCodeSubmit": "Redeem",
+    "redeemCodeError": "Invalid code. Please try again.",
     "dataSourcesLink": "Data sources",
     "privacyLink": "Privacy policy",
     "version": "Version {{version}}",
@@ -285,12 +291,10 @@
   },
   "privacy": {
     "title": "Privacy",
-    "body": "Blacklabel scans packaged-food barcodes and shows a 0–100 score based on ingredients, additives and nutrition. It does not provide medical advice.\n\nOn first launch, the app creates an anonymous account tied to a random identifier stored on your device — not your name or email, unless you choose to link an Apple or Google account.\n\nWe store the barcodes you scan and when, so you can see your own history. If you contribute a product photo, those images are uploaded and sent to a third-party vision service to extract text. Your allergen and diet preferences are stored to show you personal warnings. If you subscribe to premium, RevenueCat shares your subscription status with us — we never see your payment details.\n\nWe don't sell your data or use it for advertising. Your data is retained as long as your account exists. You can permanently delete your account and all associated data at any time from Settings, or contact us with your device ID (below).\n\nThis app is not directed at children.",
-    "contactLabel": "Questions or data requests"
+    "body": "Blacklabel scans packaged-food barcodes and shows a 0–100 score based on ingredients, additives and nutrition. It does not provide medical advice.\n\nOn first launch, the app creates an anonymous account tied to a random identifier stored on your device — not your name or email, unless you choose to link an Apple or Google account.\n\nWe store the barcodes you scan and when, so you can see your own history. If you contribute a product photo, those images are uploaded and sent to a third-party vision service to extract text. Your allergen and diet preferences are stored to show you personal warnings. If you subscribe to premium, RevenueCat shares your subscription status with us — we never see your payment details.\n\nWe don't sell your data or use it for advertising. Your data is retained as long as your account exists. You can permanently delete your account and all associated data at any time from Settings.\n\nThis app is not directed at children."
   },
   "terms": {
     "title": "Terms of use",
-    "body": "By using Blacklabel, you agree to these terms.\n\nBlacklabel shows a 0–100 score for packaged foods based on publicly available ingredient, additive and nutrition data. This score is not medical advice, a diagnosis, or a recommendation to treat any condition — always consult a qualified professional for health decisions.\n\nProduct data comes primarily from Open Food Facts, a community-maintained database. We cannot guarantee its accuracy or completeness; always check a product's official packaging before relying on information shown here.\n\nIf you contribute a product photo, you confirm you have the right to share it and grant us a license to use it to extract and publish the product information it contains.\n\nPremium subscriptions automatically renew until cancelled. Manage or cancel your subscription in your Apple ID or Google Play account settings — we cannot cancel it on your behalf, and prices and billing are set and processed by the App Store or Google Play, not by us.\n\nYou can delete your account at any time from Settings, which permanently removes your scan history, preferences, and contributions.\n\nBlacklabel is provided \"as is\", without warranty of any kind. We are not liable for decisions made based on information in the app.\n\nWe may update these terms as the app changes; continued use after a change means you accept the update.",
-    "contactLabel": "Questions"
+    "body": "By using Blacklabel, you agree to these terms.\n\nBlacklabel shows a 0–100 score for packaged foods based on publicly available ingredient, additive and nutrition data. This score is not medical advice, a diagnosis, or a recommendation to treat any condition — always consult a qualified professional for health decisions.\n\nProduct data comes primarily from Open Food Facts, a community-maintained database. We cannot guarantee its accuracy or completeness; always check a product's official packaging before relying on information shown here.\n\nIf you contribute a product photo, you confirm you have the right to share it and grant us a license to use it to extract and publish the product information it contains.\n\nPremium subscriptions automatically renew until cancelled. Manage or cancel your subscription in your Apple ID or Google Play account settings — we cannot cancel it on your behalf, and prices and billing are set and processed by the App Store or Google Play, not by us.\n\nYou can delete your account at any time from Settings, which permanently removes your scan history, preferences, and contributions.\n\nBlacklabel is provided \"as is\", without warranty of any kind. We are not liable for decisions made based on information in the app.\n\nWe may update these terms as the app changes; continued use after a change means you accept the update."
   }
 }

@@ -128,6 +128,13 @@ function ProductFoundView({ product }: { product: ProductFound }) {
         {product.imageUrl && <Image source={{ uri: product.imageUrl }} style={styles.productImage} resizeMode="contain" />}
       </View>
 
+      {product.dataQuality !== 'Complete' && (
+        <View style={styles.incompleteDataCard}>
+          <Text style={styles.incompleteDataTitle}>{t('warning.incompleteDataTitle')}</Text>
+          <Text style={styles.incompleteDataMessage}>{t('warning.incompleteDataMessage')}</Text>
+        </View>
+      )}
+
       {profilesWithWarnings.length > 0 && (
         <View style={styles.warningCard}>
           {profilesWithWarnings.map((profileWarning) => (
@@ -438,6 +445,24 @@ const styles = StyleSheet.create({
     color: '#C62828',
     fontSize: 14,
     fontWeight: '500',
+  },
+  incompleteDataCard: {
+    marginTop: 20,
+    marginHorizontal: 20,
+    backgroundColor: '#FFF4E5',
+    borderRadius: 12,
+    padding: 16,
+  },
+  incompleteDataTitle: {
+    color: '#8A5A00',
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  incompleteDataMessage: {
+    color: '#8A5A00',
+    fontSize: 13,
+    marginTop: 4,
+    lineHeight: 19,
   },
   lockedWarningCard: {
     marginTop: 20,

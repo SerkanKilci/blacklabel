@@ -51,10 +51,9 @@ We do not collect precise location, contacts, or browsing history outside this a
 
 Your scan history, preferences, and contributed photos are retained as long as your account
 exists. You can permanently delete your account and all associated data at any time from
-Settings → Delete my account (`DELETE /api/v1/me`), or contact us (see below) with your device
-identifier, visible in Settings. Deletion removes your scan history, preferences, and
-contributions from our database immediately; uploaded contribution images may persist on disk
-briefly afterward (a known gap — see `README.md`'s account-deletion notes).
+Settings → Delete my account (`DELETE /api/v1/me`). Deletion removes your scan history,
+preferences, and contributions from our database immediately; uploaded contribution images may
+persist on disk briefly afterward (a known gap — see `README.md`'s account-deletion notes).
 
 ## Children's privacy
 
@@ -69,14 +68,10 @@ can't resolve.
 
 ## Your rights
 
-Depending on where you live, you may have rights to access, correct, or delete your data. Contact
-us to exercise these rights.
+Depending on where you live, you may have rights to access, correct, or delete your data. You can
+exercise these rights yourself at any time from Settings → Delete my account.
 
 ## Changes to this policy
 
 We may update this policy as the app changes. Material changes will be reflected in the app's
 "Data Sources & Privacy" page.
-
-## Contact
-
-privacy@blacklabel.app *(placeholder — replace before publishing)*

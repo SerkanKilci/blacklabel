@@ -3,10 +3,10 @@ import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { deleteAccount } from '../../src/api/auth';
-import { debugGrantPremium } from '../../src/api/subscription';
+import { debugGrantPremium, redeemCode as redeemCodeRequest } from '../../src/api/subscription';
 import { clearAuth, ensureUserId } from '../../src/auth/deviceAuthClient';
 import { BackButton } from '../../src/components/BackButton';
 import { Screen } from '../../src/components/Screen';
@@ -33,6 +33,9 @@ export default function SettingsScreen() {
   const [userId, setUserId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isGrantingPremium, setIsGrantingPremium] = useState(false);
+  const [showRedeemInput, setShowRedeemInput] = useState(false);
+  const [redeemCode, setRedeemCode] = useState('');
+  const [isRedeeming, setIsRedeeming] = useState(false);
 
   useEffect(() => {
     void ensureUserId().then(setUserId);
@@ -69,6 +72,23 @@ export default function SettingsScreen() {
       Alert.alert(t('settings.deleteAccountErrorTitle'), t('settings.debugGrantPremiumError'));
     } finally {
       setIsGrantingPremium(false);
+    }
+  };
+
+  const handleRedeemCode = async () => {
+    if (!redeemCode.trim()) {
+      return;
+    }
+    setIsRedeeming(true);
+    try {
+      await redeemCodeRequest(redeemCode.trim());
+      await queryClient.invalidateQueries({ queryKey: ['subscription'] });
+      setRedeemCode('');
+      setShowRedeemInput(false);
+    } catch {
+      Alert.alert(t('settings.deleteAccountErrorTitle'), t('settings.redeemCodeError'));
+    } finally {
+      setIsRedeeming(false);
     }
   };
 
@@ -109,6 +129,34 @@ export default function SettingsScreen() {
           <Text style={styles.linkText}>{t('settings.managePremium')}</Text>
         </Pressable>
       </View>
+
+      {!subscription?.isPremium && (
+        showRedeemInput ? (
+          <View style={styles.redeemRow}>
+            <TextInput
+              style={styles.redeemInput}
+              value={redeemCode}
+              onChangeText={setRedeemCode}
+              placeholder={t('settings.redeemCodePlaceholder')}
+              placeholderTextColor="#9E9E9E"
+              autoCapitalize="none"
+              autoCorrect={false}
+              editable={!isRedeeming}
+            />
+            <Pressable style={styles.redeemButton} onPress={() => void handleRedeemCode()} disabled={isRedeeming}>
+              {isRedeeming ? (
+                <ActivityIndicator size="small" color="#1A1A1A" />
+              ) : (
+                <Text style={styles.redeemButtonText}>{t('settings.redeemCodeSubmit')}</Text>
+              )}
+            </Pressable>
+          </View>
+        ) : (
+          <Pressable onPress={() => setShowRedeemInput(true)}>
+            <Text style={styles.hintText}>{t('settings.redeemCodeLink')}</Text>
+          </Pressable>
+        )
+      )}
 
       {__DEV__ && !subscription?.isPremium && (
         <Pressable style={styles.debugButton} onPress={() => void handleDebugGrantPremium()} disabled={isGrantingPremium}>
@@ -264,6 +312,33 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#9E9E9E',
     marginBottom: 12,
+  },
+  redeemRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 12,
+  },
+  redeemInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#CCCCCC',
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    fontSize: 14,
+    color: '#1A1A1A',
+  },
+  redeemButton: {
+    borderWidth: 1,
+    borderColor: '#1A1A1A',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    justifyContent: 'center',
+  },
+  redeemButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1A1A1A',
   },
   debugButton: {
     borderWidth: 1,

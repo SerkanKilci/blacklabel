@@ -9,3 +9,8 @@ export function getSubscription(): Promise<Subscription> {
 export function debugGrantPremium(): Promise<Subscription> {
   return authorizedPost<Subscription>('/me/debug-grant-premium', {});
 }
+
+/** Store-reviewer premium unlock — see Settings' "redeem code" row. */
+export function redeemCode(code: string): Promise<Subscription> {
+  return authorizedPost<Subscription>('/me/redeem-code', { code });
+}
