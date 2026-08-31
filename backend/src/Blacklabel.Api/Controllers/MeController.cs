@@ -6,6 +6,7 @@ using Blacklabel.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Blacklabel.Api.Controllers;
 
@@ -19,19 +20,22 @@ public class MeController : ControllerBase
     private readonly IAdditiveRepository _additiveRepository;
     private readonly IAllergenRepository _allergenRepository;
     private readonly IWebHostEnvironment _environment;
+    private readonly IConfiguration _configuration;
 
     public MeController(
         IHouseholdProfileRepository profileRepository,
         IAppUserRepository appUserRepository,
         IAdditiveRepository additiveRepository,
         IAllergenRepository allergenRepository,
-        IWebHostEnvironment environment)
+        IWebHostEnvironment environment,
+        IConfiguration configuration)
     {
         _profileRepository = profileRepository;
         _appUserRepository = appUserRepository;
         _additiveRepository = additiveRepository;
         _allergenRepository = allergenRepository;
         _environment = environment;
+        _configuration = configuration;
     }
 
     /// <summary>
@@ -180,6 +184,37 @@ public class MeController : ControllerBase
     public async Task<IActionResult> DebugGrantPremium(CancellationToken ct)
     {
         if (!_environment.IsDevelopment())
+        {
+            return NotFound();
+        }
+
+        var userId = GetUserId();
+        var user = await _appUserRepository.GetByIdAsync(userId, ct);
+        if (user is null)
+        {
+            return NotFound();
+        }
+
+        user.IsPremium = true;
+        user.PremiumUntil = DateTime.UtcNow.AddYears(1);
+        await _appUserRepository.SaveChangesAsync(ct);
+
+        return Ok(new SubscriptionResponse(user.IsPremium, user.PremiumUntil));
+    }
+
+    /// <summary>
+    /// Grants the current account premium when given the shared review-access code (set via
+    /// Review:AccessCode config, not exposed anywhere in the UI or docs) — this is how the App
+    /// Store/Play Store reviewer unlocks premium-gated screens without a real purchase. Unset
+    /// config means the code can never match, so this is a no-op until we deliberately configure
+    /// it for a submission.
+    /// </summary>
+    [HttpPost("redeem-code")]
+    [EnableRateLimiting("auth")]
+    public async Task<IActionResult> RedeemCode([FromBody] RedeemCodeRequest request, CancellationToken ct)
+    {
+        var reviewCode = _configuration["Review:AccessCode"];
+        if (string.IsNullOrWhiteSpace(reviewCode) || request.Code != reviewCode)
         {
             return NotFound();
         }
