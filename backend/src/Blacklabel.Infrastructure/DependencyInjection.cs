@@ -56,6 +56,19 @@ public static class DependencyInjection
             .AddPolicyHandler(GetRetryPolicy())
             .AddPolicyHandler(GetCircuitBreakerPolicy());
 
+        var usdaBaseUrl = configuration["Usda:BaseUrl"] ?? "https://api.nal.usda.gov/fdc/v1/";
+        var usdaApiKey = configuration["Usda:ApiKey"] ?? string.Empty;
+
+        services.AddSingleton<UsdaRateLimiter>();
+        services.AddSingleton(new UsdaApiKey(usdaApiKey));
+        services.AddHttpClient<IUsdaFoodDataClient, UsdaFoodDataClient>(client =>
+            {
+                client.BaseAddress = new Uri(usdaBaseUrl);
+                client.Timeout = TimeSpan.FromSeconds(8);
+            })
+            .AddPolicyHandler(GetRetryPolicy())
+            .AddPolicyHandler(GetCircuitBreakerPolicy());
+
         var visionEndpoint = configuration["VisionService:Endpoint"];
         var visionTimeoutSeconds = configuration.GetValue<int?>("VisionService:TimeoutSeconds") ?? 30;
 

@@ -19,7 +19,7 @@ public class ProductLookupServiceTests
 {
     private static readonly Guid TestUserId = Guid.NewGuid();
 
-    private static (BlacklabelDbContext Context, ProductLookupService Service, FakeOpenFoodFactsClient OffClient) CreateService()
+    private static (BlacklabelDbContext Context, ProductLookupService Service, FakeOpenFoodFactsClient OffClient, FakeUsdaFoodDataClient UsdaClient) CreateService()
     {
         var options = new DbContextOptionsBuilder<BlacklabelDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
@@ -29,6 +29,7 @@ public class ProductLookupServiceTests
         context.Database.EnsureCreated();
 
         var offClient = new FakeOpenFoodFactsClient();
+        var usdaClient = new FakeUsdaFoodDataClient();
         var emptyScopeFactory = new ServiceCollection().BuildServiceProvider().GetRequiredService<IServiceScopeFactory>();
 
         var service = new ProductLookupService(
@@ -39,11 +40,12 @@ public class ProductLookupServiceTests
             new AppUserRepository(context),
             new ScanRepository(context),
             offClient,
+            usdaClient,
             new ScoreCalculator(new ScoreThresholds()),
             emptyScopeFactory,
             NullLogger<ProductLookupService>.Instance);
 
-        return (context, service, offClient);
+        return (context, service, offClient, usdaClient);
     }
 
     private static async Task SeedUserAsync(BlacklabelDbContext context, Guid userId, bool isPremium = false)
@@ -75,10 +77,98 @@ public class ProductLookupServiceTests
         ImageUrl: "https://example.org/image.jpg",
         CategoriesTags: categories ?? new List<string> { "biscuits" });
 
+    // Missing ingredients (the real-world OFF gap this feature targets) -- nutriments are fully
+    // populated so DataQuality.Partial is driven specifically by hasIngredients being false.
+    private static OpenFoodFactsProduct CreatePartialOffProduct() => new(
+        ProductName: "Test Cereal",
+        ProductNameTr: null,
+        Brands: "Test Brand",
+        Quantity: "300 g",
+        IngredientsText: null,
+        IngredientsTextTr: null,
+        AdditivesTags: new List<string>(),
+        AllergensTags: new List<string>(),
+        NovaGroup: 3,
+        NutriscoreGrade: "c",
+        Nutriments: new NutrimentsDto(
+            EnergyKcal100g: 380, Fat100g: 5, SaturatedFat100g: 1, Carbohydrates100g: 70,
+            Sugars100g: 10, Fiber100g: 6, Proteins100g: 8, Salt100g: 1.0m),
+        ImageUrl: null,
+        CategoriesTags: new List<string> { "cereals" });
+
+    private static UsdaFoodItem CreateUsdaMatch(string gtinUpc) => new(
+        GtinUpc: gtinUpc,
+        IngredientsText: "WHOLE GRAIN OATS, SUGAR, SALT",
+        Nutriments: new NutrimentsDto(
+            EnergyKcal100g: 379, Fat100g: 4.8m, SaturatedFat100g: 0.9m, Carbohydrates100g: 71,
+            Sugars100g: 9.5m, Fiber100g: 6.2m, Proteins100g: 8.1m, Salt100g: 1.1m));
+
+    [Fact]
+    public async Task GetByBarcodeAsync_Enriches_From_Usda_When_Off_Is_Partial_On_A_Us_Barcode()
+    {
+        var (context, service, offClient, usdaClient) = CreateService();
+        const string barcode = "0016000275287"; // US GS1 prefix (001)
+        offClient.SetResponse(barcode, CreatePartialOffProduct());
+        usdaClient.SetResponse(barcode, CreateUsdaMatch("00016000275287"));
+
+        var result = await service.GetByBarcodeAsync(TestUserId, barcode, CancellationToken.None);
+
+        Assert.Equal(ProductLookupOutcome.Found, result.Outcome);
+        Assert.Equal("WHOLE GRAIN OATS, SUGAR, SALT", result.Product!.IngredientsText);
+        Assert.Equal(1, usdaClient.CallCount);
+
+        // Still Partial: USDA has no structured allergen signal equivalent to OFF's
+        // allergens_tags, so a product "completed" this way must not claim DataQuality.Complete
+        // and silence the incomplete-data safety warning.
+        Assert.Equal(DataQuality.Partial.ToString(), result.Product.DataQuality);
+
+        var persisted = await context.Products.FirstAsync(p => p.Barcode == barcode);
+        Assert.NotNull(persisted.UsdaEnrichedAt);
+    }
+
+    [Fact]
+    public async Task GetByBarcodeAsync_Skips_Usda_When_Off_Data_Is_Already_Complete()
+    {
+        var (_, service, offClient, usdaClient) = CreateService();
+        const string barcode = "0016000275287";
+        offClient.SetResponse(barcode, CreateOffProduct());
+
+        await service.GetByBarcodeAsync(TestUserId, barcode, CancellationToken.None);
+
+        Assert.Equal(0, usdaClient.CallCount);
+    }
+
+    [Fact]
+    public async Task GetByBarcodeAsync_Skips_Usda_For_A_Barcode_Outside_Its_Coverage()
+    {
+        var (_, service, offClient, usdaClient) = CreateService();
+        const string barcode = "8690504010104"; // Turkey GS1 prefix -- FDC doesn't cover this market
+        offClient.SetResponse(barcode, CreatePartialOffProduct());
+
+        await service.GetByBarcodeAsync(TestUserId, barcode, CancellationToken.None);
+
+        Assert.Equal(0, usdaClient.CallCount);
+    }
+
+    [Fact]
+    public async Task GetByBarcodeAsync_Marks_UsdaEnrichedAt_Even_When_Usda_Has_No_Match_So_It_Is_Not_Requeried()
+    {
+        var (context, service, offClient, usdaClient) = CreateService();
+        const string barcode = "0016000275287";
+        offClient.SetResponse(barcode, CreatePartialOffProduct());
+        // No usdaClient.SetResponse -- FakeUsdaFoodDataClient defaults to NotFound.
+
+        await service.GetByBarcodeAsync(TestUserId, barcode, CancellationToken.None);
+
+        var persisted = await context.Products.FirstAsync(p => p.Barcode == barcode);
+        Assert.NotNull(persisted.UsdaEnrichedAt);
+        Assert.Equal(DataQuality.Partial.ToString(), (await service.GetByBarcodeAsync(TestUserId, barcode, CancellationToken.None)).Product!.DataQuality);
+    }
+
     [Fact]
     public async Task GetByBarcodeAsync_Returns_InvalidBarcode_Without_Calling_OFF()
     {
-        var (_, service, offClient) = CreateService();
+        var (_, service, offClient, _) = CreateService();
 
         var result = await service.GetByBarcodeAsync(TestUserId, "123", CancellationToken.None);
 
@@ -91,7 +181,7 @@ public class ProductLookupServiceTests
     [Fact]
     public async Task GetByBarcodeAsync_Returns_NotFound_With_CanContribute_When_OFF_Has_No_Product()
     {
-        var (_, service, _) = CreateService();
+        var (_, service, _, _) = CreateService();
 
         var result = await service.GetByBarcodeAsync(TestUserId, "8690504010104", CancellationToken.None);
 
@@ -103,7 +193,7 @@ public class ProductLookupServiceTests
     [Fact]
     public async Task GetByBarcodeAsync_Returns_LookupUnavailable_Rather_Than_NotFound_When_OFF_Is_Unreachable()
     {
-        var (_, service, offClient) = CreateService();
+        var (_, service, offClient, _) = CreateService();
         const string barcode = "8690504010104";
         offClient.SetUnavailable(barcode);
 
@@ -119,7 +209,7 @@ public class ProductLookupServiceTests
     [Fact]
     public async Task GetByBarcodeAsync_Fetches_From_OFF_Maps_And_Persists_When_Not_Cached()
     {
-        var (context, service, offClient) = CreateService();
+        var (context, service, offClient, _) = CreateService();
         const string barcode = "8690504010104";
         offClient.SetResponse(barcode, CreateOffProduct());
 
@@ -146,7 +236,7 @@ public class ProductLookupServiceTests
     [Fact]
     public async Task GetByBarcodeAsync_Returns_Cached_Product_Without_Calling_OFF()
     {
-        var (context, service, offClient) = CreateService();
+        var (context, service, offClient, _) = CreateService();
         const string barcode = "8690504010104";
 
         var product = new Product
@@ -174,7 +264,7 @@ public class ProductLookupServiceTests
     [Fact]
     public async Task GetByBarcodeAsync_Records_A_Scan_On_Every_Successful_Lookup()
     {
-        var (context, service, offClient) = CreateService();
+        var (context, service, offClient, _) = CreateService();
         const string barcode = "8690504010104";
         offClient.SetResponse(barcode, CreateOffProduct());
 
@@ -188,7 +278,7 @@ public class ProductLookupServiceTests
     [Fact]
     public async Task GetByBarcodeAsync_Blocks_Free_User_After_Ten_Scans_Today()
     {
-        var (context, service, offClient) = CreateService();
+        var (context, service, offClient, _) = CreateService();
         const string barcode = "8690504010104";
         offClient.SetResponse(barcode, CreateOffProduct());
         await SeedUserAsync(context, TestUserId, isPremium: false);
@@ -207,7 +297,7 @@ public class ProductLookupServiceTests
     [Fact]
     public async Task GetByBarcodeAsync_Does_Not_Limit_Premium_Users()
     {
-        var (context, service, offClient) = CreateService();
+        var (context, service, offClient, _) = CreateService();
         const string barcode = "8690504010104";
         offClient.SetResponse(barcode, CreateOffProduct());
         await SeedUserAsync(context, TestUserId, isPremium: true);
@@ -222,7 +312,7 @@ public class ProductLookupServiceTests
     [Fact]
     public async Task GetByBarcodeAsync_Returns_Empty_ProfileWarnings_For_Free_User_Even_With_Profiles()
     {
-        var (context, service, offClient) = CreateService();
+        var (context, service, offClient, _) = CreateService();
         const string barcode = "8690504010104";
         offClient.SetResponse(barcode, CreateOffProduct());
         await SeedUserAsync(context, TestUserId, isPremium: false);
@@ -245,7 +335,7 @@ public class ProductLookupServiceTests
     [Fact]
     public async Task GetByBarcodeAsync_Returns_ProfileWarnings_For_Premium_User()
     {
-        var (context, service, offClient) = CreateService();
+        var (context, service, offClient, _) = CreateService();
         const string barcode = "8690504010104";
         offClient.SetResponse(barcode, CreateOffProduct());
         await SeedUserAsync(context, TestUserId, isPremium: true);
@@ -270,7 +360,7 @@ public class ProductLookupServiceTests
     [Fact]
     public async Task GetByBarcodeAsync_Computes_Independent_Warnings_Per_Household_Profile()
     {
-        var (context, service, offClient) = CreateService();
+        var (context, service, offClient, _) = CreateService();
         const string barcode = "8690504010104";
         offClient.SetResponse(barcode, CreateOffProduct());
         await SeedUserAsync(context, TestUserId, isPremium: true);
@@ -291,7 +381,7 @@ public class ProductLookupServiceTests
     [Fact]
     public async Task GetAlternativesAsync_Returns_PremiumRequired_For_Free_User()
     {
-        var (context, service, _) = CreateService();
+        var (context, service, _, _) = CreateService();
         await SeedUserAsync(context, TestUserId, isPremium: false);
 
         var result = await service.GetAlternativesAsync(TestUserId, "8690504010104", CancellationToken.None);
@@ -303,7 +393,7 @@ public class ProductLookupServiceTests
     [Fact]
     public async Task GetAlternativesAsync_Returns_Higher_Scored_Products_With_Overlapping_Category()
     {
-        var (context, service, _) = CreateService();
+        var (context, service, _, _) = CreateService();
         await SeedUserAsync(context, TestUserId, isPremium: true);
 
         var target = new Product

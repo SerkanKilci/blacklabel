@@ -27,6 +27,7 @@ public class ProductLookupService : IProductLookupService
     private readonly IAppUserRepository _appUserRepository;
     private readonly IScanRepository _scanRepository;
     private readonly IOpenFoodFactsClient _openFoodFactsClient;
+    private readonly IUsdaFoodDataClient _usdaFoodDataClient;
     private readonly ScoreCalculator _scoreCalculator;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<ProductLookupService> _logger;
@@ -39,6 +40,7 @@ public class ProductLookupService : IProductLookupService
         IAppUserRepository appUserRepository,
         IScanRepository scanRepository,
         IOpenFoodFactsClient openFoodFactsClient,
+        IUsdaFoodDataClient usdaFoodDataClient,
         ScoreCalculator scoreCalculator,
         IServiceScopeFactory scopeFactory,
         ILogger<ProductLookupService> logger)
@@ -50,6 +52,7 @@ public class ProductLookupService : IProductLookupService
         _appUserRepository = appUserRepository;
         _scanRepository = scanRepository;
         _openFoodFactsClient = openFoodFactsClient;
+        _usdaFoodDataClient = usdaFoodDataClient;
         _scoreCalculator = scoreCalculator;
         _scopeFactory = scopeFactory;
         _logger = logger;
@@ -178,6 +181,7 @@ public class ProductLookupService : IProductLookupService
         {
             using var scope = _scopeFactory.CreateScope();
             var offClient = scope.ServiceProvider.GetRequiredService<IOpenFoodFactsClient>();
+            var usdaClient = scope.ServiceProvider.GetRequiredService<IUsdaFoodDataClient>();
             var productRepository = scope.ServiceProvider.GetRequiredService<IProductRepository>();
             var additiveRepository = scope.ServiceProvider.GetRequiredService<IAdditiveRepository>();
             var allergenRepository = scope.ServiceProvider.GetRequiredService<IAllergenRepository>();
@@ -197,6 +201,7 @@ public class ProductLookupService : IProductLookupService
                 }
 
                 await ApplyOffDataAsync(existing, refreshedResult.Product, additiveRepository, allergenRepository, CancellationToken.None);
+                await TryEnrichFromUsdaAsync(existing, usdaClient, CancellationToken.None);
                 await productRepository.SaveChangesAsync(CancellationToken.None);
             }
             catch (Exception ex)
@@ -221,6 +226,7 @@ public class ProductLookupService : IProductLookupService
         };
 
         var matchedAdditives = await ApplyOffDataAsync(product, off, _additiveRepository, _allergenRepository, ct);
+        await TryEnrichFromUsdaAsync(product, _usdaFoodDataClient, ct);
 
         return (product, matchedAdditives);
     }
@@ -232,6 +238,42 @@ public class ProductLookupService : IProductLookupService
         IAllergenRepository allergenRepository,
         CancellationToken ct)
         => ProductFromOffMapper.ApplyAsync(product, off, additiveRepository, allergenRepository, _scoreCalculator, ct);
+
+    /// <summary>
+    /// Fills gaps a Partial-quality OFF product left empty using a barcode-confirmed USDA
+    /// FoodData Central match, when the barcode is in a market USDA actually covers (US/Canada
+    /// GS1 prefixes). Marks <see cref="Product.UsdaEnrichedAt"/> on every attempt except a
+    /// transient failure, so a product USDA genuinely has no data for isn't re-queried on every
+    /// subsequent scan/refresh, while a real hiccup gets retried next time instead of being
+    /// permanently given up on.
+    /// </summary>
+    private static async Task TryEnrichFromUsdaAsync(Product product, IUsdaFoodDataClient usdaFoodDataClient, CancellationToken ct)
+    {
+        if (product.DataQuality != DataQuality.Partial || product.UsdaEnrichedAt is not null)
+        {
+            return;
+        }
+
+        if (!UsdaBarcodeMatcher.IsUsOrCanadaBarcode(product.Barcode))
+        {
+            return;
+        }
+
+        var usdaResult = await usdaFoodDataClient.GetProductAsync(product.Barcode, ct);
+        if (usdaResult.Outcome == UsdaLookupOutcome.Unavailable)
+        {
+            return;
+        }
+
+        if (usdaResult.Outcome == UsdaLookupOutcome.Found && usdaResult.Product is not null)
+        {
+            UsdaEnrichmentApplier.Apply(product, usdaResult.Product);
+        }
+        else
+        {
+            product.UsdaEnrichedAt = DateTime.UtcNow;
+        }
+    }
 
     private ProductResponse BuildResponse(
         Product product, IReadOnlyList<Additive> matchedAdditives, IReadOnlyList<HouseholdProfile> profiles, bool isPremium)
