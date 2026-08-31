@@ -57,10 +57,18 @@ public sealed class ProductUpsertService
             return Result.SkippedNotTargetMarket;
         }
 
-        var existing = await _context.Products
-            .Include(p => p.ProductAdditives)
-            .Include(p => p.ProductAllergens)
-            .FirstOrDefaultAsync(p => p.Barcode == barcode, ct);
+        // Check already-tracked-but-not-yet-saved entities first: the OFF dump can repeat the
+        // same barcode within a single batch (re-normalized duplicates, re-exports), and a
+        // DB-only lookup can't see a row that was Added to the ChangeTracker but not yet flushed
+        // by SaveChanges, which previously caused a second insert of the same barcode and a
+        // unique-index violation.
+        var existing = _context.ChangeTracker.Entries<Product>()
+            .Select(e => e.Entity)
+            .FirstOrDefault(p => p.Barcode == barcode)
+            ?? await _context.Products
+                .Include(p => p.ProductAdditives)
+                .Include(p => p.ProductAllergens)
+                .FirstOrDefaultAsync(p => p.Barcode == barcode, ct);
 
         var isNew = existing is null;
         var product = existing ?? new Product

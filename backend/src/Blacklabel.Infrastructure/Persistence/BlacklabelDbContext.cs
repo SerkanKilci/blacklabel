@@ -32,7 +32,10 @@ public class BlacklabelDbContext : DbContext
             entity.Property(p => p.Quantity).HasMaxLength(100);
             entity.Property(p => p.NutriScore).HasMaxLength(1);
             entity.Property(p => p.ImageUrl).HasMaxLength(500);
-            entity.Property(p => p.Categories).HasMaxLength(1000).IsRequired();
+            // Unbounded: real-world OFF category tag lists (stored as JSON) routinely exceed a
+            // few hundred characters for products with many tags, and the bulk importer processes
+            // millions of rows where any fixed cap will eventually be hit again.
+            entity.Property(p => p.Categories).IsRequired();
         });
 
         modelBuilder.Entity<Additive>(entity =>
