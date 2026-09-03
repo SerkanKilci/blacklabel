@@ -127,6 +127,48 @@ public class ProductLookupServiceTests
     }
 
     [Fact]
+    public async Task GetByBarcodeAsync_Is_Complete_With_Full_Ingredients_Even_When_Most_Nutriments_Are_Missing()
+    {
+        // Regression test: DataQuality.Complete must depend only on ingredients being present, not
+        // on how many nutriment fields OFF's contributors happened to fill in -- the "data
+        // incomplete" safety warning is about allergen/additive trustworthiness, which ingredients
+        // alone determine. Tying it to nutriment completeness was flagging ~800K real products
+        // (full ingredients, sparse nutrition facts) as incomplete.
+        var (_, service, offClient, _) = CreateService();
+        const string barcode = "8690504010104";
+        var sparseNutrimentsProduct = CreateOffProduct() with
+        {
+            Nutriments = new NutrimentsDto(
+                EnergyKcal100g: 480, Fat100g: null, SaturatedFat100g: null, Carbohydrates100g: null,
+                Sugars100g: null, Fiber100g: null, Proteins100g: null, Salt100g: null)
+        };
+        offClient.SetResponse(barcode, sparseNutrimentsProduct);
+
+        var result = await service.GetByBarcodeAsync(TestUserId, barcode, CancellationToken.None);
+
+        Assert.Equal(DataQuality.Complete.ToString(), result.Product!.DataQuality);
+    }
+
+    [Fact]
+    public async Task GetByBarcodeAsync_Is_Partial_When_Allergens_Tags_Empty_But_Ingredients_Mention_One()
+    {
+        // OFF's own allergens_tags came back empty, but the free-text ingredients clearly name a
+        // known allergen (milk) -- must not claim Complete and silently imply "nothing flagged".
+        var (_, service, offClient, _) = CreateService();
+        const string barcode = "8690504010104";
+        var untaggedAllergenProduct = CreateOffProduct() with
+        {
+            IngredientsText = "Wheat flour, sugar, milk powder, salt",
+            AllergensTags = new List<string>()
+        };
+        offClient.SetResponse(barcode, untaggedAllergenProduct);
+
+        var result = await service.GetByBarcodeAsync(TestUserId, barcode, CancellationToken.None);
+
+        Assert.Equal(DataQuality.Partial.ToString(), result.Product!.DataQuality);
+    }
+
+    [Fact]
     public async Task GetByBarcodeAsync_Skips_Usda_When_Off_Data_Is_Already_Complete()
     {
         var (_, service, offClient, usdaClient) = CreateService();

@@ -161,7 +161,7 @@ public class ContributionService : IContributionService
             IngredientsText = extraction.IngredientsText,
             Nutriments = JsonSerializer.Serialize(extraction.Nutriments),
             Source = ProductSource.Ocr,
-            DataQuality = DetermineDataQuality(extraction),
+            DataQuality = DetermineDataQuality(extraction, matchedAllergenCodes),
             Score = scoreResult.Score,
             ScoreCalculatedAt = now,
             CreatedAt = now,
@@ -217,26 +217,26 @@ public class ContributionService : IContributionService
         return response with { ProfileWarnings = profileWarnings };
     }
 
-    private static DataQuality DetermineDataQuality(LabelExtractionResult extraction)
+    // See ProductFromOffMapper.DetermineDataQuality: Complete depends only on ingredients being
+    // present, not nutriment-field completeness, since this flag drives the allergen/additive
+    // safety warning rather than score precision. Same keyword safety-net as the OFF path too.
+    private static DataQuality DetermineDataQuality(LabelExtractionResult extraction, IReadOnlyList<string> matchedAllergenCodes)
     {
         if (extraction.Confidence < 0.6)
         {
             return DataQuality.Unverified;
         }
 
-        var populatedNutrimentCount = new[]
-        {
-            extraction.Nutriments.EnergyKcal100g,
-            extraction.Nutriments.SaturatedFat100g,
-            extraction.Nutriments.Sugars100g,
-            extraction.Nutriments.Salt100g,
-            extraction.Nutriments.Fiber100g,
-            extraction.Nutriments.Proteins100g
-        }.Count(value => value.HasValue);
-
         var hasIngredients = !string.IsNullOrWhiteSpace(extraction.IngredientsText);
+        if (!hasIngredients)
+        {
+            return DataQuality.Partial;
+        }
 
-        return hasIngredients && populatedNutrimentCount >= 4 ? DataQuality.Complete : DataQuality.Partial;
+        var possiblyUnflaggedAllergen = matchedAllergenCodes.Count == 0 &&
+            AllergenKeywordScanner.MentionsPossibleAllergen(extraction.IngredientsText);
+
+        return possiblyUnflaggedAllergen ? DataQuality.Partial : DataQuality.Complete;
     }
 
     private static string? Truncate(string? value, int maxLength)

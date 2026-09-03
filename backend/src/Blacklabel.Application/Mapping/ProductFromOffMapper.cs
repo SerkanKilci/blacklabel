@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Blacklabel.Application.ExternalModels;
 using Blacklabel.Application.Interfaces;
+using Blacklabel.Application.Matching;
 using Blacklabel.Application.Scoring;
 using Blacklabel.Domain.Entities;
 using Blacklabel.Domain.Enums;
@@ -69,7 +70,7 @@ public static class ProductFromOffMapper
         product.ImageUrl = Truncate(off.ImageUrl, 500);
         product.Categories = JsonSerializer.Serialize(off.CategoriesTags);
         product.Source = ProductSource.OpenFoodFacts;
-        product.DataQuality = DetermineDataQuality(off);
+        product.DataQuality = DetermineDataQuality(off, matchedAllergenCodes);
         product.Score = scoreResult.Score;
         product.ScoreCalculatedAt = now;
         product.UpdatedAt = now;
@@ -89,21 +90,27 @@ public static class ProductFromOffMapper
         return matchedAdditives;
     }
 
-    private static DataQuality DetermineDataQuality(OpenFoodFactsProduct off)
+    // Complete depends only on ingredients being present, not on how many nutriment fields OFF's
+    // contributors happened to fill in. This flag drives the mobile "data incomplete" safety
+    // warning, which is about allergen/additive trustworthiness -- that's a function of whether we
+    // have an ingredients list, not of nutrition-facts completeness (which only affects score
+    // precision and is handled independently via null-tolerant ScoreInput fields).
+    private static DataQuality DetermineDataQuality(OpenFoodFactsProduct off, IReadOnlyList<string> matchedAllergenCodes)
     {
-        var populatedNutrimentCount = new[]
-        {
-            off.Nutriments.EnergyKcal100g,
-            off.Nutriments.SaturatedFat100g,
-            off.Nutriments.Sugars100g,
-            off.Nutriments.Salt100g,
-            off.Nutriments.Fiber100g,
-            off.Nutriments.Proteins100g
-        }.Count(value => value.HasValue);
-
         var hasIngredients = !string.IsNullOrWhiteSpace(off.IngredientsText) || !string.IsNullOrWhiteSpace(off.IngredientsTextTr);
+        if (!hasIngredients)
+        {
+            return DataQuality.Partial;
+        }
 
-        return hasIngredients && populatedNutrimentCount >= 4 ? DataQuality.Complete : DataQuality.Partial;
+        // Safety net: OFF's allergens_tags came back empty, but the ingredients text itself
+        // mentions a likely allergen. Don't claim Complete when we can't back the "nothing
+        // flagged" implication that carries for the user -- see AllergenKeywordScanner.
+        var possiblyUnflaggedAllergen = matchedAllergenCodes.Count == 0 &&
+            (AllergenKeywordScanner.MentionsPossibleAllergen(off.IngredientsText) ||
+             AllergenKeywordScanner.MentionsPossibleAllergen(off.IngredientsTextTr));
+
+        return possiblyUnflaggedAllergen ? DataQuality.Partial : DataQuality.Complete;
     }
 
     private static string? Truncate(string? value, int maxLength)
