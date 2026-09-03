@@ -7,7 +7,7 @@ public sealed record RevenueCatWebhookPayload(
 );
 
 public sealed record RevenueCatEvent(
-    [property: JsonPropertyName("type")] string Type,
-    [property: JsonPropertyName("app_user_id")] string AppUserId,
+    [property: JsonPropertyName("type")] string? Type,
+    [property: JsonPropertyName("app_user_id")] string? AppUserId,
     [property: JsonPropertyName("expiration_at_ms")] long? ExpirationAtMs
 );

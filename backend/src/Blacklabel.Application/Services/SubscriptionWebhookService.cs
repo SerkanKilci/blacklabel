@@ -44,13 +44,13 @@ public class SubscriptionWebhookService : ISubscriptionWebhookService
             ? DateTimeOffset.FromUnixTimeMilliseconds(ms).UtcDateTime
             : (DateTime?)null;
 
-        if (GrantingEventTypes.Contains(webhookEvent.Type))
+        if (GrantingEventTypes.Contains(webhookEvent.Type!))
         {
             user.IsPremium = true;
             user.PremiumUntil = expiresAt;
             await _appUserRepository.SaveChangesAsync(ct);
         }
-        else if (RevokingEventTypes.Contains(webhookEvent.Type))
+        else if (RevokingEventTypes.Contains(webhookEvent.Type!))
         {
             user.IsPremium = false;
             user.PremiumUntil = expiresAt;
