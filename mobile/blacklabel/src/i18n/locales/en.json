@@ -229,6 +229,7 @@
     "restoring": "Restoring...",
     "restoreSuccess": "Purchases restored.",
     "purchaseError": "Something went wrong with the purchase. Please try again.",
+    "purchaseProcessing": "Your purchase is being confirmed — this can take a few seconds. Reopen this screen shortly if Premium doesn't appear yet.",
     "close": "Close",
     "duration": {
       "lifetime": "One-time purchase",

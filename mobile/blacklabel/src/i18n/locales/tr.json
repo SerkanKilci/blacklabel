@@ -229,6 +229,7 @@
     "restoring": "Geri yükleniyor...",
     "restoreSuccess": "Satın alımlar geri yüklendi.",
     "purchaseError": "Satın alma sırasında bir şeyler ters gitti. Lütfen tekrar dene.",
+    "purchaseProcessing": "Satın alman onaylanıyor — birkaç saniye sürebilir. Premium hemen görünmezse bu ekranı biraz sonra tekrar aç.",
     "close": "Kapat",
     "duration": {
       "lifetime": "Tek seferlik satın alma",

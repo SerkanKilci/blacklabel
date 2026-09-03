@@ -229,6 +229,7 @@
     "restoring": "Wird wiederhergestellt...",
     "restoreSuccess": "Käufe wiederhergestellt.",
     "purchaseError": "Beim Kauf ist etwas schiefgelaufen. Bitte versuch es erneut.",
+    "purchaseProcessing": "Dein Kauf wird bestätigt — das kann ein paar Sekunden dauern. Öffne diesen Bildschirm gleich noch einmal, falls Premium noch nicht angezeigt wird.",
     "close": "Schließen",
     "duration": {
       "lifetime": "Einmaliger Kauf",

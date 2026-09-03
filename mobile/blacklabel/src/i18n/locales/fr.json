@@ -229,6 +229,7 @@
     "restoring": "Restauration en cours...",
     "restoreSuccess": "Achats restaurés.",
     "purchaseError": "Un problème est survenu lors de l'achat. Veuillez réessayer.",
+    "purchaseProcessing": "Votre achat est en cours de confirmation — cela peut prendre quelques secondes. Rouvrez cet écran dans un instant si Premium n'apparaît pas encore.",
     "close": "Fermer",
     "duration": {
       "lifetime": "Achat unique",

@@ -9,7 +9,13 @@ import { PACKAGE_TYPE, type PurchasesPackage } from 'react-native-purchases';
 import { Screen } from '../src/components/Screen';
 import { useProfile } from '../src/hooks/useProfile';
 import { useSocialLink } from '../src/hooks/useSocialLink';
-import { getCurrentOffering, isPurchasesConfigured, purchasePackage, restorePurchases } from '../src/purchases/purchases';
+import {
+  getCurrentOffering,
+  isPurchasesConfigured,
+  purchasePackage,
+  restorePurchases,
+  waitForPremiumConfirmation,
+} from '../src/purchases/purchases';
 
 const FEATURE_KEYS = [
   'unlimitedScans',
@@ -57,7 +63,15 @@ export default function PaywallScreen() {
     setFeedback(null);
     try {
       await purchasePackage(pkg);
-      await queryClient.invalidateQueries({ queryKey: ['subscription'] });
+      const confirmed = await waitForPremiumConfirmation(queryClient);
+      if (!confirmed) {
+        // Apple/RevenueCat confirmed the purchase, but our backend's IsPremium flag hasn't
+        // caught up yet (webhook delay) -- still queue a refetch so it picks up whenever the
+        // webhook lands, and tell the user rather than silently looking like nothing happened.
+        await queryClient.invalidateQueries({ queryKey: ['subscription'] });
+        setFeedback(t('paywall.purchaseProcessing'));
+        return;
+      }
       router.back();
     } catch {
       setFeedback(t('paywall.purchaseError'));

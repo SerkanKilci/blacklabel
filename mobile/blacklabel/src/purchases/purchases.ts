@@ -1,5 +1,9 @@
+import type { QueryClient } from '@tanstack/react-query';
 import { Platform } from 'react-native';
 import Purchases, { type PurchasesOffering, type PurchasesPackage } from 'react-native-purchases';
+
+import { getSubscription } from '../api/subscription';
+import type { Subscription } from '../types/subscription';
 
 const IOS_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY;
 const ANDROID_API_KEY = process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY;
@@ -54,4 +58,29 @@ export async function purchasePackage(pkg: PurchasesPackage): Promise<void> {
 
 export async function restorePurchases(): Promise<void> {
   await Purchases.restorePurchases();
+}
+
+/**
+ * RevenueCat confirms a purchase/restore to the client the moment StoreKit does, but our own
+ * backend's IsPremium flag only flips once RevenueCat's webhook reaches our server -- a separate,
+ * asynchronous delivery (WebhooksController) that can lag a few seconds behind the client-side
+ * confirmation. Checking /me/subscription once immediately after a purchase can and does race
+ * that webhook, silently showing "not premium" even though the purchase succeeded. This polls a
+ * few times with a short delay to give the webhook a realistic window to land before giving up.
+ */
+export async function waitForPremiumConfirmation(
+  queryClient: QueryClient,
+  { attempts = 6, delayMs = 1500 }: { attempts?: number; delayMs?: number } = {},
+): Promise<boolean> {
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    const subscription = await getSubscription();
+    if (subscription.isPremium) {
+      queryClient.setQueryData<Subscription>(['subscription'], subscription);
+      return true;
+    }
+    if (attempt < attempts - 1) {
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
+  }
+  return false;
 }

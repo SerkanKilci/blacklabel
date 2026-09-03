@@ -229,6 +229,7 @@
     "restoring": "Restaurando...",
     "restoreSuccess": "Compras restauradas.",
     "purchaseError": "Algo salió mal con la compra. Inténtalo de nuevo.",
+    "purchaseProcessing": "Tu compra se está confirmando — esto puede tardar unos segundos. Vuelve a abrir esta pantalla en un momento si Premium aún no aparece.",
     "close": "Cerrar",
     "duration": {
       "lifetime": "Compra única",
