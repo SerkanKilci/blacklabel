@@ -20,6 +20,12 @@ public class AppUserRepository : IAppUserRepository
     public Task<AppUser?> GetByIdAsync(Guid id, CancellationToken ct)
         => _context.AppUsers.FirstOrDefaultAsync(u => u.Id == id, ct);
 
+    public Task<AppUser?> GetByAppleUserIdAsync(string appleUserId, CancellationToken ct)
+        => _context.AppUsers.FirstOrDefaultAsync(u => u.AppleUserId == appleUserId, ct);
+
+    public Task<AppUser?> GetByGoogleUserIdAsync(string googleUserId, CancellationToken ct)
+        => _context.AppUsers.FirstOrDefaultAsync(u => u.GoogleUserId == googleUserId, ct);
+
     public Task AddAsync(AppUser user, CancellationToken ct)
     {
         _context.AppUsers.Add(user);

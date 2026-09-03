@@ -122,4 +122,50 @@ public class AccountLinkServiceTests
         Assert.Equal("google-sub-1", updated.GoogleUserId);
         Assert.Equal("already-set@example.com", updated.Email);
     }
+
+    [Fact]
+    public async Task LinkAsync_Switches_To_The_Existing_Account_When_The_Identity_Is_Already_Linked_Elsewhere()
+    {
+        // Simulates: user signed in with Apple on phone A (account A gets premium, scan history,
+        // etc.), then reinstalls on phone B, which starts as a brand new anonymous account B, and
+        // signs in with the same Apple ID. Must resolve to account A, not stamp AppleUserId onto
+        // the fresh account B and strand A's data.
+        var (context, service, newDeviceUserId) = CreateService();
+
+        var originalAccountId = Guid.NewGuid();
+        context.AppUsers.Add(new AppUser
+        {
+            Id = originalAccountId,
+            DeviceId = "original-device",
+            AppleUserId = "apple-sub-1",
+            IsPremium = true,
+            CreatedAt = DateTime.UtcNow
+        });
+        await context.SaveChangesAsync();
+
+        var result = await service.LinkAsync(newDeviceUserId, new LinkAccountRequest("apple", "valid-apple-token"), CancellationToken.None);
+
+        Assert.NotNull(result);
+        Assert.Equal(originalAccountId, result!.UserId);
+        Assert.True(result.IsPremium);
+        Assert.Equal($"token-for-{originalAccountId}", result.Token);
+
+        // The fresh anonymous account is left untouched, not linked to the Apple id.
+        var newDeviceAccount = await context.AppUsers.SingleAsync(u => u.Id == newDeviceUserId);
+        Assert.Null(newDeviceAccount.AppleUserId);
+    }
+
+    [Fact]
+    public async Task LinkAsync_Does_Not_Switch_Accounts_When_Relinking_The_Same_Identity_To_The_Same_User()
+    {
+        var (context, service, userId) = CreateService();
+        var user = await context.AppUsers.SingleAsync(u => u.Id == userId);
+        user.AppleUserId = "apple-sub-1";
+        await context.SaveChangesAsync();
+
+        var result = await service.LinkAsync(userId, new LinkAccountRequest("apple", "valid-apple-token"), CancellationToken.None);
+
+        Assert.NotNull(result);
+        Assert.Equal(userId, result!.UserId);
+    }
 }

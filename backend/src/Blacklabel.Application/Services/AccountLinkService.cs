@@ -1,5 +1,6 @@
 using Blacklabel.Application.Dtos;
 using Blacklabel.Application.Interfaces;
+using Blacklabel.Domain.Entities;
 
 namespace Blacklabel.Application.Services;
 
@@ -41,13 +42,28 @@ public class AccountLinkService : IAccountLinkService
             return null;
         }
 
+        // If this identity is already linked to a different account -- the common "signed in
+        // before, now on a new device/reinstall" case -- switch to that account instead of
+        // stamping the same provider id onto a second row. Without this, a returning user's scan
+        // history and household profiles stay stranded on whichever fresh anonymous account they
+        // happened to open the app with this time; only their premium entitlement would come back
+        // (that part works independently, via RevenueCat's own receipt-based restore).
+        AppUser? existingUser = provider switch
+        {
+            "apple" => await _appUserRepository.GetByAppleUserIdAsync(identity.ProviderUserId, ct),
+            "google" => await _appUserRepository.GetByGoogleUserIdAsync(identity.ProviderUserId, ct),
+            _ => null
+        };
+
+        var targetUser = existingUser is not null && existingUser.Id != user.Id ? existingUser : user;
+
         switch (provider)
         {
             case "apple":
-                user.AppleUserId = identity.ProviderUserId;
+                targetUser.AppleUserId = identity.ProviderUserId;
                 break;
             case "google":
-                user.GoogleUserId = identity.ProviderUserId;
+                targetUser.GoogleUserId = identity.ProviderUserId;
                 break;
             default:
                 return null;
@@ -55,12 +71,12 @@ public class AccountLinkService : IAccountLinkService
 
         if (!string.IsNullOrWhiteSpace(identity.Email))
         {
-            user.Email = identity.Email;
+            targetUser.Email = identity.Email;
         }
 
         await _appUserRepository.SaveChangesAsync(ct);
 
-        var token = _tokenService.GenerateToken(user);
-        return new AuthResponse(token, user.Id, user.IsPremium);
+        var token = _tokenService.GenerateToken(targetUser);
+        return new AuthResponse(token, targetUser.Id, targetUser.IsPremium);
     }
 }
