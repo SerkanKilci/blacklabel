@@ -1,11 +1,9 @@
 # Privacy Policy — Blacklabel
 
-**Draft — not yet reviewed by counsel.** Replace the placeholder contact address below with a
-real one, have this reviewed against applicable law in your target markets (KVKK in Turkey,
-GDPR in the EU, App Store/Play Store privacy requirements), and host it at a public URL before
-submitting the app to either store — both require a live Privacy Policy URL in the listing.
+This is the canonical Privacy Policy text, published at `docs/privacy.html` and linked from the
+app's Settings screen.
 
-Last updated: 2026-08-18.
+Last updated: 2026-09-03.
 
 ## What this app does
 

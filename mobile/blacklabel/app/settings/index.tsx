@@ -1,4 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -176,18 +177,16 @@ export default function SettingsScreen() {
           <View style={styles.row}>
             <Text style={styles.rowLabel}>{t('settings.appleLinked')}</Text>
           </View>
+        ) : linkingProvider === 'apple' ? (
+          <ActivityIndicator size="small" color="#1A1A1A" style={styles.appleButtonLoading} />
         ) : (
-          <Pressable
-            style={styles.signInButton}
+          <AppleAuthentication.AppleAuthenticationButton
+            buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+            buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+            cornerRadius={12}
+            style={styles.appleButton}
             onPress={() => void handleSignIn('apple')}
-            disabled={linkingProvider !== null}
-          >
-            {linkingProvider === 'apple' ? (
-              <ActivityIndicator size="small" color="#1A1A1A" />
-            ) : (
-              <Text style={styles.signInButtonText}>{t('settings.signInWithApple')}</Text>
-            )}
-          </Pressable>
+          />
         )
       )}
 
@@ -366,6 +365,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#1A1A1A',
+  },
+  appleButton: {
+    width: '100%',
+    height: 44,
+    marginBottom: 10,
+  },
+  appleButtonLoading: {
+    marginBottom: 10,
   },
   errorText: {
     fontSize: 13,

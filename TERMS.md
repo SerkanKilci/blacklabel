@@ -1,14 +1,9 @@
 # Terms of Use — Blacklabel
 
-**Draft — not yet reviewed by counsel.** Replace the placeholder contact address below with a
-real one, have this reviewed against applicable law in your target markets, and host it at a
-public URL alongside `PRIVACY.md` before submitting the app to either store. Apple's Guideline
-3.1.2(a) requires auto-renewable subscription apps to disclose title, length, and price of the
-subscription and link to Terms of Use *and* Privacy Policy from the purchase screen itself — both
-are already wired into the in-app Paywall (`app/paywall.tsx`) and Settings screens; this document
-is the canonical text those in-app pages summarize.
+This is the canonical Terms of Use text, published at `docs/terms.html` and summarized in the
+in-app Paywall (`app/paywall.tsx`) and Settings screens.
 
-Last updated: 2026-08-14.
+Last updated: 2026-09-03.
 
 ## Acceptance
 
@@ -72,7 +67,8 @@ delete your account at any time.
 
 ## Governing law
 
-*(Placeholder — set the governing jurisdiction for your target market(s) before publishing.)*
+These terms are governed by the laws of the Republic of Turkey, without regard to conflict-of-law
+principles.
 
 ## Changes to these terms
 

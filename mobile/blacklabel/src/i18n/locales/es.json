@@ -2,7 +2,7 @@
   "scanner": {
     "permissionTitle": "Se necesita acceso a la cámara",
     "permissionMessage": "Blacklabel necesita acceso a la cámara para escanear códigos de barras de productos.",
-    "grantButton": "Conceder acceso a la cámara",
+    "grantButton": "Continuar",
     "targetHint": "Alinea el código de barras dentro del marco",
     "recentScans": "Escaneos recientes",
     "manualEntryButton": "Introducir código de barras manualmente",
@@ -152,8 +152,8 @@
     "dietMessage": "Este producto no encaja con tu preferencia \"{{flag}}\".",
     "lockedTitle": "⚠️ Uno de tus perfiles del hogar tiene una advertencia",
     "lockedMessage": "Este producto entra en conflicto con un alérgeno o preferencia de uno de tus perfiles guardados. Pasa a Premium para ver quién y por qué.",
-    "incompleteDataTitle": "⚠️ Los datos de este producto están incompletos",
-    "incompleteDataMessage": "Falta la lista de ingredientes, por lo que la comprobación de alérgenos y aditivos puede ser incompleta. Que no aparezca ninguna advertencia no significa que este producto sea seguro — comprueba siempre el envase oficial antes de comprar."
+    "incompleteDataTitle": "⚠️ Los datos de este producto no están verificados",
+    "incompleteDataMessage": "Esta información proviene de una base de datos mantenida por la comunidad y puede estar incompleta o ser inexacta. Que no aparezca ninguna advertencia no significa que este producto sea seguro. Si tiene una alergia grave o una afección de salud, compruebe siempre el envase del propio producto antes de comprarlo."
   },
   "history": {
     "title": "Historial",
@@ -221,8 +221,8 @@
       "offlineMode": "Modo sin conexión"
     },
     "notConfigured": "Las compras aún no están disponibles en esta versión.",
-    "signInRequiredTitle": "Inicia sesión primero",
-    "signInRequiredMessage": "Inicia sesión con Apple o Google para proteger tu suscripción premium. Así no la perderás si cambias de teléfono.",
+    "signInOptionalTitle": "Sincronizar entre dispositivos (opcional)",
+    "signInOptionalMessage": "Inicia sesión con Apple o Google para acceder a tu suscripción Premium también en otros dispositivos. No es necesario para comprar.",
     "signInUnavailable": "No hay ningún método de inicio de sesión compatible en este dispositivo.",
     "subscribe": "Suscribirse",
     "restore": "Restaurar compras",

@@ -2,7 +2,7 @@
   "scanner": {
     "permissionTitle": "Accès à l'appareil photo requis",
     "permissionMessage": "Blacklabel a besoin d'accéder à l'appareil photo pour scanner les codes-barres des produits.",
-    "grantButton": "Autoriser l'appareil photo",
+    "grantButton": "Continuer",
     "targetHint": "Aligne le code-barres dans le cadre",
     "recentScans": "Scans récents",
     "manualEntryButton": "Saisir le code-barres manuellement",
@@ -152,8 +152,8 @@
     "dietMessage": "Ce produit ne correspond pas à ta préférence « {{flag}} ».",
     "lockedTitle": "⚠️ Un de tes profils du foyer a un avertissement",
     "lockedMessage": "Ce produit est en conflit avec un allergène ou une préférence de l'un de tes profils enregistrés. Passe à Premium pour voir qui et pourquoi.",
-    "incompleteDataTitle": "⚠️ Les données de ce produit sont incomplètes",
-    "incompleteDataMessage": "La liste des ingrédients est manquante, la vérification des allergènes et additifs peut donc être incomplète. L'absence d'avertissement ne signifie pas que ce produit est sûr — vérifie toujours l'emballage officiel avant d'acheter."
+    "incompleteDataTitle": "⚠️ Les données de ce produit n'ont pas été vérifiées",
+    "incompleteDataMessage": "Ces informations proviennent d'une base de données communautaire et peuvent être incomplètes ou inexactes. L'absence d'avertissement ne signifie pas que ce produit est sûr. En cas d'allergie grave ou de problème de santé, vérifiez toujours l'emballage du produit lui-même avant d'acheter."
   },
   "history": {
     "title": "Historique",
@@ -221,8 +221,8 @@
       "offlineMode": "Mode hors ligne"
     },
     "notConfigured": "Les achats ne sont pas encore disponibles dans cette version.",
-    "signInRequiredTitle": "Connecte-toi d'abord",
-    "signInRequiredMessage": "Connecte-toi avec Apple ou Google pour sécuriser ton abonnement Premium. Ainsi, tu ne le perdras pas si tu changes de téléphone.",
+    "signInOptionalTitle": "Synchroniser sur plusieurs appareils (facultatif)",
+    "signInOptionalMessage": "Connecte-toi avec Apple ou Google pour accéder à ton abonnement Premium sur d'autres appareils aussi. Non requis pour l'achat.",
     "signInUnavailable": "Aucune méthode de connexion prise en charge n'est disponible sur cet appareil.",
     "subscribe": "S'abonner",
     "restore": "Restaurer les achats",

@@ -2,7 +2,7 @@
   "scanner": {
     "permissionTitle": "Kamerazugriff erforderlich",
     "permissionMessage": "Blacklabel benötigt Kamerazugriff, um Produktbarcodes zu scannen.",
-    "grantButton": "Kamerazugriff erlauben",
+    "grantButton": "Weiter",
     "targetHint": "Barcode im Rahmen ausrichten",
     "recentScans": "Zuletzt gescannt",
     "manualEntryButton": "Barcode manuell eingeben",
@@ -152,8 +152,8 @@
     "dietMessage": "Dieses Produkt passt nicht zu deiner Präferenz \"{{flag}}\".",
     "lockedTitle": "⚠️ Eines deiner Haushaltsprofile hat eine Warnung",
     "lockedMessage": "Dieses Produkt steht im Konflikt mit einem Allergen oder einer Präferenz in einem deiner gespeicherten Profile. Upgrade auf Premium, um zu sehen, wer und warum.",
-    "incompleteDataTitle": "⚠️ Die Daten dieses Produkts sind unvollständig",
-    "incompleteDataMessage": "Die Zutatenliste fehlt, daher kann die Allergen- und Zusatzstoffprüfung unvollständig sein. Keine Warnung bedeutet nicht, dass dieses Produkt sicher ist — prüfe vor dem Kauf immer die offizielle Verpackung."
+    "incompleteDataTitle": "⚠️ Die Daten dieses Produkts sind nicht verifiziert",
+    "incompleteDataMessage": "Diese Informationen stammen aus einer community-basierten Datenbank und können unvollständig oder fehlerhaft sein. Keine Warnung bedeutet nicht, dass dieses Produkt sicher ist. Bei einer schweren Allergie oder gesundheitlichen Erkrankung prüfe vor dem Kauf immer die Verpackung des Produkts selbst."
   },
   "history": {
     "title": "Verlauf",
@@ -221,8 +221,8 @@
       "offlineMode": "Offline-Modus"
     },
     "notConfigured": "Käufe sind in dieser Version noch nicht verfügbar.",
-    "signInRequiredTitle": "Zuerst anmelden",
-    "signInRequiredMessage": "Melde dich mit Apple oder Google an, um dein Premium-Abo abzusichern. So verlierst du es nicht, wenn du das Telefon wechselst.",
+    "signInOptionalTitle": "Geräteübergreifend synchronisieren (optional)",
+    "signInOptionalMessage": "Melde dich mit Apple oder Google an, um auch von anderen Geräten auf dein Premium-Abo zuzugreifen. Für den Kauf nicht erforderlich.",
     "signInUnavailable": "Auf diesem Gerät ist keine unterstützte Anmeldemethode verfügbar.",
     "subscribe": "Abonnieren",
     "restore": "Käufe wiederherstellen",

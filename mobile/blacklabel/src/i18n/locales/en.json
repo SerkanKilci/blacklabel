@@ -2,7 +2,7 @@
   "scanner": {
     "permissionTitle": "Camera access needed",
     "permissionMessage": "Blacklabel needs camera access to scan product barcodes.",
-    "grantButton": "Grant camera access",
+    "grantButton": "Continue",
     "targetHint": "Align the barcode within the frame",
     "recentScans": "Recent scans",
     "manualEntryButton": "Enter barcode manually",
@@ -152,8 +152,8 @@
     "dietMessage": "This product doesn't fit your \"{{flag}}\" preference.",
     "lockedTitle": "⚠️ One of your household profiles has a warning",
     "lockedMessage": "This product conflicts with an allergen or preference on one of your saved profiles. Upgrade to Premium to see who and why.",
-    "incompleteDataTitle": "⚠️ This product's data is incomplete",
-    "incompleteDataMessage": "The ingredients list is missing, so allergen and additive checks may be incomplete. No warning shown doesn't mean this product is safe — always check the official packaging before buying."
+    "incompleteDataTitle": "⚠️ This product's data hasn't been verified",
+    "incompleteDataMessage": "This information comes from a community-maintained database and may be incomplete or inaccurate. No warning shown doesn't mean this product is safe. If you have a serious allergy or health condition, always check the product's own packaging before buying."
   },
   "history": {
     "title": "History",
@@ -221,8 +221,8 @@
       "offlineMode": "Offline mode"
     },
     "notConfigured": "Purchases aren't available in this build yet.",
-    "signInRequiredTitle": "Sign in first",
-    "signInRequiredMessage": "Sign in with Apple or Google to secure your premium subscription. That way you won't lose it if you switch phones.",
+    "signInOptionalTitle": "Sync across devices (optional)",
+    "signInOptionalMessage": "Sign in with Apple or Google to access your premium subscription on other devices too. Not required to purchase.",
     "signInUnavailable": "No supported sign-in method is available on this device.",
     "subscribe": "Subscribe",
     "restore": "Restore purchases",

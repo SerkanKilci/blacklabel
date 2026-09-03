@@ -2,7 +2,7 @@
   "scanner": {
     "permissionTitle": "Kamera izni gerekli",
     "permissionMessage": "Blacklabel, ürün barkodlarını tarayabilmek için kamera erişimine ihtiyaç duyar.",
-    "grantButton": "Kamera erişimi ver",
+    "grantButton": "Devam et",
     "targetHint": "Barkodu çerçeve içine hizalayın",
     "recentScans": "Son taramalar",
     "manualEntryButton": "Barkodu elle gir",
@@ -152,8 +152,8 @@
     "dietMessage": "Bu ürün \"{{flag}}\" tercihine uymuyor.",
     "lockedTitle": "⚠️ Hane profillerinden biri için uyarı var",
     "lockedMessage": "Bu ürün, kaydettiğin profillerden birinin alerjen veya tercihleriyle çelişiyor. Kimin ve neden olduğunu görmek için Premium'a geç.",
-    "incompleteDataTitle": "⚠️ Bu ürünün verisi eksik",
-    "incompleteDataMessage": "İçindekiler listesi eksik olduğu için alerjen ve katkı maddesi kontrolü tam olmayabilir. Uyarı çıkmaması, bu ürünün güvenli olduğu anlamına gelmez — satın almadan önce mutlaka ambalajı kontrol et."
+    "incompleteDataTitle": "⚠️ Bu ürünün verisi doğrulanmamış",
+    "incompleteDataMessage": "Bu bilgiler topluluk kaynaklı bir veritabanından geliyor ve eksik veya hatalı olabilir. Herhangi bir uyarı çıkmaması, bu ürünün güvenli olduğu anlamına gelmez. Ciddi bir alerjiniz veya sağlık durumunuz varsa, satın almadan önce ürünün kendi ambalajını mutlaka kontrol edin."
   },
   "history": {
     "title": "Geçmiş",
@@ -221,8 +221,8 @@
       "offlineMode": "Çevrimdışı mod"
     },
     "notConfigured": "Satın alma bu sürümde henüz kullanılamıyor.",
-    "signInRequiredTitle": "Önce giriş yapmalısın",
-    "signInRequiredMessage": "Premium aboneliğini güvenceye almak için Apple veya Google hesabınla giriş yap. Böylece telefon değiştirsen bile aboneliğini kaybetmezsin.",
+    "signInOptionalTitle": "Cihazlar arasında senkronize et (isteğe bağlı)",
+    "signInOptionalMessage": "Premium aboneliğine başka cihazlardan da erişmek için Apple veya Google ile giriş yap. Satın almak için gerekli değil.",
     "signInUnavailable": "Bu cihazda desteklenen bir giriş yöntemi bulunamadı.",
     "subscribe": "Abone ol",
     "restore": "Satın alımları geri yükle",

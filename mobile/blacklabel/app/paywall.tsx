@@ -1,4 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -42,10 +43,13 @@ export default function PaywallScreen() {
   const { appleAvailable, googleConfigured, linkingProvider, hasError: linkError, handleSignIn } = useSocialLink();
   const isAccountLinked = Boolean(profile?.hasAppleLink || profile?.hasGoogleLink);
 
+  // RevenueCat is configured at app launch with our own (anonymous, device-based) user id as its
+  // appUserID -- see src/purchases/purchases.ts -- so purchasing never depends on being signed in
+  // with Apple/Google. Not gating this on isAccountLinked is required by App Store Guideline
+  // 5.1.1(v): apps cannot require registration to buy an IAP that isn't account-based.
   const { data: offering, isLoading } = useQuery({
     queryKey: ['revenuecat-offering'],
     queryFn: getCurrentOffering,
-    enabled: isAccountLinked,
   });
 
   const handlePurchase = async (pkg: PurchasesPackage) => {
@@ -90,47 +94,12 @@ export default function PaywallScreen() {
         </View>
       ))}
 
+      {/* Purchasing never requires being signed in -- RevenueCat is already configured with our
+          own anonymous device account as its appUserID at app launch (see purchases.ts). Gating
+          this behind Apple/Google sign-in would violate Guideline 5.1.1(v): apps can't require
+          registration to buy an IAP that isn't account-based. */}
       <View style={styles.packagesSection}>
-        {!isAccountLinked ? (
-          <View style={styles.signInGate}>
-            <Text style={styles.signInGateTitle}>{t('paywall.signInRequiredTitle')}</Text>
-            <Text style={styles.signInGateText}>{t('paywall.signInRequiredMessage')}</Text>
-
-            {appleAvailable && (
-              <Pressable
-                style={styles.signInButton}
-                onPress={() => void handleSignIn('apple')}
-                disabled={linkingProvider !== null}
-              >
-                {linkingProvider === 'apple' ? (
-                  <ActivityIndicator size="small" color="#1A1A1A" />
-                ) : (
-                  <Text style={styles.signInButtonText}>{t('settings.signInWithApple')}</Text>
-                )}
-              </Pressable>
-            )}
-
-            {googleConfigured && (
-              <Pressable
-                style={styles.signInButton}
-                onPress={() => void handleSignIn('google')}
-                disabled={linkingProvider !== null}
-              >
-                {linkingProvider === 'google' ? (
-                  <ActivityIndicator size="small" color="#1A1A1A" />
-                ) : (
-                  <Text style={styles.signInButtonText}>{t('settings.signInWithGoogle')}</Text>
-                )}
-              </Pressable>
-            )}
-
-            {!appleAvailable && !googleConfigured && (
-              <Text style={styles.notConfiguredText}>{t('paywall.signInUnavailable')}</Text>
-            )}
-
-            {linkError && <Text style={styles.feedbackText}>{t('settings.linkError')}</Text>}
-          </View>
-        ) : !isPurchasesConfigured() ? (
+        {!isPurchasesConfigured() ? (
           <Text style={styles.notConfiguredText}>{t('paywall.notConfigured')}</Text>
         ) : isLoading ? (
           <ActivityIndicator size="large" color="#1A1A1A" />
@@ -155,7 +124,7 @@ export default function PaywallScreen() {
         )}
       </View>
 
-      {isAccountLinked && isPurchasesConfigured() && (
+      {isPurchasesConfigured() && (
         <>
           <Text style={styles.legalNoticeText}>{t('paywall.autoRenewalNotice')}</Text>
 
@@ -167,6 +136,39 @@ export default function PaywallScreen() {
             <Text style={styles.legalLinkText}>{t('settings.privacyLink')}</Text>
           </Pressable>
         </>
+      )}
+
+      {/* Optional: linking Apple/Google lets the same premium entitlement be recognized on
+          another device. Never blocks purchase itself (see above). */}
+      {!isAccountLinked && (appleAvailable || googleConfigured) && (
+        <View style={styles.signInGate}>
+          <Text style={styles.signInGateTitle}>{t('paywall.signInOptionalTitle')}</Text>
+          <Text style={styles.signInGateText}>{t('paywall.signInOptionalMessage')}</Text>
+
+          {linkingProvider !== null ? (
+            <ActivityIndicator size="small" color="#1A1A1A" style={styles.signInLoading} />
+          ) : (
+            <>
+              {appleAvailable && (
+                <AppleAuthentication.AppleAuthenticationButton
+                  buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+                  buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+                  cornerRadius={12}
+                  style={styles.appleButton}
+                  onPress={() => void handleSignIn('apple')}
+                />
+              )}
+
+              {googleConfigured && (
+                <Pressable style={styles.signInButton} onPress={() => void handleSignIn('google')}>
+                  <Text style={styles.signInButtonText}>{t('settings.signInWithGoogle')}</Text>
+                </Pressable>
+              )}
+            </>
+          )}
+
+          {linkError && <Text style={styles.feedbackText}>{t('settings.linkError')}</Text>}
+        </View>
       )}
 
       {feedback && <Text style={styles.feedbackText}>{feedback}</Text>}
@@ -259,6 +261,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#1A1A1A',
+  },
+  appleButton: {
+    width: '100%',
+    height: 44,
+    marginBottom: 10,
+  },
+  signInLoading: {
+    marginVertical: 8,
   },
   packageButton: {
     borderWidth: 1,
